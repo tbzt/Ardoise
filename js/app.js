@@ -1,6 +1,6 @@
 /* App — le démarrage et le routage. Un écran à la fois, choisi par le
    fragment d'URL : #/exercices, #/exercice/<id>, #/seances,
-   #/seance/<id>, #/seance/<id>/imprimer. Le bouton « précédent » du
+   #/seance/<id>, #/seance/<id>/imprimer, #/seance/<id>/glace. Le bouton « précédent » du
    navigateur marche donc tout seul. */
 import { Storage } from "./core/storage.js";
 import { Store } from "./core/store.js";
@@ -13,6 +13,7 @@ import { Exercice } from "./widgets/exercice.js";
 import { Seances } from "./widgets/seances.js";
 import { Seance } from "./widgets/seance.js";
 import { Impression } from "./widgets/impression.js";
+import { BordGlace } from "./widgets/bordglace.js";
 
 const main = document.getElementById("main");
 let ecran = null;
@@ -39,6 +40,9 @@ function router() {
     actif = "seances";
   } else if (nom === "seance" && id && action === "imprimer") {
     ecran = Impression.afficher(main, id);
+    actif = "seances";
+  } else if (nom === "seance" && id && action === "glace") {
+    ecran = BordGlace.afficher(main, id);
     actif = "seances";
   } else if (nom === "seance" && id) {
     ecran = Seance.afficher(main, id);

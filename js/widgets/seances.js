@@ -44,7 +44,7 @@ function carte(s) {
     <a class="carte carte-seance" href="#/seance/${s.id}">
       <p class="date">${esc(formaterDate(s.date))}${s.heure ? ` · ${esc(s.heure)}` : ""}</p>
       <h3>${esc(s.titre) || "<em>Séance sans titre</em>"}</h3>
-      <p class="meta">${s.groupe ? `<span>${esc(s.groupe)}</span>` : ""}<span>${s.blocs.length} bloc${s.blocs.length > 1 ? "s" : ""}</span><span class="${depasse ? "alerte" : ""}">${formaterDuree(total)} / ${formaterDuree(s.duree_glace)}</span></p>
+      <p class="meta">${s.groupe ? `<span>${esc(s.groupe)}</span>` : ""}<span>${s.blocs.length} bloc${s.blocs.length > 1 ? "s" : ""}</span><span class="${depasse ? "alerte" : ""}">${formaterDuree(total)} / ${formaterDuree(s.duree_glace)}</span><a class="carte-lien" href="#/seance/${s.id}/glace" title="Bord de glace">Bord de glace →</a></p>
       ${s.objectif ? `<p class="objectif">${esc(s.objectif)}</p>` : ""}
     </a>`;
 }

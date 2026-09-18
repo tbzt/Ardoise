@@ -24,6 +24,7 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/exercice.js   la fiche (éditeur + formulaire, auto-enregistrement)
                    js/widgets/seances.js    la liste des séances
                    js/widgets/seance.js     le déroulé (blocs, frise, bibliothèque latérale)
+                   js/widgets/bordglace.js  la séance vue du banc : matériel, points clés, bloc en cours
                    js/widgets/impression.js la feuille de séance imprimable
                    js/widgets/feuillepdf.js la même feuille en PDF (schémas rendus en JPEG via canvas)
 2. Composants      js/widgets/editeur.js    l'éditeur de schéma (outils, gestes, historique)
@@ -85,7 +86,7 @@ Styles de trait : `patin`, `conduite` (ondulé), `passe` (pointillé), `tir` (do
 Un bloc recopie le **titre** de l'exercice au moment de l'ajout : si l'exercice est supprimé plus tard, la séance garde son sens.
 
 ### Persistance
-Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_theme`, `ardoise_v1_initialise`. L'export JSON porte `format: "ardoise/1"`.
+Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_theme`, `ardoise_v1_initialise`, et `ardoise_v1_coches_<id de séance>` pour la liste de matériel cochée au bord de la glace. L'export JSON porte `format: "ardoise/1"`.
 
 ---
 

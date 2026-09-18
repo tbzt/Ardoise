@@ -25,6 +25,7 @@ export const Seance = {
         <a class="retour" href="#/seances">← Séances</a>
         <span class="etat" data-etat>Enregistré</span>
         <span class="spacer"></span>
+        <a class="bouton primaire" href="#/seance/${se.id}/glace" title="La séance vue du banc : matériel, points clés, bloc en cours">Bord de glace</a>
         <a class="bouton" href="#/seance/${se.id}/imprimer">Imprimer</a>
         <button type="button" data-act="pdf" title="Télécharger la feuille de séance en PDF">PDF</button>
         <button type="button" data-act="dupliquer">Dupliquer</button>

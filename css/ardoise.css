@@ -169,6 +169,21 @@ button:hover,
   border-color: var(--accent);
   color: var(--accent-ink);
 }
+.bouton.primaire {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.bouton.primaire:hover {
+  filter: brightness(1.1);
+  color: #fff;
+}
+.carte-lien {
+  margin-left: auto;
+  font-weight: 600;
+  text-decoration: none;
+}
 button:disabled {
   opacity: 0.45;
   cursor: default;
@@ -1098,4 +1113,187 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
     color: inherit;
     text-decoration: none;
   }
+}
+
+/* ── Bord de glace ──────────────────────────────────────────── */
+
+.ecran-glace {
+  max-width: 720px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+}
+.glace-tete {
+  margin-bottom: var(--e4);
+}
+.glace-tete h1 {
+  font-size: 1.6rem;
+}
+.glace-tete .meta {
+  color: var(--ink-soft);
+  margin: var(--e1) 0;
+}
+.glace-objectif {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.glace-horloge {
+  font-weight: 700;
+  color: var(--accent-ink);
+  margin-top: var(--e2);
+}
+.glace-panneau {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  padding: var(--e4);
+  margin-bottom: var(--e5);
+  box-shadow: var(--ombre);
+}
+.glace-panneau h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin-bottom: var(--e2);
+}
+.glace-panneau h2 + .glace-notes,
+.glace-materiel + h2 {
+  margin-top: var(--e4);
+}
+.glace-materiel {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.glace-materiel li {
+  border-top: 1px solid var(--rule);
+}
+.glace-materiel li:first-child {
+  border-top: none;
+}
+.glace-materiel label {
+  display: flex;
+  gap: var(--e3);
+  align-items: flex-start;
+  padding: var(--e2) 0;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--ink);
+  cursor: pointer;
+}
+.glace-materiel input {
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  margin: 2px 0 0;
+  flex: none;
+  accent-color: var(--accent);
+}
+.glace-materiel span {
+  display: flex;
+  flex-direction: column;
+}
+.glace-materiel small {
+  font-size: 0.8rem;
+}
+.glace-materiel input:checked + span strong {
+  text-decoration: line-through;
+  color: var(--ink-faint);
+}
+.glace-rien,
+.glace-notes {
+  margin: 0;
+}
+.glace-blocs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e3);
+}
+.glace-bloc {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 5px solid var(--rule-controle);
+  border-radius: var(--rayon);
+  padding: var(--e3) var(--e4);
+  transition: opacity 200ms ease;
+}
+.glace-bloc.glace-libre {
+  border-left-color: var(--rule);
+}
+.glace-bloc.en-cours {
+  border-left-color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent), var(--ombre);
+}
+.glace-bloc.passe {
+  opacity: 0.55;
+}
+.glace-bloc-tete {
+  display: flex;
+  gap: var(--e3);
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  margin-bottom: var(--e1);
+}
+.glace-badge {
+  margin-left: auto;
+  font-family: var(--sans);
+  font-weight: 700;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+.glace-bloc h2 {
+  font-size: 1.15rem;
+  margin-bottom: var(--e1);
+  display: flex;
+  gap: var(--e2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+.glace-bloc-objectif {
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 0.95rem;
+}
+.glace-points {
+  margin: var(--e1) 0 var(--e2);
+  padding-left: 1.2em;
+}
+.glace-points li {
+  margin-bottom: 2px;
+}
+.glace-note {
+  background: color-mix(in srgb, var(--warning) 12%, transparent);
+  border-left: 3px solid var(--warning);
+  padding: var(--e1) var(--e3);
+  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
+  font-weight: 600;
+}
+.glace-details {
+  margin-top: var(--e2);
+  font-size: 0.95rem;
+}
+.glace-details summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+  padding: var(--e1) 0;
+}
+.glace-details .vignette {
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon-petit);
+  margin: var(--e2) 0;
+}
+.glace-materiel-ex {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
 }

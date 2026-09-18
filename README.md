@@ -6,7 +6,7 @@ Application web à page unique, **100 % locale** : aucun serveur, aucune dépend
 
 → [tbzt.github.io/Ardoise](https://tbzt.github.io/Ardoise)
 
-Livrée avec **54 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
+Livrée avec **72 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
 
 ---
 
@@ -30,6 +30,10 @@ Livrée avec **54 exercices** et deux séances types pour **adultes débutants**
 - Durée par bloc, note par bloc, **réordonnancement par glisser-déposer** (ou avec les flèches), **heure de début calculée** pour chaque bloc.
 - Depuis la bibliothèque, un clic sur un exercice ouvre son **aperçu** (schéma, objectif, description, points clés) avant de l'ajouter.
 - Une **frise** colorée montre où passe le temps, et prévient quand on dépasse la glace.
+
+### Au bord de la glace
+- Une fois la séance prête, le mode **Bord de glace** la montre depuis le banc, sur téléphone : le **matériel à sortir** (une liste à cocher, agrégée depuis les exercices), les notes à avoir en tête, puis chaque bloc avec ses horaires, son objectif et ses **points clés** — le schéma et le déroulé complet restent à un clic.
+- Si la séance a une heure et qu'on est le bon jour, le **bloc en cours** est mis en avant avec le temps restant, les blocs passés s'estompent, et l'écran reste allumé.
 
 ### Imprimer — la feuille de séance
 - Le plan en tête (heure, durée, bloc, note), puis chaque exercice avec son schéma, sa description et ses points clés.

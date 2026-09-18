@@ -1321,6 +1321,415 @@ export function exercicesDeBase() {
         ],
       },
     }),
+
+    /* ── Quatrième fournée : équilibre, carres, soulever le palet,
+       mises au jeu, précision, et de quoi occuper un gardien. ── */
+
+    ex({
+      id: "cat_miroir",
+      nom: "Le miroir",
+      categorie: "echauffement",
+      duree: 5,
+      objectif: "Bouger de côté, s'arrêter, repartir — en copiant quelqu'un qui vous regarde.",
+      description:
+        "Par deux, face à face, de part et d'autre d'une ligne, à trois mètres. L'un mène : déplacements latéraux, avant-arrière, un genou au sol, tour sur soi-même. L'autre le reflète comme un miroir, en restant face à lui. Trente secondes, puis on inverse.\n\nQuatre manches. Le coach demande d'accélérer à la dernière : les jambes doivent brûler un peu avant la suite.",
+      points_cles: ["Rester face à face : on se déplace de côté, pas en tournant", "Genoux fléchis en permanence", "Le meneur varie : lent, rapide, haut, bas"],
+      materiel: "Aucun.",
+      variantes: "Avec palet pour les deux. Le miroir en marche arrière.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(110, 70, "X", "M"), J(150, 70, "O", "", "bleu"), L("patin", [[110, 82], [110, 110]]), L("patin", [[150, 82], [150, 110]], "bleu"),
+          J(110, 150, "X", "M"), J(150, 150, "O", "", "bleu"), L("patin", [[110, 138], [110, 112]]), L("patin", [[150, 138], [150, 112]], "bleu"),
+          J(110, 230, "X", "M"), J(150, 230, "O", "", "bleu"),
+          T(180, 150, "Face à face de chaque côté\nde la ligne : le meneur bouge,\nl'autre reflète", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_echauffement_gardien",
+      nom: "Échauffement du gardien",
+      categorie: "gardien",
+      duree: 6,
+      objectif: "Mettre le gardien en route avant les tirs : ses jambes, puis ses mains, puis les deux.",
+      description:
+        "Pendant que le groupe patine, le gardien dans sa zone avec un coach ou un joueur calme :\n1. Une minute de déplacements seuls : poussées en T poteau à poteau, papillon et relevé, glissade.\n2. Vingt tirs doux au sol, alternés gauche et droite, depuis l'enclave.\n3. Vingt tirs à mi-hauteur, mitaine et bouclier.\n4. Dix tirs surprise, le tireur choisit.\n\nOn monte en puissance, jamais l'inverse. Le gardien annonce quand il est prêt pour la suite.",
+      points_cles: ["Jambes d'abord, mains ensuite", "Doux, puis moyen, puis normal — jamais fort au début", "Le gardien dit quand il est prêt"],
+      materiel: "Vingt palets, un tireur patient.",
+      variantes: "Le tireur se déplace en tirant. Deux tireurs qui alternent.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(50, 150, "G"), L("patin", [[50, 138], [50, 128]], "bleu"), L("patin", [[50, 162], [50, 172]], "bleu"),
+          J(115, 150, "C"), P(126, 142), P(132, 148), P(127, 156),
+          L("tir", [[105, 145], [56, 142]], "rouge"), L("tir", [[105, 155], [56, 158]], "rouge"),
+          T(150, 230, "Déplacements seuls, puis tirs doux au sol,\npuis à mi-hauteur, puis surprise", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_croises_lateraux",
+      nom: "Croisés latéraux sur la ligne",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      duree: 6,
+      objectif: "Se déplacer de côté sans se retourner : les croisés latéraux, comme un défenseur devant sa cage.",
+      description:
+        "Sur la ligne bleue, face au coach. On se déplace vers la droite en croisant le pied gauche devant le droit, puis le droit revient sur le côté, et on recommence. Arrivé à la bande, retour vers la gauche avec l'autre pied.\n\nPremière longueur au pas. Deuxième en glissant sur le pied qui ne croise pas. Troisième au sifflet : changement de sens à chaque coup.",
+      points_cles: ["Les épaules restent face au coach : on va de côté, pas en avant", "Le pied qui croise passe DEVANT l'autre", "Bas sur les jambes, on ne saute pas"],
+      materiel: "Un sifflet.",
+      variantes: "Avec crosse au sol, à deux mains. Croisés latéraux puis pivot en marche arrière.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(150, 90), J(150, 130), J(150, 170), J(150, 210),
+          L("patin", [[165, 90], [290, 90]]), L("patin", [[165, 130], [290, 130]]), L("patin", [[165, 170], [290, 170]]), L("patin", [[165, 210], [290, 210]]),
+          L("patin", [[290, 250], [165, 250]]),
+          J(440, 150, "C"),
+          T(150, 45, "De côté, face au coach : le pied extérieur croise devant", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_sauts_equilibre",
+      nom: "Petits sauts et réceptions",
+      categorie: "patinage",
+      duree: 5,
+      objectif: "Décoller et se recevoir sans tomber : la confiance dans ses appuis.",
+      description:
+        "En glissant lentement sur la longueur, on saute par-dessus chaque ligne : les deux pieds ensemble d'abord, réception genoux fléchis. Deuxième passage : réception sur un seul pied, l'autre au retour. Troisième : un petit saut avec un quart de tour.\n\nOn ne cherche pas la hauteur. On cherche à retomber exactement comme on est parti, sans bruit.",
+      points_cles: ["Décoller des deux pieds, atterrir genoux fléchis, en silence", "Bras devant, pas au-dessus de la tête", "Regard devant, pas sur la ligne"],
+      materiel: "Aucun.",
+      variantes: "Sauter par-dessus une crosse posée au sol. Saut puis arrêt immédiat.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(50, 110), J(50, 190),
+          L("patin", [[62, 110], [215, 110]]), T(222, 92, "saut", "bleu", "petit"), L("patin", [[240, 110], [288, 110]]), T(294, 92, "saut", "rouge", "petit"), L("patin", [[312, 110], [358, 110]]), T(365, 92, "saut", "bleu", "petit"), L("patin", [[382, 110], [550, 110]]),
+          L("patin", [[62, 190], [215, 190]]), L("patin", [[240, 190], [288, 190]]), L("patin", [[312, 190], [358, 190]]), L("patin", [[382, 190], [550, 190]]),
+          T(170, 250, "Deux pieds, puis un pied, puis quart de tour", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_arret_en_t",
+      nom: "L'arrêt en T",
+      categorie: "patinage",
+      duree: 5,
+      objectif: "Un freinage de plus dans la boîte : le pied arrière en travers, qui frotte.",
+      description:
+        "Glisse sur deux pieds, puis on place un patin derrière l'autre, perpendiculaire, et on le laisse frotter la glace en appuyant progressivement : le T freine. Le poids reste surtout sur le pied avant.\n\nCinq arrêts avec chaque pied derrière, de la ligne de but à la bleue. Utile pour ceux qui n'osent pas encore l'arrêt hockey, et pour tout le monde en marche arrière plus tard.",
+      points_cles: ["Le pied arrière perpendiculaire, sur la carre intérieure", "Appuyer progressivement, pas d'un coup", "Buste droit, regard devant"],
+      materiel: "Aucun.",
+      variantes: "Arrêt en T puis départ dans l'autre sens sans se retourner.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), J(60, 150), J(60, 220),
+          L("patin", [[72, 80], [180, 80]]), L("patin", [[72, 150], [180, 150]]), L("patin", [[72, 220], [180, 220]]),
+          T(195, 80, "T", "rouge", "grand"), T(195, 150, "T", "rouge", "grand"), T(195, 220, "T", "rouge", "grand"),
+          T(60, 270, "Glisse, puis le pied arrière en travers qui frotte", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_cercle_marche_arriere",
+      nom: "Marche arrière sur le cercle",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      duree: 6,
+      objectif: "Reculer en tournant : les poussées en C d'un seul côté, la tête par-dessus l'épaule.",
+      description:
+        "Sur un cercle de mise au jeu, en marche arrière, en suivant la ligne. Le patin extérieur au cercle pousse en C, l'intérieur glisse sur sa carre externe. Trois tours dans un sens, trois dans l'autre.\n\nQuand ça tient, on ajoute un croisé arrière tous les deux pas pour ceux qui veulent. Les autres continuent en C : c'est déjà très bien.",
+      points_cles: ["Regarder par-dessus l'épaule intérieure au cercle", "Hanches basses, poids un peu vers l'intérieur", "Le patin intérieur ne pousse pas, il guide"],
+      materiel: "Aucun.",
+      variantes: "Avec palet. Un tour avant, un tour arrière, sans s'arrêter (pivot).",
+      schema: {
+        vue: "moitie",
+        objets: [
+          L("arriere", [...tour(100, 220, 55, Math.PI / 2, -1)]),
+          L("arriere", [...tour(100, 80, 55, -Math.PI / 2, 1)]),
+          J(175, 260), J(175, 40),
+          T(180, 150, "Poussées en C du pied extérieur,\nla tête par-dessus l'épaule", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_course_poursuite_cercle",
+      nom: "Course-poursuite sur le cercle",
+      categorie: "jeu",
+      duree: 5,
+      objectif: "Patiner vite en courbe, parce qu'on a quelqu'un aux trousses.",
+      description:
+        "Deux joueurs sur un cercle, diamétralement opposés. Au sifflet, chacun poursuit l'autre en suivant la ligne du cercle. Celui qui touche l'autre a gagné ; au bout de deux tours sans rattrapage, match nul et on change.\n\nUn sens, puis l'autre. Cinq cercles, dix joueurs en jeu, ça tourne vite.",
+      points_cles: ["Pencher vers l'intérieur, croiser si on sait", "Ne pas couper le cercle : la ligne, c'est la règle", "Ceux qui attendent encouragent"],
+      materiel: "Un sifflet.",
+      variantes: "Avec palet. En marche arrière (les plus avancés).",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(100, 35), J(100, 125, "O", "", "bleu"), L("patin", [...tour(100, 80, 45, -Math.PI / 2, 1).slice(0, 5)]), L("patin", [...tour(100, 80, 45, Math.PI / 2, 1).slice(0, 5)], "bleu"),
+          J(100, 175), J(100, 265, "O", "", "bleu"),
+          J(300, 105), J(300, 195, "O", "", "bleu"),
+          J(500, 35), J(500, 125, "O", "", "bleu"),
+          J(500, 175), J(500, 265, "O", "", "bleu"),
+          T(200, 150, "Face à face sur le cercle : au sifflet, chacun poursuit l'autre", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_slalom_crosses",
+      nom: "Slalom entre les crosses",
+      categorie: "maniement",
+      duree: 6,
+      objectif: "Conduire le palet entre des obstacles bas, et commencer à le soulever pour passer par-dessus.",
+      description:
+        "Six crosses posées au sol en quinconce, à trois mètres les unes des autres. Le joueur slalome avec le palet entre les crosses ; puis, deuxième passage, il doit faire passer le palet PAR-DESSUS chaque crosse (petit soulevé) tout en la contournant lui-même.\n\nLe soulevé : la palette se glisse sous le palet et le lève d'une petite rotation des poignets. Pas plus haut que le manche.",
+      points_cles: ["Le palet loin devant dans le slalom, pas dans les patins", "Pour soulever : palette sous le palet, poignets qui tournent, pas les bras", "On enjambe la crosse, on ne saute pas dessus"],
+      materiel: "Six crosses de rechange (ou celles de la moitié du groupe), un palet par joueur.",
+      variantes: "Les crosses plus rapprochées. En marche arrière, sans soulever.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(45, 150), J(30, 150), P(56, 154),
+          L("libre", [[90, 125], [90, 175]], "orange"), L("libre", [[130, 125], [130, 175]], "orange"), L("libre", [[170, 125], [170, 175]], "orange"), L("libre", [[210, 125], [210, 175]], "orange"), L("libre", [[250, 125], [250, 175]], "orange"),
+          L("conduite", [[62, 150], [90, 130], [130, 170], [170, 130], [210, 170], [250, 130], [285, 150]]),
+          T(60, 220, "Slalom entre les crosses,\npuis le palet par-dessus chaque crosse", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_soulever_palet",
+      nom: "Soulever le palet",
+      categorie: "maniement",
+      duree: 5,
+      objectif: "Faire décoller le palet : la passe levée et le tir levé commencent ici.",
+      description:
+        "Chacun avec un palet, face à une crosse posée au sol à deux mètres. On soulève le palet par-dessus la crosse : la palette légèrement ouverte, le palet part de l'arrière de la palette vers la pointe, et les poignets tournent au dernier moment. On va le chercher, on recommence de l'autre côté.\n\nVingt fois. Puis la crosse s'éloigne à trois mètres, puis quatre.",
+      points_cles: ["Palette ouverte, le palet roule du talon vers la pointe", "Le mouvement finit avec la palette vers le haut", "Petit et précis avant haut et fort"],
+      materiel: "Une crosse au sol pour deux joueurs, un palet par joueur.",
+      variantes: "Par deux : passes levées par-dessus la crosse. Soulever en revers.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(70, 70), P(82, 74), L("libre", [[110, 55], [110, 85]], "orange"), L("passe", [[86, 74], [140, 74]], "vert"),
+          J(70, 150), P(82, 154), L("libre", [[110, 135], [110, 165]], "orange"), L("passe", [[86, 154], [140, 154]], "vert"),
+          J(70, 230), P(82, 234), L("libre", [[110, 215], [110, 245]], "orange"), L("passe", [[86, 234], [140, 234]], "vert"),
+          T(170, 150, "Par-dessus la crosse au sol :\npalette ouverte, poignets qui tournent", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_triangle_mouvement",
+      nom: "Triangle en mouvement sur la longueur",
+      categorie: "passe",
+      duree: 8,
+      objectif: "Passer à trois en montant la glace : garder la forme, garder le rythme.",
+      description:
+        "Par trois, de front, à sept mètres les uns des autres. On monte toute la glace en se faisant des passes : celui du milieu donne à gauche, qui redonne au milieu, qui donne à droite, qui redonne au milieu. Arrivés dans la zone, celui qui a le palet tire.\n\nRetour par la bande, le trio suivant part quand le précédent passe la rouge. On change les positions à chaque passage.",
+      points_cles: ["Les trois avancent à la même vitesse : on ne s'attend pas, on ne se dépasse pas", "Passe devant le partenaire, dans sa course", "Celui du milieu regarde à gauche ET à droite"],
+      materiel: "Des palets à la ligne de but.",
+      variantes: "Passes en revers pour les ailiers. Le milieu en marche arrière (les plus avancés).",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(60, 80), J(60, 150), P(72, 154), J(60, 220),
+          L("patin", [[72, 80], [520, 80]]), L("patin", [[72, 150], [500, 150]]), L("patin", [[72, 220], [520, 220]]),
+          L("passe", [[110, 145], [160, 86]], "vert"), L("passe", [[180, 86], [230, 145]], "vert"), L("passe", [[260, 155], [310, 214]], "vert"), L("passe", [[330, 214], [380, 155]], "vert"),
+          L("tir", [[505, 150], [556, 150]], "rouge"), J(552, 150, "G"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_donne_et_va",
+      nom: "Donne et va",
+      categorie: "passe",
+      duree: 8,
+      objectif: "Passer, courir, recevoir : le une-deux, le plus vieux truc du monde et il marche toujours.",
+      description:
+        "Une file à la ligne bleue avec les palets, un joueur relais immobile au haut du cercle (le coach au début). Le premier part avec le palet, passe au relais, accélère vers la cage, reçoit la passe en retour dans sa course et tire.\n\nIl récupère son palet, devient relais, et le relais rejoint la file. Changer de côté à mi-temps.",
+      points_cles: ["Passer PUIS accélérer : la passe libère, la course fait le reste", "Le relais redonne en une touche, devant le joueur", "Recevoir en mouvement et tirer sans s'arrêter"],
+      materiel: "Des palets à la ligne bleue.",
+      variantes: "Deux relais, deux une-deux. Le relais en mouvement lui aussi.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(46, 150, "G"),
+          J(255, 60), J(275, 52), P(245, 66),
+          J(150, 100, "O", "", "bleu"),
+          L("conduite", [[243, 70], [190, 85]]), L("passe", [[185, 88], [160, 98]], "rouge"),
+          L("patin", [[180, 95], [120, 130]]), L("passe", [[145, 108], [118, 128]], "bleu"),
+          L("tir", [[112, 134], [48, 148]], "rouge"),
+          T(150, 220, "Passe au relais, accélère,\nreçois dans la course, tire", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_relais_passes",
+      nom: "Relais de passes en ligne",
+      categorie: "passe",
+      duree: 6,
+      objectif: "Des passes précises sous pression amicale : la première équipe qui a fait remonter le palet gagne.",
+      description:
+        "Deux équipes, chacune alignée sur la longueur à cinq mètres d'intervalle. Le palet part du premier et remonte la ligne de passe en passe jusqu'au dernier, qui le ramène en conduisant, se place en tête, et le palet repart.\n\nQuand tout le monde a été dernier, l'équipe a fini. Palet manqué : on va le chercher, pas de raccourci.",
+      points_cles: ["Palette au sol avant que la passe parte", "Passes au sol, à la palette", "Le dernier ramène le palet en conduite, tête haute"],
+      materiel: "Un palet par équipe.",
+      variantes: "Passes en revers. Deux palets par équipe en même temps.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(80, 100), J(160, 100), J(240, 100), J(320, 100), J(400, 100), J(480, 100),
+          L("passe", [[92, 100], [148, 100]], "rouge"), L("passe", [[172, 100], [228, 100]], "rouge"), L("passe", [[252, 100], [308, 100]], "rouge"), L("passe", [[332, 100], [388, 100]], "rouge"), L("passe", [[412, 100], [468, 100]], "rouge"),
+          L("conduite", [[485, 112], [400, 130], [80, 130], [65, 105]]),
+          J(80, 200, "O", "", "bleu"), J(160, 200, "O", "", "bleu"), J(240, 200, "O", "", "bleu"), J(320, 200, "O", "", "bleu"), J(400, 200, "O", "", "bleu"), J(480, 200, "O", "", "bleu"),
+          L("passe", [[92, 200], [148, 200]], "bleu"), L("passe", [[172, 200], [228, 200]], "bleu"), L("passe", [[252, 200], [308, 200]], "bleu"), L("passe", [[332, 200], [388, 200]], "bleu"), L("passe", [[412, 200], [468, 200]], "bleu"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_tirs_en_mouvement_bleue",
+      nom: "Tirs en mouvement depuis la bleue",
+      categorie: "tir",
+      duree: 8,
+      objectif: "Tirer du poignet en pleine glisse, sans casser sa foulée.",
+      description:
+        "Deux files à la ligne bleue, dans les coins, palets en tas. Le premier part avec le palet, prend deux ou trois poussées, et tire du haut du cercle sans s'arrêter. Il récupère son palet et change de file.\n\nOn alterne les files. Consigne de la deuxième série : le tir part pendant que le pied côté palet est en l'air.",
+      points_cles: ["Le palet reste devant soi pendant les poussées", "Le poids passe sur la jambe avant au moment du tir", "On tire, puis on continue de patiner vers la cage"],
+      materiel: "Vingt palets.",
+      variantes: "Tir en revers. Tir après un virage serré autour d'un cône.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(46, 150, "G"),
+          J(260, 50), J(280, 44), P(250, 56), L("conduite", [[248, 60], [200, 75], [150, 92]]), L("tir", [[145, 95], [48, 144]], "rouge"),
+          J(260, 250), J(280, 256), P(250, 244), L("conduite", [[248, 240], [200, 225], [150, 208]]), L("tir", [[145, 205], [48, 156]], "rouge"),
+          T(150, 150, "Deux poussées, tir en pleine glisse", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_tir_precision_cibles",
+      nom: "Tirs de précision sur cibles",
+      categorie: "tir",
+      duree: 8,
+      objectif: "Viser un endroit, pas la cage : les quatre coins, en comptant les points.",
+      description:
+        "Cage vide, quatre cibles dans les coins : cônes accrochés à la barre, bouteilles d'eau, ou simplement des palets posés sur la barre du haut. Chacun tire dix palets depuis l'enclave, à l'arrêt : un point par cible touchée, deux si elle tombe.\n\nOn annonce sa cible avant de tirer. Le total est noté, on refait la semaine suivante.",
+      points_cles: ["Annoncer la cible, regarder la cible, tirer vers la cible", "En haut : la palette se ferme tard. En bas : elle se ferme tôt", "La précision d'abord, la force ensuite"],
+      materiel: "Quatre cibles (cônes, bouteilles, palets sur la barre), vingt palets.",
+      variantes: "Tirs en mouvement. Tirs en revers. Par équipes, le total le plus haut gagne.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          K(40, 136), K(40, 164), P(42, 141), P(42, 159),
+          J(120, 150), P(132, 142), P(138, 148), P(133, 156), J(150, 140), J(165, 130),
+          L("tir", [[110, 146], [46, 138]], "rouge"), L("tir", [[110, 154], [46, 162]], "rouge"),
+          T(140, 220, "Quatre cibles dans les coins, cage vide :\nannoncer, viser, compter", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_mise_au_jeu",
+      nom: "La mise au jeu",
+      categorie: "jeu",
+      duree: 6,
+      objectif: "Gagner le palet à l'engagement : la position, le timing, et où on l'envoie.",
+      description:
+        "Par deux sur un point de mise au jeu, le coach laisse tomber le palet. On travaille trois façons : tirer le palet vers l'arrière en revers, le pousser vers l'avant entre les jambes de l'adversaire, ou bloquer la crosse adverse et laisser un partenaire venir chercher le palet.\n\nDix engagements par duo, on tourne. Puis on ajoute un partenaire derrière chaque joueur qui doit récupérer le palet.",
+      points_cles: ["Bas sur les jambes, la crosse au sol avant le palet", "Regarder la main du coach, pas le palet", "Décider avant : arrière, avant, ou bloquer"],
+      materiel: "Des palets pour le coach.",
+      variantes: "Mise au jeu puis tir immédiat pour celui qui gagne. Le perdant doit défendre.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(92, 80, "X", "", "rouge"), J(108, 80, "O", "", "bleu"), J(150, 80, "C"), P(100, 86),
+          L("passe", [[96, 90], [70, 110]], "rouge"), J(60, 118, "X", "", "rouge"),
+          J(92, 220, "X", "", "rouge"), J(108, 220, "O", "", "bleu"), J(150, 220, "C"), P(100, 226),
+          L("passe", [[104, 230], [130, 250]], "bleu"), J(140, 258, "O", "", "bleu"),
+          T(180, 150, "Arrière en revers, avant entre les jambes,\nou bloquer la crosse", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_trois_contre_deux",
+      nom: "Trois contre deux depuis la ligne rouge",
+      categorie: "jeu",
+      niveau: "intermediaire",
+      duree: 10,
+      objectif: "Attaquer en surnombre : trouver le joueur libre, vite, avant que les défenseurs ne se replacent.",
+      description:
+        "Trois attaquants partent de la ligne rouge, deux défenseurs les attendent à la ligne bleue, le gardien en cage. Les attaquants montent en triangle et cherchent le joueur libre ; les défenseurs reculent en marche arrière et essaient de couper les passes, sans charge.\n\nL'action finit sur un tir ou une récupération. Puis deux attaquants deviennent défenseurs.",
+      points_cles: ["Le porteur monte au milieu, les deux autres écartent", "Passer avant la bleue, tirer dans l'enclave", "Défenseurs : reculer ensemble, crosse au sol, ne pas se jeter"],
+      materiel: "Des palets à la ligne rouge.",
+      variantes: "Trois contre deux puis un troisième défenseur qui revient en retard. Deux contre un enchaîné après la récupération.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(46, 150, "G"), J(180, 110, "O", "", "bleu"), J(180, 190, "O", "", "bleu"),
+          L("arriere", [[170, 110], [110, 120]], "bleu"), L("arriere", [[170, 190], [110, 180]], "bleu"),
+          J(300, 80), J(300, 150), P(288, 156), J(300, 220),
+          L("patin", [[290, 80], [130, 90]]), L("conduite", [[286, 156], [200, 150]]), L("patin", [[290, 220], [130, 210]]),
+          L("passe", [[195, 148], [140, 96]], "rouge"), L("tir", [[130, 100], [48, 146]], "rouge"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_roi_du_cercle",
+      nom: "Le roi du cercle",
+      categorie: "jeu",
+      duree: 5,
+      objectif: "Garder son palet en enlevant celui des autres : tête haute, ou on perd.",
+      description:
+        "Tout le monde dans le cercle central, chacun avec un palet. Au sifflet, on garde le sien et on essaie de sortir ceux des autres du cercle, avec la crosse seulement. Palet sorti : on sort aussi, et on va patiner autour du cercle en attendant. Le dernier avec un palet est roi.\n\nTrois manches. Le roi de chaque manche commence la suivante avec un handicap : en marche arrière.",
+      points_cles: ["Tête haute : le danger vient de partout", "Le palet près de soi, protégé par les patins", "Crosse sur le palet des autres, jamais sur leurs patins"],
+      materiel: "Un palet par joueur.",
+      variantes: "Deux cercles pour un grand groupe. Sans crosse : palet aux pieds.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(280, 130), P(288, 138), J(320, 125), P(328, 133), J(300, 170), P(308, 178), J(265, 160), P(273, 168), J(335, 165), P(343, 173), J(300, 118), P(308, 126),
+          J(360, 100, "O", "", "bleu"), L("patin", [...tour(300, 150, 62, -Math.PI / 4, 1).slice(0, 5)], "bleu"),
+          T(200, 60, "Chacun garde son palet, sort ceux des autres — le dernier est roi", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_etirements_dos_hanches",
+      nom: "Étirements : dos, hanches, adducteurs",
+      categorie: "retour",
+      duree: 5,
+      objectif: "Détendre ce que le patinage contracte : le bas du dos, les hanches, l'intérieur des cuisses.",
+      description:
+        "En cercle, le coach montre, tout le monde suit, quinze secondes par position :\n1. Fente basse, genou arrière au sol, bassin vers l'avant — chaque côté.\n2. Assis, jambes écartées, buste vers l'avant.\n3. Assis, une jambe pliée par-dessus l'autre, torsion du dos.\n4. À genoux, dos rond puis dos creux, lentement.\n5. Debout, un patin sur la bande, on penche vers l'avant.\n\nOn respire. Personne ne force. C'est aussi le moment de dire un mot sur la prochaine séance.",
+      points_cles: ["Quinze secondes, en respirant", "On tient, on ne rebondit pas", "Chaque côté"],
+      materiel: "Aucun.",
+      variantes: "",
+      schema: {
+        vue: "entiere",
+        objets: [
+          ...[0, 1, 2, 3, 4, 5, 6, 7].map((i) => J(Math.round(300 + 65 * Math.cos((i * Math.PI) / 4)), Math.round(150 + 65 * Math.sin((i * Math.PI) / 4)))),
+          J(300, 150, "C"),
+          T(200, 50, "Fente, adducteurs, torsion, dos rond-dos creux, patin sur la bande", "noir", "petit"),
+        ],
+      },
+    }),
   ];
   return liste.map((e, i) => ({ ...e, cree: t0 + i, modifie: t0 + i }));
 }
