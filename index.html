@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ardoise — séances de hockey</title>
+    <meta
+      name="description"
+      content="L'ardoise du coach de hockey : dessiner des exercices sur la patinoire, les ranger, composer et imprimer ses séances. 100 % local, aucune donnée transmise."
+    />
+    <link rel="stylesheet" href="css/ardoise.css" />
+
+    <!-- Le thème choisi doit être posé AVANT le premier rendu, sinon la
+         page clignote dans le thème du système avant de basculer. Seule
+         duplication assumée de la clé de stockage (voir js/core/theme.js). -->
+    <script>
+      try {
+        var t = JSON.parse(localStorage.getItem("ardoise_v1_theme"));
+        if (t === "sombre" || t === "clair")
+          document.documentElement.setAttribute("data-theme", t === "sombre" ? "dark" : "light");
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <header class="barre">
+      <a class="titre" href="#/exercices">Ardoise</a>
+      <nav class="modes" id="modes" aria-label="Écrans">
+        <a href="#/exercices" data-ecran="exercices">Exercices</a>
+        <a href="#/seances" data-ecran="seances">Séances</a>
+      </nav>
+      <span class="spacer"></span>
+      <span id="compteurs" class="compteurs"></span>
+      <button id="act-exporter" type="button" title="Télécharger toutes vos données en un fichier JSON">Exporter</button>
+      <button id="act-importer" type="button" title="Recharger un fichier exporté">Importer</button>
+      <input id="fichier-archive" type="file" accept="application/json,.json" hidden />
+      <button id="act-catalogue" type="button" title="Réinstaller les exercices fournis avec l'appli (sans toucher aux vôtres)">Catalogue</button>
+      <button id="act-vider" type="button" title="Tout effacer">Vider</button>
+      <button id="act-theme" class="theme" type="button" title="Thème d'affichage"></button>
+    </header>
+
+    <p id="statut" role="status" hidden></p>
+
+    <main id="main"></main>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
