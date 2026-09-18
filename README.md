@@ -6,7 +6,7 @@ Application web à page unique, **100 % locale** : aucun serveur, aucune dépend
 
 → [tbzt.github.io/Ardoise](https://tbzt.github.io/Ardoise)
 
-Livrée avec une quinzaine d'exercices et une séance type pour **adultes débutants** : tomber et se relever, freiner, reculer, conduire le palet, passer, tirer, jouer un peu, et finir au calme.
+Livrée avec **35 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
 
 ---
 
@@ -14,13 +14,13 @@ Livrée avec une quinzaine d'exercices et une séance type pour **adultes début
 
 ### Dessiner — l'éditeur de schémas
 - Une patinoire aux proportions IIHF (60 × 30 m), **entière ou demi-glace**.
-- On **pose** d'un clic : joueurs `X` et `O`, gardien `G`, coach `C`, palets, cônes, textes.
+- On **pose** d'un clic : joueurs `X` et `O`, gardien `G`, coach `C`, palets, cônes, textes, et des **cages mobiles** orientables pour les matchs en travers.
 - On **trace** d'un glissé, au doigt, au stylet ou à la souris : patinage, patinage avec palet (ondulé), passe (pointillé), tir (double trait), marche arrière (petits arcs), trait libre.
 - Cinq couleurs, sélection, déplacement, étiquettes sur les joueurs, annuler / rétablir, raccourcis (`Suppr`, `Ctrl+Z`, `Ctrl+Y`, `Échap`).
 
 ### Ranger — la bibliothèque
 - Chaque exercice a sa fiche : catégorie, niveau, durée, objectif, description, points clés, matériel, variantes, et son schéma.
-- Sept catégories : échauffement, patinage, maniement, passes, tirs, jeu, retour au calme.
+- Huit catégories : échauffement, patinage, maniement, passes, tirs, jeu, gardien, retour au calme.
 - Recherche plein texte et filtre par catégorie ; duplication pour décliner un exercice.
 - Tout s'enregistre tout seul, un instant après la frappe.
 
@@ -35,7 +35,7 @@ Livrée avec une quinzaine d'exercices et une séance type pour **adultes début
 - Mise en page prévue pour A4 ; lisible aussi à l'écran, sur téléphone.
 
 ### Système
-- **Exporter / Importer** toutes les données en un fichier JSON (fusion ou remplacement).
+- **Exporter / Importer** toutes les données en un fichier JSON (fusion ou remplacement), ou **un exercice seul** depuis sa fiche — le fichier se réimporte chez soi ou chez un autre coach, et met à jour l'exercice s'il est plus récent.
 - **Catalogue** : réinstalle les exercices fournis sans toucher aux vôtres.
 - Thème clair / sombre / automatique.
 

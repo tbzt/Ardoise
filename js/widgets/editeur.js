@@ -96,6 +96,7 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         <button type="button" class="outil glyphe" data-outil="jC" title="Coach">C</button>
         <button type="button" class="outil glyphe" data-outil="palet" title="Palet">●</button>
         <button type="button" class="outil glyphe" data-outil="cone" title="Cône">▲</button>
+        <button type="button" class="outil" data-outil="cage" title="Cage mobile">Cage</button>
         <button type="button" class="outil glyphe" data-outil="texte" title="Texte">Aa</button>
       </div>
       <div class="groupe" role="group" aria-label="Tracer">
@@ -177,12 +178,18 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         `<label>Style <select name="style">${Object.entries(STYLES_TRAIT)
           .map(([k, v]) => `<option value="${k}"${o.style === k ? " selected" : ""}>${v}</option>`)
           .join("")}</select></label>`;
+    } else if (o.t === "cage") {
+      champs +=
+        `<span class="prop-nom">Cage</span>` +
+        `<label>Ouverte vers <select name="sens">${[["gauche", "la gauche"], ["droite", "la droite"], ["haut", "le haut"], ["bas", "le bas"]]
+          .map(([k, v]) => `<option value="${k}"${(o.sens || "gauche") === k ? " selected" : ""}>${v}</option>`)
+          .join("")}</select></label>`;
     } else if (o.t === "cone") {
       champs += `<span class="prop-nom">Cône</span>`;
     } else {
       champs += `<span class="prop-nom">Palet</span>`;
     }
-    if (o.t !== "palet") {
+    if (o.t !== "palet" && o.t !== "cage") {
       champs += `<div class="groupe couleurs" role="group" aria-label="Couleur de l'objet">${Object.entries(COULEURS)
         .map(([k, c]) => `<button type="button" class="couleur ${(o.couleur || (o.t === "cone" ? "orange" : "noir")) === k ? "actif" : ""}" data-prop="couleur" data-val="${k}" style="--c:${c}" title="${k}"></button>`)
         .join("")}</div>`;
@@ -254,6 +261,9 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         break;
       case "cone":
         o = { ...base, t: "cone", couleur: couleur === "noir" ? "orange" : couleur };
+        break;
+      case "cage":
+        o = { ...base, t: "cage", sens: "gauche" };
         break;
       case "texte":
         o = { ...base, t: "texte", texte: "Texte", taille: "moyen", couleur };
@@ -386,7 +396,7 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
     if (b.dataset.couleur) {
       couleur = b.dataset.couleur;
       const o = objetSel();
-      if (o && o.t !== "palet") {
+      if (o && o.t !== "palet" && o.t !== "cage") {
         const avant = clone(schema);
         o.couleur = couleur;
         commettre(avant);

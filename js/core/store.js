@@ -111,17 +111,24 @@ export const Store = {
       exercices = exercices.filter((e) => e.id !== id);
       persisterExercices();
     },
-    /* Ajoute les exercices absents (par id) sans écraser les présents. */
-    installer(liste) {
-      let n = 0;
+    /* Ajoute les exercices absents (par id). Avec `mettreAJour`, remplace
+       aussi ceux dont la version importée est plus récente — c'est le cas
+       d'un exercice exporté seul, retouché ailleurs, puis rapporté. */
+    installer(liste, { mettreAJour = false } = {}) {
+      let ajoutes = 0;
+      let misAJour = 0;
       for (const ex of liste) {
-        if (!exercices.some((e) => e.id === ex.id)) {
+        const i = exercices.findIndex((e) => e.id === ex.id);
+        if (i < 0) {
           exercices.push(ex);
-          n++;
+          ajoutes++;
+        } else if (mettreAJour && (ex.modifie || 0) > (exercices[i].modifie || 0)) {
+          exercices[i] = ex;
+          misAJour++;
         }
       }
-      if (n) persisterExercices();
-      return n;
+      if (ajoutes || misAJour) persisterExercices();
+      return { ajoutes, misAJour };
     },
   },
 
@@ -158,16 +165,21 @@ export const Store = {
       seances = seances.filter((s) => s.id !== id);
       persisterSeances();
     },
-    installer(liste) {
-      let n = 0;
+    installer(liste, { mettreAJour = false } = {}) {
+      let ajoutes = 0;
+      let misAJour = 0;
       for (const se of liste) {
-        if (!seances.some((s) => s.id === se.id)) {
+        const i = seances.findIndex((s) => s.id === se.id);
+        if (i < 0) {
           seances.push(se);
-          n++;
+          ajoutes++;
+        } else if (mettreAJour && (se.modifie || 0) > (seances[i].modifie || 0)) {
+          seances[i] = se;
+          misAJour++;
         }
       }
-      if (n) persisterSeances();
-      return n;
+      if (ajoutes || misAJour) persisterSeances();
+      return { ajoutes, misAJour };
     },
   },
 

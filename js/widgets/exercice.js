@@ -2,6 +2,7 @@
    Tout s'enregistre tout seul, un instant après la frappe. */
 import { Store, blocDepuisExercice } from "../core/store.js";
 import { esc, debounce, statut, formaterDate } from "../core/dom.js";
+import { Archive } from "../core/archive.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { creerEditeur } from "./editeur.js";
 import { choisir } from "./dialogue.js";
@@ -23,6 +24,7 @@ export const Exercice = {
         <span class="etat" data-etat>Enregistré</span>
         <span class="spacer"></span>
         <button type="button" data-act="seance">Ajouter à une séance…</button>
+        <button type="button" data-act="exporter" title="Télécharger cet exercice seul, en JSON, pour le partager ou le garder">Exporter</button>
         <button type="button" data-act="dupliquer">Dupliquer</button>
         <button type="button" class="danger" data-act="supprimer">Supprimer</button>
       </div>
@@ -87,7 +89,11 @@ export const Exercice = {
     sec.querySelector(".entete").addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.act === "dupliquer") {
+      if (b.dataset.act === "exporter") {
+        Store.exercices.sauver(ex);
+        Archive.exporterExercice(ex);
+        statut("Exercice exporté.");
+      } else if (b.dataset.act === "dupliquer") {
         Store.exercices.sauver(ex);
         const copie = Store.exercices.dupliquer(ex.id);
         statut("Exercice dupliqué.");

@@ -200,6 +200,14 @@ function cone(o) {
   return `<g class="obj obj-cone" data-id="${o.id}" transform="translate(${o.x},${o.y})"><circle r="10" fill="transparent"/><circle class="halo" r="11" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M0,-7 L6,5 L-6,5 Z" fill="${c}" stroke="#fff" stroke-width="1"/></g>`;
 }
 
+/* Une cage mobile, pour les matchs en travers ou les cages décalées.
+   `sens` dit vers où elle s'ouvre : gauche, droite, haut, bas. */
+const ROTATIONS = { gauche: 0, droite: 180, haut: 90, bas: 270 };
+function cage(o) {
+  const rot = ROTATIONS[o.sens] ?? 0;
+  return `<g class="obj obj-cage" data-id="${o.id}" transform="translate(${o.x},${o.y}) rotate(${rot})"><rect x="-10" y="-13" width="20" height="26" fill="transparent"/><rect class="halo" x="-10" y="-13" width="20" height="26" fill="none" stroke="${ROUGE}" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M0,-9 L-12,-9 L-12,9 L0,9" fill="#e9eef2" stroke="${ROUGE}" stroke-width="1.8" stroke-linejoin="round"/><line x1="0" y1="-9" x2="0" y2="9" stroke="${ROUGE}" stroke-width="2.4"/></g>`;
+}
+
 function texte(o) {
   const c = couleurDe(o);
   const taille = o.taille === "grand" ? 15 : o.taille === "petit" ? 9 : 11.5;
@@ -257,6 +265,8 @@ export function objet(o, uid) {
       return palet(o);
     case "cone":
       return cone(o);
+    case "cage":
+      return cage(o);
     case "texte":
       return texte(o);
     case "trait":

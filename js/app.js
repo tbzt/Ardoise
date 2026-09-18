@@ -7,7 +7,7 @@ import { Store } from "./core/store.js";
 import { Theme } from "./core/theme.js";
 import { Archive } from "./core/archive.js";
 import { statut } from "./core/dom.js";
-import { exercicesDeBase, seanceDeBase } from "./data/catalogue.js";
+import { exercicesDeBase, seancesDeBase } from "./data/catalogue.js";
 import { Exercices } from "./widgets/exercices.js";
 import { Exercice } from "./widgets/exercice.js";
 import { Seances } from "./widgets/seances.js";
@@ -18,10 +18,10 @@ const main = document.getElementById("main");
 let ecran = null;
 
 function installerCatalogue(silencieux = false) {
-  const n = Store.exercices.installer(exercicesDeBase());
-  const s = Store.seances.installer([seanceDeBase()]);
+  const n = Store.exercices.installer(exercicesDeBase()).ajoutes;
+  const s = Store.seances.installer(seancesDeBase()).ajoutes;
   if (silencieux) return;
-  if (n || s) statut(`Catalogue installé : ${n} exercice${n > 1 ? "s" : ""}${s ? " et une séance type" : ""}.`, 4000);
+  if (n || s) statut(`Catalogue installé : ${n} exercice${n > 1 ? "s" : ""}${s ? ` et ${s} séance${s > 1 ? "s" : ""} type` : ""}.`, 4000);
   else statut("Le catalogue est déjà entièrement présent.");
 }
 
@@ -74,7 +74,8 @@ fichier.addEventListener("change", async () => {
   const remplacer = confirm("Remplacer toutes vos données par celles du fichier ?\n\n« OK » : remplacer. « Annuler » : fusionner (n'ajouter que ce qui manque).");
   try {
     const r = await Archive.importer(f, remplacer ? "remplacer" : "fusion");
-    statut(`Import terminé : ${r.exercices} exercice(s), ${r.seances} séance(s).`, 4000);
+    const bilan = (c, mot) => `${c.ajoutes} ${mot}(s) ajouté(s)${c.misAJour ? `, ${c.misAJour} mis à jour` : ""}`;
+    statut(`Import terminé : ${bilan(r.exercices, "exercice")} ; ${bilan(r.seances, "séance")}.`, 5000);
     router();
   } catch (e) {
     alert(e.message);

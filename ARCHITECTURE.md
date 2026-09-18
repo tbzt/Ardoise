@@ -63,6 +63,7 @@ Le repère est la patinoire entière en décimètres : `600 × 300`, origine en 
 | `joueur` | `x, y, forme: X\|O\|G\|C, label, couleur`           |
 | `palet`  | `x, y`                                             |
 | `cone`   | `x, y, couleur`                                    |
+| `cage`   | `x, y, sens: gauche\|droite\|haut\|bas`            |
 | `texte`  | `x, y, texte, taille: petit\|moyen\|grand, couleur` |
 | `trait`  | `pts: [{x,y}…], style, couleur`                    |
 
@@ -90,7 +91,7 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_theme`, `ardoise
 - **Pas de `onclick` dans les gabarits** : délégation d'événements sur `data-act`, `data-outil`, `data-prop`.
 - **Les écrans rendent des chaînes** (`innerHTML`) et échappent tout texte utilisateur avec `esc()`. Les identifiants internes ne sont jamais saisis par l'utilisateur.
 - **Un écran renvoie `{ detruire() }`** ; le routeur l'appelle avant d'en monter un autre (désabonnement du Store, sauvegarde en attente, écouteurs clavier).
-- **Le catalogue a des identifiants fixes** (`cat_…`) : le réinstaller ajoute ce qui manque et n'écrase rien.
+- **Le catalogue a des identifiants fixes** (`cat_…`) : le réinstaller ajoute ce qui manque et n'écrase rien. L'import d'un fichier, lui, ajoute ce qui manque **et** remplace ce dont la version importée est plus récente (`modifie`) — c'est ce qui permet d'exporter un exercice seul, de le retoucher ailleurs et de le rapporter.
 - **Un seul auteur dans l'historique git.** Pas de `Co-Authored-By`, pas de pied de message généré.
 
 ---
