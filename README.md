@@ -6,7 +6,7 @@ Application web à page unique, **100 % locale** : aucun serveur, aucune dépend
 
 → [tbzt.github.io/Ardoise](https://tbzt.github.io/Ardoise)
 
-Livrée avec **35 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
+Livrée avec **54 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
 
 ---
 
@@ -27,7 +27,8 @@ Livrée avec **35 exercices** et deux séances types pour **adultes débutants**
 ### Composer — les séances
 - Date, heure, groupe, lieu, temps de glace, objectif, notes.
 - Un **déroulé** de blocs : des exercices piochés dans la bibliothèque, ou des blocs libres (pause eau, mot du coach).
-- Durée par bloc, note par bloc, réordonnancement, **heure de début calculée** pour chaque bloc.
+- Durée par bloc, note par bloc, **réordonnancement par glisser-déposer** (ou avec les flèches), **heure de début calculée** pour chaque bloc.
+- Depuis la bibliothèque, un clic sur un exercice ouvre son **aperçu** (schéma, objectif, description, points clés) avant de l'ajouter.
 - Une **frise** colorée montre où passe le temps, et prévient quand on dépasse la glace.
 
 ### Imprimer — la feuille de séance

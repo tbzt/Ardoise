@@ -5,6 +5,7 @@ import { Store, blocLibre, blocDepuisExercice } from "../core/store.js";
 import { esc, debounce, statut, formaterDuree, heureA } from "../core/dom.js";
 import { CATEGORIES } from "../data/catalogue.js";
 import { chip, barreFiltres, filtrer, trier, exporterPdf } from "./communs.js";
+import { apercu } from "./dialogue.js";
 
 const filtre = { q: "", categorie: "" };
 
@@ -97,8 +98,11 @@ export const Seance = {
           })
           .join("") + (depasse ? `<i class="limite" style="left:${(glace / base) * 100}%"></i>` : "");
       let t = 0;
-      blocsEl.querySelectorAll("li").forEach((li, i) => {
-        const b = se.blocs[i];
+      // seules les rangées de bloc portent une heure — pas le message
+      // « le déroulé est vide », qui est aussi un <li>
+      blocsEl.querySelectorAll("li[data-id]").forEach((li) => {
+        const b = se.blocs.find((x) => x.id === li.dataset.id);
+        if (!b) return;
         li.querySelector(".heure").textContent = heureA(se.heure, t);
         t += Number(b.duree) || 0;
       });
@@ -116,6 +120,7 @@ export const Seance = {
                   : `<input name="titre" value="${esc(b.titre)}" placeholder="Titre du bloc" aria-label="Titre du bloc">`;
               return `
                 <li class="bloc" data-id="${b.id}">
+                  <button type="button" class="poignee" data-poignee title="Glisser pour déplacer" aria-label="Déplacer ce bloc">⋮⋮</button>
                   <span class="heure"></span>
                   <div class="bloc-titre">${titre}</div>
                   <label class="duree"><input type="number" name="duree" min="1" max="120" value="${esc(b.duree)}" aria-label="Durée en minutes"> min</label>
@@ -131,6 +136,48 @@ export const Seance = {
         : `<li class="vide">Le déroulé est vide : ajoutez des exercices depuis la bibliothèque, ou un bloc libre.</li>`;
       peindreTemps();
     }
+
+    /* Glisser-déposer : on attrape la poignée, la rangée suit le
+       pointeur en se réinsérant dans la liste au fil du mouvement, et
+       l'ordre du DOM devient l'ordre des blocs au relâcher. Les
+       événements pointeur couvrent la souris, le doigt et le stylet ;
+       les flèches ▲▼ restent pour le clavier. */
+    blocsEl.addEventListener("pointerdown", (e) => {
+      const poignee = e.target.closest("[data-poignee]");
+      const li = poignee && poignee.closest("li[data-id]");
+      if (!li) return;
+      e.preventDefault();
+      try {
+        poignee.setPointerCapture(e.pointerId);
+      } catch (err) {
+        /* sans capture, les écouteurs sur le document suffisent */
+      }
+      li.classList.add("en-glisse");
+      const deplacer = (ev) => {
+        const sous = document.elementFromPoint(ev.clientX, ev.clientY);
+        const autre = sous && sous.closest("li[data-id]");
+        if (!autre || autre === li || autre.parentElement !== blocsEl) return;
+        const r = autre.getBoundingClientRect();
+        if (ev.clientY < r.top + r.height / 2) blocsEl.insertBefore(li, autre);
+        else blocsEl.insertBefore(li, autre.nextSibling);
+      };
+      const finir = () => {
+        document.removeEventListener("pointermove", deplacer);
+        document.removeEventListener("pointerup", finir);
+        document.removeEventListener("pointercancel", finir);
+        li.classList.remove("en-glisse");
+        const ordre = [...blocsEl.querySelectorAll("li[data-id]")].map((x) => x.dataset.id);
+        const avant = se.blocs.map((b) => b.id).join();
+        se.blocs.sort((a, b) => ordre.indexOf(a.id) - ordre.indexOf(b.id));
+        if (se.blocs.map((b) => b.id).join() !== avant) {
+          peindreBlocs();
+          toucher();
+        } else peindreTemps();
+      };
+      document.addEventListener("pointermove", deplacer);
+      document.addEventListener("pointerup", finir);
+      document.addEventListener("pointercancel", finir);
+    });
 
     blocsEl.addEventListener("input", (e) => {
       const li = e.target.closest("li[data-id]");
@@ -185,7 +232,7 @@ export const Seance = {
               .map(
                 (ex) => `
               <li>
-                <div class="bibli-titre"><strong>${esc(ex.nom) || "<em>Sans nom</em>"}</strong><span class="meta">${chip(ex.categorie)} ${formaterDuree(ex.duree)}</span></div>
+                <button type="button" class="bibli-titre" data-apercu="${ex.id}" title="Voir l'exercice"><strong>${esc(ex.nom) || "<em>Sans nom</em>"}</strong><span class="meta">${chip(ex.categorie)} ${formaterDuree(ex.duree)}</span></button>
                 <button type="button" data-ajouter="${ex.id}" title="Ajouter au déroulé">+</button>
               </li>`,
               )
@@ -198,16 +245,28 @@ export const Seance = {
       }
     }
 
-    bibliEl.addEventListener("click", (e) => {
+    function ajouterAuDeroule(ex) {
+      se.blocs.push(blocDepuisExercice(ex));
+      peindreBlocs();
+      toucher();
+      statut(`« ${ex.nom} » ajouté au déroulé.`);
+    }
+
+    bibliEl.addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.ajouter) {
-        const ex = Store.exercices.get(b.dataset.ajouter);
+      if (b.dataset.apercu) {
+        const ex = Store.exercices.get(b.dataset.apercu);
         if (!ex) return;
-        se.blocs.push(blocDepuisExercice(ex));
-        peindreBlocs();
-        toucher();
-        statut(`« ${ex.nom} » ajouté au déroulé.`);
+        const choix = await apercu(ex);
+        if (choix === "ajouter") ajouterAuDeroule(ex);
+        else if (choix === "fiche") {
+          Store.seances.sauver(se);
+          location.hash = `#/exercice/${ex.id}`;
+        }
+      } else if (b.dataset.ajouter) {
+        const ex = Store.exercices.get(b.dataset.ajouter);
+        if (ex) ajouterAuDeroule(ex);
       } else if (b.dataset.cat !== undefined) {
         filtre.categorie = b.dataset.cat;
         filtre._focus = false;

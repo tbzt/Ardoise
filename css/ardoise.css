@@ -701,13 +701,39 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .blocs .bloc {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr) 92px minmax(120px, 1fr) auto;
+  grid-template-columns: 22px 52px minmax(0, 1fr) 92px minmax(120px, 1fr) auto;
   gap: var(--e2);
   align-items: center;
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: var(--rayon);
   padding: var(--e2) var(--e3);
+}
+.blocs .poignee {
+  border: none;
+  background: transparent;
+  color: var(--ink-faint);
+  padding: 0;
+  min-height: 30px;
+  min-width: 22px;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  font-size: 1rem;
+  letter-spacing: -2px;
+  user-select: none;
+}
+.blocs .poignee:hover {
+  color: var(--accent);
+}
+.blocs .bloc.en-glisse {
+  border-color: var(--accent);
+  box-shadow: var(--ombre);
+  background: var(--accent-soft);
+  cursor: grabbing;
+}
+.blocs .bloc.en-glisse .poignee {
+  cursor: grabbing;
 }
 .blocs .heure {
   font-family: var(--mono);
@@ -817,10 +843,69 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   color: var(--ink-faint);
   font-size: 0.8rem;
 }
-.bibli-liste button {
+.bibli-liste button[data-ajouter] {
   min-width: 34px;
   justify-content: center;
   font-weight: 700;
+}
+.bibli-liste button.bibli-titre {
+  border: none;
+  background: transparent;
+  padding: 2px 4px;
+  margin-left: -4px;
+  text-align: left;
+  align-items: flex-start;
+  border-radius: var(--rayon-petit);
+}
+.bibli-liste button.bibli-titre:hover {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.dialogue-apercu {
+  width: min(94vw, 760px);
+}
+.apercu-entete h2 {
+  margin-bottom: var(--e1);
+}
+.apercu-entete .meta {
+  display: flex;
+  gap: var(--e2);
+  align-items: center;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+.apercu-corps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--e4);
+  margin: var(--e3) 0 var(--e4);
+  max-height: 60vh;
+  overflow: auto;
+}
+.apercu-corps .vignette {
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon-petit);
+  align-self: start;
+}
+.apercu-texte {
+  font-size: 0.92rem;
+}
+.apercu-texte .objectif {
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.apercu-texte ul {
+  padding-left: 1.2em;
+  margin: 0 0 var(--e2);
+}
+.apercu-texte .materiel {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+}
+@media (max-width: 640px) {
+  .apercu-corps {
+    grid-template-columns: 1fr;
+  }
 }
 @media (max-width: 960px) {
   .seance-corps {
@@ -836,13 +921,13 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 @media (max-width: 640px) {
   .blocs .bloc {
-    grid-template-columns: 52px minmax(0, 1fr) auto;
+    grid-template-columns: 22px 52px minmax(0, 1fr) auto;
   }
   .blocs .note {
-    grid-column: 2 / 3;
+    grid-column: 3 / 4;
   }
   .blocs .duree {
-    grid-column: 3 / 4;
+    grid-column: 4 / 5;
     grid-row: 2;
   }
 }
@@ -882,6 +967,8 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 .dialogue-pied {
   display: flex;
   justify-content: flex-end;
+  gap: var(--e2);
+  align-items: center;
 }
 
 /* ── La feuille imprimée ────────────────────────────────────── */
