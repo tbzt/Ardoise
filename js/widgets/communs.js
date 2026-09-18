@@ -1,6 +1,7 @@
 /* Ce que plusieurs écrans partagent : la pastille de catégorie, le
    filtre de bibliothèque (recherche + catégories), les vignettes. */
-import { esc } from "../core/dom.js";
+import { esc, statut, telechargerBlob, slug } from "../core/dom.js";
+import { seanceEnPdf } from "./feuillepdf.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { svg } from "./patinoire.js";
 
@@ -52,4 +53,28 @@ export function trier(exercices) {
     if (ra !== rb) return (ra < 0 ? 99 : ra) - (rb < 0 ? 99 : rb);
     return (a.nom || "").localeCompare(b.nom || "", "fr");
   });
+}
+
+/* Fabrique et télécharge la feuille de séance en PDF. Le bouton est
+   désactivé pendant la fabrication : sur un téléphone, rendre dix
+   schémas prend une ou deux secondes. */
+export async function exporterPdf(se, bouton) {
+  const libelle = bouton ? bouton.textContent : "";
+  if (bouton) {
+    bouton.disabled = true;
+    bouton.textContent = "Fabrication…";
+  }
+  try {
+    const blob = await seanceEnPdf(se);
+    telechargerBlob(`seance-${slug(se.titre) || se.id}${se.date ? `-${se.date}` : ""}.pdf`, blob);
+    statut("PDF téléchargé.");
+  } catch (e) {
+    console.error(e);
+    alert(`Le PDF n'a pas pu être fabriqué : ${e.message}`);
+  } finally {
+    if (bouton) {
+      bouton.disabled = false;
+      bouton.textContent = libelle;
+    }
+  }
 }

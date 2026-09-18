@@ -61,3 +61,25 @@ export function statut(message, duree = 2500) {
   clearTimeout(statut._h);
   statut._h = setTimeout(() => (p.hidden = true), duree);
 }
+
+export function telechargerBlob(nom, blob) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nom;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* Nom de fichier sûr à partir d'un titre. */
+export function slug(texte) {
+  return String(texte || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40);
+}

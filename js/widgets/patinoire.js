@@ -162,9 +162,9 @@ function couleurDe(o) {
   return COULEURS[o.couleur] || COULEURS.noir;
 }
 
-function joueur(o, uid) {
+function joueur(o, uid, inter) {
   const c = couleurDe(o);
-  const halo = `<circle class="halo" r="15" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>`;
+  const halo = !inter ? "" : `<circle class="halo" r="15" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>`;
   let corps;
   switch (o.forme) {
     case "G":
@@ -191,24 +191,27 @@ function joueur(o, uid) {
   return `<g class="obj obj-joueur" data-id="${o.id}" transform="translate(${o.x},${o.y})"><circle r="12" fill="transparent"/>${halo}${corps}${etiquette}</g>`;
 }
 
-function palet(o) {
-  return `<g class="obj obj-palet" data-id="${o.id}" transform="translate(${o.x},${o.y})"><circle r="8" fill="transparent"/><circle class="halo" r="9" fill="none" stroke="#1b1f24" stroke-width="1.5" stroke-dasharray="3 3"/><circle r="3.5" fill="#1b1f24"/></g>`;
+function palet(o, inter) {
+  const halo = inter ? `<circle r="8" fill="transparent"/><circle class="halo" r="9" fill="none" stroke="#1b1f24" stroke-width="1.5" stroke-dasharray="3 3"/>` : "";
+  return `<g class="obj obj-palet" data-id="${o.id}" transform="translate(${o.x},${o.y})">${halo}<circle r="3.5" fill="#1b1f24"/></g>`;
 }
 
-function cone(o) {
+function cone(o, inter) {
   const c = o.couleur ? couleurDe(o) : COULEURS.orange;
-  return `<g class="obj obj-cone" data-id="${o.id}" transform="translate(${o.x},${o.y})"><circle r="10" fill="transparent"/><circle class="halo" r="11" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M0,-7 L6,5 L-6,5 Z" fill="${c}" stroke="#fff" stroke-width="1"/></g>`;
+  const halo = inter ? `<circle r="10" fill="transparent"/><circle class="halo" r="11" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>` : "";
+  return `<g class="obj obj-cone" data-id="${o.id}" transform="translate(${o.x},${o.y})">${halo}<path d="M0,-7 L6,5 L-6,5 Z" fill="${c}" stroke="#fff" stroke-width="1"/></g>`;
 }
 
 /* Une cage mobile, pour les matchs en travers ou les cages décalées.
    `sens` dit vers où elle s'ouvre : gauche, droite, haut, bas. */
 const ROTATIONS = { gauche: 0, droite: 180, haut: 90, bas: 270 };
-function cage(o) {
+function cage(o, inter) {
   const rot = ROTATIONS[o.sens] ?? 0;
-  return `<g class="obj obj-cage" data-id="${o.id}" transform="translate(${o.x},${o.y}) rotate(${rot})"><rect x="-10" y="-13" width="20" height="26" fill="transparent"/><rect class="halo" x="-10" y="-13" width="20" height="26" fill="none" stroke="${ROUGE}" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M0,-9 L-12,-9 L-12,9 L0,9" fill="#e9eef2" stroke="${ROUGE}" stroke-width="1.8" stroke-linejoin="round"/><line x1="0" y1="-9" x2="0" y2="9" stroke="${ROUGE}" stroke-width="2.4"/></g>`;
+  const halo = inter ? `<rect x="-10" y="-13" width="20" height="26" fill="transparent"/><rect class="halo" x="-10" y="-13" width="20" height="26" fill="none" stroke="${ROUGE}" stroke-width="1.5" stroke-dasharray="3 3"/>` : "";
+  return `<g class="obj obj-cage" data-id="${o.id}" transform="translate(${o.x},${o.y}) rotate(${rot})">${halo}<path d="M0,-9 L-12,-9 L-12,9 L0,9" fill="#e9eef2" stroke="${ROUGE}" stroke-width="1.8" stroke-linejoin="round"/><line x1="0" y1="-9" x2="0" y2="9" stroke="${ROUGE}" stroke-width="2.4"/></g>`;
 }
 
-function texte(o) {
+function texte(o, inter) {
   const c = couleurDe(o);
   const taille = o.taille === "grand" ? 15 : o.taille === "petit" ? 9 : 11.5;
   const lignes = String(o.texte || "").split("\n");
@@ -217,10 +220,10 @@ function texte(o) {
     .join("");
   const larg = Math.max(...lignes.map((l) => l.length), 2) * taille * 0.55;
   const haut = lignes.length * taille * 1.2;
-  return `<g class="obj obj-texte" data-id="${o.id}" transform="translate(${o.x},${o.y})"><rect x="-4" y="${-taille}" width="${r(larg + 8)}" height="${r(haut + 6)}" fill="transparent"/><rect class="halo" x="-4" y="${-taille}" width="${r(larg + 8)}" height="${r(haut + 6)}" fill="none" stroke="${c}" stroke-width="1.2" stroke-dasharray="3 3"/><text font-size="${taille}" font-weight="600" fill="${c}" paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round" dominant-baseline="middle">${spans}</text></g>`;
+  return `<g class="obj obj-texte" data-id="${o.id}" transform="translate(${o.x},${o.y})">${inter ? `<rect x="-4" y="${-taille}" width="${r(larg + 8)}" height="${r(haut + 6)}" fill="transparent"/><rect class="halo" x="-4" y="${-taille}" width="${r(larg + 8)}" height="${r(haut + 6)}" fill="none" stroke="${c}" stroke-width="1.2" stroke-dasharray="3 3"/>` : ""}<text font-size="${taille}" font-weight="600" fill="${c}" paint-order="stroke" stroke="#fff" stroke-width="3" stroke-linejoin="round" dominant-baseline="middle">${spans}</text></g>`;
 }
 
-function trait(o, uid) {
+function trait(o, uid, inter) {
   const c = couleurDe(o);
   const pts = o.pts || [];
   if (pts.length < 2) return "";
@@ -253,24 +256,29 @@ function trait(o, uid) {
       d = lisser(pts);
       corps = `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>`;
   }
-  const guide = lisser(pts);
-  return `<g class="obj obj-trait" data-id="${o.id}"><path class="hit" d="${guide}" fill="none" stroke="transparent" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path class="halo" d="${guide}" fill="none" stroke="${c}" stroke-opacity="0.35" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>${corps}</g>`;
+  const guide = inter ? lisser(pts) : "";
+  const halo = inter ? `<path class="hit" d="${guide}" fill="none" stroke="transparent" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path class="halo" d="${guide}" fill="none" stroke="${c}" stroke-opacity="0.35" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>` : "";
+  return `<g class="obj obj-trait" data-id="${o.id}">${halo}${corps}</g>`;
 }
 
-export function objet(o, uid) {
+/* `inter` : en mode interactif (l'éditeur), chaque objet porte une
+   zone de saisie transparente et un halo de sélection. Partout ailleurs
+   (vignettes, impression, image PDF), on ne rend que le dessin — le
+   SVG est plus léger, et il reste juste même sans la feuille de style. */
+export function objet(o, uid, inter = false) {
   switch (o.t) {
     case "joueur":
-      return joueur(o, uid);
+      return joueur(o, uid, inter);
     case "palet":
-      return palet(o);
+      return palet(o, inter);
     case "cone":
-      return cone(o);
+      return cone(o, inter);
     case "cage":
-      return cage(o);
+      return cage(o, inter);
     case "texte":
-      return texte(o);
+      return texte(o, inter);
     case "trait":
-      return trait(o, uid);
+      return trait(o, uid, inter);
     default:
       return "";
   }
@@ -298,7 +306,7 @@ export function svg(schema, opts = {}) {
   const uid = opts.uid || `p${++compteurSvg}`;
   const objets = (schema?.objets || []).map((o) => objet(o, uid)).join("");
   return (
-    `<svg class="patinoire ${opts.classe || ""}" viewBox="${vue.x} ${vue.y} ${vue.w} ${vue.h}" xmlns="http://www.w3.org/2000/svg" data-uid="${uid}" role="img" aria-label="Schéma d'exercice">` +
+    `<svg class="patinoire ${opts.classe || ""}" viewBox="${vue.x} ${vue.y} ${vue.w} ${vue.h}" xmlns="http://www.w3.org/2000/svg" data-uid="${uid}" role="img" aria-label="Schéma d'exercice" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"${opts.taille ? ` width="${opts.taille.w}" height="${opts.taille.h}"` : ""}>` +
     defs(uid) +
     `<g class="glace">${fond()}</g>` +
     `<g class="objets">${objets}</g>` +
@@ -309,7 +317,7 @@ export function svg(schema, opts = {}) {
 /* Le contenu seul (sans la balise <svg>), pour que l'éditeur
    rafraîchisse sans recréer l'élément. */
 export function contenu(schema, uid) {
-  return defs(uid) + `<g class="glace">${fond()}</g>` + `<g class="objets">${(schema.objets || []).map((o) => objet(o, uid)).join("")}</g>`;
+  return defs(uid) + `<g class="glace">${fond()}</g>` + `<g class="objets">${(schema.objets || []).map((o) => objet(o, uid, true)).join("")}</g>`;
 }
 
 export function viewBox(vue) {

@@ -4,7 +4,7 @@
 import { Store, blocLibre, blocDepuisExercice } from "../core/store.js";
 import { esc, debounce, statut, formaterDuree, heureA } from "../core/dom.js";
 import { CATEGORIES } from "../data/catalogue.js";
-import { chip, barreFiltres, filtrer, trier } from "./communs.js";
+import { chip, barreFiltres, filtrer, trier, exporterPdf } from "./communs.js";
 
 const filtre = { q: "", categorie: "" };
 
@@ -25,6 +25,7 @@ export const Seance = {
         <span class="etat" data-etat>Enregistré</span>
         <span class="spacer"></span>
         <a class="bouton" href="#/seance/${se.id}/imprimer">Imprimer</a>
+        <button type="button" data-act="pdf" title="Télécharger la feuille de séance en PDF">PDF</button>
         <button type="button" data-act="dupliquer">Dupliquer</button>
         <button type="button" class="danger" data-act="supprimer">Supprimer</button>
       </div>
@@ -241,10 +242,13 @@ export const Seance = {
       toucher();
     });
 
-    sec.querySelector(".entete").addEventListener("click", (e) => {
+    sec.querySelector(".entete").addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.act === "dupliquer") {
+      if (b.dataset.act === "pdf") {
+        Store.seances.sauver(se);
+        await exporterPdf(se, b);
+      } else if (b.dataset.act === "dupliquer") {
         Store.seances.sauver(se);
         const copie = Store.seances.dupliquer(se.id);
         statut("Séance dupliquée.");

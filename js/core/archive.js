@@ -1,29 +1,12 @@
 /* Archive — export et import de toutes les données en un fichier JSON.
    Le format porte sa version : on saura le relire demain. */
 import { Store } from "./store.js";
+import { telechargerBlob, slug } from "./dom.js";
 
 const FORMAT = "ardoise/1";
 
 function telecharger(nom, donnees) {
-  const blob = new Blob([JSON.stringify(donnees, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = nom;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function slug(texte) {
-  return String(texte || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 40);
+  telechargerBlob(nom, new Blob([JSON.stringify(donnees, null, 2)], { type: "application/json" }));
 }
 
 export const Archive = {

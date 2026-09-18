@@ -33,6 +33,7 @@ Livrée avec **35 exercices** et deux séances types pour **adultes débutants**
 ### Imprimer — la feuille de séance
 - Le plan en tête (heure, durée, bloc, note), puis chaque exercice avec son schéma, sa description et ses points clés.
 - Mise en page prévue pour A4 ; lisible aussi à l'écran, sur téléphone.
+- **Export PDF** en un clic, fabriqué dans le navigateur sans aucune bibliothèque : un vrai fichier à envoyer au groupe ou à garder sur le téléphone.
 
 ### Système
 - **Exporter / Importer** toutes les données en un fichier JSON (fusion ou remplacement), ou **un exercice seul** depuis sa fiche — le fichier se réimporte chez soi ou chez un autre coach, et met à jour l'exercice s'il est plus récent.

@@ -4,7 +4,7 @@
 import { Store } from "../core/store.js";
 import { esc, formaterDate, formaterDuree, heureA } from "../core/dom.js";
 import { CATEGORIES } from "../data/catalogue.js";
-import { chip, vignette } from "./communs.js";
+import { chip, vignette, exporterPdf } from "./communs.js";
 
 export const Impression = {
   afficher(main, id) {
@@ -30,6 +30,7 @@ export const Impression = {
       <div class="entete no-print">
         <a class="retour" href="#/seance/${se.id}">← Retour à la séance</a>
         <span class="spacer"></span>
+        <button type="button" data-act="pdf" title="Télécharger cette feuille en PDF">Télécharger en PDF</button>
         <button type="button" class="primaire" data-act="imprimer">Imprimer</button>
       </div>
       <article class="feuille">
@@ -82,6 +83,7 @@ export const Impression = {
       </article>`;
 
     sec.querySelector("[data-act='imprimer']").addEventListener("click", () => window.print());
+    sec.querySelector("[data-act='pdf']").addEventListener("click", (e) => exporterPdf(se, e.currentTarget));
     return { detruire() {} };
   },
 };

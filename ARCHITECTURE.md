@@ -25,11 +25,13 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/seances.js    la liste des séances
                    js/widgets/seance.js     le déroulé (blocs, frise, bibliothèque latérale)
                    js/widgets/impression.js la feuille de séance imprimable
+                   js/widgets/feuillepdf.js la même feuille en PDF (schémas rendus en JPEG via canvas)
 2. Composants      js/widgets/editeur.js    l'éditeur de schéma (outils, gestes, historique)
                    js/widgets/patinoire.js  le rendu SVG : la glace et les objets
                    js/widgets/communs.js    pastilles, filtres, vignettes partagés
                    js/widgets/dialogue.js   une boîte de choix modale
-1. Noyau           js/core/store.js         la vérité : exercices + séances, signal de changement
+1. Noyau           js/core/pdf.js           un générateur PDF minimal : Helvetica, traits, rectangles, JPEG
+                   js/core/store.js         la vérité : exercices + séances, signal de changement
                    js/core/storage.js       la seule porte vers localStorage
                    js/core/archive.js       export / import JSON
                    js/core/theme.js         clair / sombre / système
@@ -38,7 +40,9 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
 0. Données         js/data/catalogue.js     catégories, niveaux, exercices et séance fournis
 ```
 
-`patinoire.js` ne connaît ni le DOM interactif ni le Store : il transforme un schéma en chaîne SVG. L'éditeur, les vignettes des cartes et l'impression s'en servent tous — un seul dessin, trois usages.
+`patinoire.js` ne connaît ni le DOM interactif ni le Store : il transforme un schéma en chaîne SVG. L'éditeur, les vignettes des cartes, l'impression et le PDF s'en servent tous — un seul dessin, quatre usages. Les zones de saisie et halos de sélection ne sont émis qu'en mode interactif (`objet(o, uid, true)`), si bien que le SVG reste juste même sans la feuille de style — c'est ce qui permet de le rendre dans un `<img>` puis un canvas pour le PDF.
+
+`pdf.js` écrit le fichier à la main : polices standard (jamais embarquées), texte encodé en Windows-1252, images en `DCTDecode` (les octets JPEG tels quels), table `xref` calculée. Il ne sait rien d'une séance ; `feuillepdf.js` fait la mise en page.
 
 ---
 
