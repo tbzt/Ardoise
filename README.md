@@ -26,6 +26,8 @@ Livrée avec **84 exercices** et deux séances types pour **adultes débutants**
 
 ### Composer — les séances
 - Date, heure, groupe, lieu, temps de glace, objectif, notes.
+- **Proposer un déroulé** : un brouillon complet calé sur le temps de glace, dans la structure des fédérations (échauffement, patinage, palet, passes, tirs, pause, jeu, retour au calme), avec les parts de temps conseillées corrigées par ce que le groupe a peu travaillé, en préférant ce qui n'a jamais été fait et ce que le dernier bilan a marqué « à revoir ». Chaque choix est expliqué ; « Autre proposition » en fait une autre ; tout se retouche. Depuis un groupe, **Proposer une séance** crée directement la séance.
+- Une séance se **pousse dans un groupe** : copie dans un groupe (sans bilan, datée du jour) ou déplacement ; depuis un groupe, on rattache une séance existante.
 - Un **déroulé** de blocs : des exercices piochés dans la bibliothèque, ou des blocs libres (pause eau, mot du coach).
 - Durée par bloc, note par bloc, **réordonnancement par glisser-déposer** (ou avec les flèches), **heure de début calculée** pour chaque bloc.
 - Depuis la bibliothèque, un clic sur un exercice ouvre son **aperçu** (schéma, objectif, description, points clés) avant de l'ajouter.

@@ -33,7 +33,8 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/patinoire.js  le rendu SVG : la glace et les objets
                    js/widgets/communs.js    pastilles, filtres, vignettes partagés
                    js/widgets/dialogue.js   une boîte de choix modale
-1. Noyau           js/core/analyse.js       ce qu'un groupe a fait : répartition, usage, répétition, conseils
+1. Noyau           js/core/brouillon.js     propose un déroulé : structure, parts de temps, score des exercices, raisons
+                   js/core/analyse.js       ce qu'un groupe a fait : répartition, usage, répétition, conseils
                    js/core/pdf.js           un générateur PDF minimal : Helvetica, traits, rectangles, JPEG
                    js/core/store.js         la vérité : exercices + séances, signal de changement
                    js/core/storage.js       la seule porte vers localStorage
@@ -95,6 +96,9 @@ Un bloc recopie le **titre** de l'exercice au moment de l'ajout : si l'exercice 
 { id, nom, niveau, description, cree, modifie }
 ```
 Supprimer un groupe détache ses séances, il ne les efface pas.
+
+### Brouillon
+`js/core/brouillon.js` compose un déroulé en trois temps : (1) les minutes visées par catégorie — `CIBLE` corrigée par l'écart des quatre dernières séances, correction amortie tant que l'historique est court, patinage jamais sous 22 % ; (2) dans chaque catégorie, les exercices classés par un score lisible (jamais fait +3, fait la dernière fois −3, « à revoir » au dernier bilan +3, niveau inadapté −4, un peu de hasard) et pris tant que le temps reste ; (3) un ajustement au temps de glace qui donne le reste à la catégorie la plus en dessous de son objectif et rogne celles qui dépassent le plus. Chaque bloc ressort avec ses raisons, affichées au coach.
 
 ### Analyse
 `js/core/analyse.js` ne stocke rien : tout se recalcule depuis les séances et leurs bilans. Une séance est **faite** si son bilan le dit, ou si sa date est passée avec un déroulé. Les blocs décochés dans le bilan sont exclus des comptes. `CIBLE` donne la part de temps conseillée par catégorie pour des adultes débutants ; chaque conseil de `conseils()` vient d'une règle nommée (équilibre, absence, répétition, à revoir).

@@ -2,11 +2,12 @@
    sa durée, et la bibliothèque à côté pour piocher. La frise en haut
    du déroulé montre d'un coup d'œil où passe le temps de glace. */
 import { Store, blocLibre, blocDepuisExercice } from "../core/store.js";
-import { esc, debounce, statut, formaterDuree, heureA } from "../core/dom.js";
+import { esc, debounce, statut, formaterDuree, heureA, formaterDate } from "../core/dom.js";
 import { CATEGORIES } from "../data/catalogue.js";
 import { chip, barreFiltres, filtrer, trier, exporterPdf } from "./communs.js";
 import { seancesDuGroupe, seancesFaites, usageExercices, recouvrement, aRevoir, libelleUsage, formaterCourt, estFaite } from "../core/analyse.js";
-import { apercu } from "./dialogue.js";
+import { apercu, choisir } from "./dialogue.js";
+import { proposerDeroule } from "../core/brouillon.js";
 
 const filtre = { q: "", categorie: "" };
 
@@ -31,6 +32,7 @@ export const Seance = {
         <a class="bouton" href="#/seance/${se.id}/imprimer">Imprimer</a>
         <button type="button" data-act="pdf" title="Télécharger la feuille de séance en PDF">PDF</button>
         <button type="button" data-act="dupliquer">Dupliquer</button>
+        <button type="button" data-act="vers-groupe" title="Copier cette séance dans un groupe, ou la déplacer">Vers un groupe…</button>
         <button type="button" class="danger" data-act="supprimer">Supprimer</button>
       </div>
       <input class="nom" name="titre" placeholder="Titre de la séance" value="${esc(se.titre)}" aria-label="Titre de la séance">
@@ -51,8 +53,10 @@ export const Seance = {
             <span class="total" data-total></span>
           </div>
           <div class="frise" data-frise aria-hidden="true"></div>
+          <div class="explication" data-explication hidden></div>
           <ol class="blocs" data-blocs></ol>
           <div class="ajouts">
+            <button type="button" class="proposer" data-act="proposer" title="Un déroulé complet, calé sur le temps de glace et l'historique du groupe, à retoucher">✦ Proposer un déroulé</button>
             <button type="button" data-act="libre" data-titre="">+ Bloc libre</button>
             <button type="button" data-act="libre" data-titre="Pause eau" data-duree="2">+ Pause eau</button>
             <button type="button" data-act="libre" data-titre="Mot du coach" data-duree="3">+ Mot du coach</button>
@@ -215,6 +219,32 @@ export const Seance = {
       toucher();
     });
 
+    function proposer() {
+      if (se.blocs.length && !confirm("Remplacer le déroulé actuel par une proposition ? (Ctrl+Z ne marche pas ici : dupliquez la séance avant si vous voulez garder l'actuel.)")) return;
+      const r = proposerDeroule(se);
+      se.blocs = r.blocs;
+      if (!se.objectif && r.objectif) {
+        se.objectif = r.objectif;
+        sec.querySelector('input[name="objectif"]').value = r.objectif;
+      }
+      peindreBlocs();
+      toucher();
+      const el = sec.querySelector("[data-explication]");
+      el.innerHTML = `
+        <div class="explication-tete"><strong>Pourquoi ce brouillon</strong><span class="spacer"></span><button type="button" data-act="proposer">Autre proposition</button><button type="button" data-act="fermer-explication" aria-label="Fermer">×</button></div>
+        <ul>${r.explications.map((x) => `<li>${chip(x.categorie)} <strong>${esc(x.titre)}</strong> <small>— ${esc(x.raisons.join(", "))}</small></li>`).join("")}</ul>
+        <p class="legende">${se.groupeId ? "Parts de temps : la cible pour des adultes débutants, corrigée par ce que ce groupe a peu travaillé sur ses quatre dernières séances. " : "Sans groupe rattaché, la proposition ne connaît pas votre historique : rattachez la séance à un groupe pour qu'elle en tienne compte. "}Retouchez librement : c'est un point de départ, pas une consigne.</p>`;
+      el.hidden = false;
+      statut("Déroulé proposé — à retoucher.");
+    }
+
+    sec.querySelector(".deroule").addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-act]");
+      if (!b) return;
+      if (b.dataset.act === "proposer") proposer();
+      else if (b.dataset.act === "fermer-explication") sec.querySelector("[data-explication]").hidden = true;
+    });
+
     sec.querySelector(".ajouts").addEventListener("click", (e) => {
       const b = e.target.closest("button[data-act='libre']");
       if (!b) return;
@@ -373,7 +403,48 @@ export const Seance = {
     sec.querySelector(".entete").addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.act === "pdf") {
+      if (b.dataset.act === "vers-groupe") {
+        Store.seances.sauver(se);
+        const groupes = Store.groupes.tous();
+        const choix = await choisir({
+          titre: "Pousser cette séance dans un groupe",
+          options: [
+            ...groupes.map((g) => ({ id: `copie:${g.id}`, libelle: `Copier dans « ${g.nom || "sans nom"} »`, detail: "une copie datée d'aujourd'hui, sans bilan ; l'originale ne bouge pas" })),
+            ...groupes.filter((g) => g.id !== se.groupeId).map((g) => ({ id: `deplace:${g.id}`, libelle: `Déplacer vers « ${g.nom || "sans nom"} »`, detail: "la séance elle-même change de groupe" })),
+            { id: "nouveau", libelle: "Nouveau groupe…", detail: "créer le groupe, puis y copier la séance" },
+          ],
+          vide: "Aucun groupe pour l'instant.",
+        });
+        if (!choix) return;
+        let [mode, gid] = choix.split(":");
+        if (mode === "nouveau") {
+          const nom = prompt("Nom du nouveau groupe :", "");
+          if (!nom || !nom.trim()) return;
+          gid = (Store.groupes.parNom(nom) || Store.groupes.creer({ nom: nom.trim() })).id;
+          mode = "copie";
+        }
+        const g = Store.groupes.get(gid);
+        if (!g) return;
+        if (mode === "deplace") {
+          se.groupeId = g.id;
+          se.groupe = g.nom;
+          Store.seances.sauver(se);
+          sec.querySelector("select[name=groupeId]").innerHTML = optionsGroupes(se);
+          peindreDerniere();
+          peindreBibli();
+          peindreRepetition();
+          statut(`Séance déplacée dans « ${g.nom} ».`);
+        } else {
+          const copie = Store.seances.dupliquer(se.id);
+          copie.titre = se.titre;
+          copie.groupeId = g.id;
+          copie.groupe = g.nom;
+          copie.bilan = null;
+          Store.seances.sauver(copie);
+          statut(`Séance copiée dans « ${g.nom} ».`);
+          location.hash = `#/seance/${copie.id}`;
+        }
+      } else if (b.dataset.act === "pdf") {
         Store.seances.sauver(se);
         await exporterPdf(se, b);
       } else if (b.dataset.act === "dupliquer") {

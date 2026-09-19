@@ -1678,3 +1678,43 @@ details.groupe-section[open] summary::before {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Le brouillon proposé ───────────────────────────────────── */
+
+.ajouts .proposer {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.explication {
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: var(--rayon);
+  padding: var(--e3) var(--e4);
+  margin-bottom: var(--e3);
+  font-size: 0.92rem;
+}
+.explication-tete {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  margin-bottom: var(--e2);
+}
+.explication-tete button {
+  min-height: 28px;
+  padding: 2px 10px;
+  font-size: 0.85rem;
+}
+.explication ul {
+  margin: 0 0 var(--e2);
+  padding: 0;
+  list-style: none;
+}
+.explication li {
+  padding: 3px 0;
+}
+.explication .legende {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  margin: 0;
+}

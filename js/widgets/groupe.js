@@ -1,10 +1,12 @@
 /* Groupe — la fiche d'une équipe : ce qu'on a fait ensemble, comment
    c'est équilibré, ce qui revient trop, ce qu'il reste à essayer, et ce
    que disent les bilans. C'est la mémoire du coach. */
-import { Store, seanceVierge } from "../core/store.js";
+import { Store } from "../core/store.js";
+import { proposerDeroule } from "../core/brouillon.js";
 import { esc, debounce, statut, formaterDate, formaterDuree } from "../core/dom.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { chip } from "./communs.js";
+import { choisir } from "./dialogue.js";
 import { CIBLE, seancesDuGroupe, seancesFaites, estFaite, repartition, usageExercices, conseils, aRevoir, noteMoyenne, formaterCourt } from "../core/analyse.js";
 
 const etoiles = (n) => (n ? "★".repeat(n) + "☆".repeat(5 - n) : "");
@@ -45,7 +47,9 @@ export const Groupe = {
           <a class="retour" href="#/groupes">← Groupes</a>
           <span class="etat" data-etat>Enregistré</span>
           <span class="spacer"></span>
-          <button type="button" class="primaire" data-act="nouvelle-seance">+ Séance pour ce groupe</button>
+          <button type="button" class="primaire" data-act="proposer-seance" title="Une séance de 60 minutes proposée d'après l'historique, à retoucher">✦ Proposer une séance</button>
+          <button type="button" data-act="nouvelle-seance">+ Séance vide</button>
+          <button type="button" data-act="rattacher" title="Pousser une séance existante dans ce groupe">Rattacher une séance…</button>
           <button type="button" class="danger" data-act="supprimer">Supprimer</button>
         </div>
         <input class="nom" name="nom" placeholder="Nom du groupe (Adultes débutants, U11, Loisir mardi…)" value="${esc(g.nom)}" aria-label="Nom du groupe">
@@ -146,12 +150,42 @@ export const Groupe = {
       sauver();
     });
 
-    sec.addEventListener("click", (e) => {
+    sec.addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
       if (b.dataset.tri) {
         tri = b.dataset.tri;
         rendre();
+      } else if (b.dataset.act === "proposer-seance") {
+        Store.groupes.sauver(g);
+        const se = Store.seances.creer({ groupeId: g.id, groupe: g.nom });
+        const r = proposerDeroule(se);
+        se.blocs = r.blocs;
+        se.objectif = r.objectif;
+        se.notes = "Brouillon proposé d'après l'historique du groupe. Le bouton « Autre proposition » dans le déroulé en fait une autre.";
+        Store.seances.sauver(se);
+        statut("Séance proposée — à retoucher.");
+        location.hash = `#/seance/${se.id}`;
+      } else if (b.dataset.act === "rattacher") {
+        const candidates = Store.seances
+          .toutes()
+          .filter((s) => s.groupeId !== g.id)
+          .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+        const choix = await choisir({
+          titre: `Rattacher une séance à « ${g.nom || "ce groupe"} »`,
+          options: candidates.map((s) => {
+            const autre = s.groupeId ? Store.groupes.get(s.groupeId) : null;
+            return { id: s.id, libelle: s.titre || "Séance sans titre", detail: `${formaterDate(s.date)} · ${autre ? `actuellement dans « ${autre.nom} »` : "sans groupe"}` };
+          }),
+          vide: "Toutes les séances sont déjà dans ce groupe.",
+        });
+        if (!choix) return;
+        const s = Store.seances.get(choix);
+        if (!s) return;
+        s.groupeId = g.id;
+        s.groupe = g.nom;
+        Store.seances.sauver(s);
+        statut(`« ${s.titre || "Séance"} » rattachée à « ${g.nom} ».`);
       } else if (b.dataset.act === "nouvelle-seance") {
         Store.groupes.sauver(g);
         const se = Store.seances.creer({ groupeId: g.id, groupe: g.nom });
