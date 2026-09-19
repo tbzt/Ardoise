@@ -1297,3 +1297,384 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   color: var(--ink-soft);
   font-size: 0.9rem;
 }
+
+/* ── Groupes, historique, bilan ─────────────────────────────── */
+
+.avis {
+  background: color-mix(in srgb, var(--warning) 12%, transparent);
+  border-left: 3px solid var(--warning);
+  padding: var(--e2) var(--e3);
+  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
+  margin: 0 0 var(--e3);
+}
+.derniere {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  padding: var(--e2) var(--e4);
+  margin-bottom: var(--e4);
+}
+.derniere summary {
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+.derniere-corps {
+  padding-top: var(--e2);
+  font-size: 0.92rem;
+}
+.derniere-corps p {
+  margin-bottom: var(--e1);
+}
+.bibli-liste .indice {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+.bibli-liste .indice.jamais {
+  color: var(--ok);
+  font-weight: 600;
+}
+.bibli-liste .indice.recent {
+  color: var(--warning);
+  font-weight: 600;
+}
+.groupe-champs {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: var(--e3);
+}
+.groupe-champs .large {
+  grid-column: auto;
+}
+.groupe-chiffres {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--e3);
+  margin: var(--e2) 0 var(--e5);
+}
+.groupe-chiffres div {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  padding: var(--e3) var(--e4);
+  display: flex;
+  flex-direction: column;
+}
+.groupe-chiffres strong {
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+}
+.groupe-chiffres span {
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+.groupe-section {
+  margin-bottom: var(--e5);
+}
+.groupe-section h2 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  margin-bottom: var(--e3);
+}
+.groupe-section h2 .tri {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-faint);
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+.groupe-section h2 .tri button {
+  min-height: 26px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+}
+details.groupe-section summary {
+  cursor: pointer;
+  list-style: none;
+}
+details.groupe-section summary h2 {
+  display: inline-flex;
+}
+details.groupe-section summary::before {
+  content: "▸ ";
+  color: var(--ink-faint);
+}
+details.groupe-section[open] summary::before {
+  content: "▾ ";
+}
+.conseils,
+.revoir,
+.jamais {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.conseil {
+  padding: var(--e2) var(--e3);
+  border-left: 3px solid var(--rule-controle);
+  background: var(--surface);
+  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
+  margin-bottom: var(--e2);
+}
+.conseil-equilibre,
+.conseil-absence {
+  border-left-color: var(--warning);
+}
+.conseil-repetition {
+  border-left-color: var(--danger);
+}
+.conseil-revoir {
+  border-left-color: var(--accent);
+}
+.revoir li,
+.jamais li {
+  padding: var(--e1) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.jamais li {
+  line-height: 1.8;
+}
+.retenir {
+  margin-top: var(--e2);
+  font-style: italic;
+}
+.equilibre-ligne {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) 80px;
+  gap: var(--e3);
+  align-items: center;
+  margin-bottom: var(--e1);
+  font-size: 0.9rem;
+}
+.equilibre .barre {
+  position: relative;
+  height: 14px;
+  background: var(--panel);
+  border-radius: 999px;
+  overflow: visible;
+}
+.equilibre .barre i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+.equilibre .barre b {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--ink);
+  opacity: 0.6;
+}
+.equilibre .val {
+  text-align: right;
+}
+.equilibre .legende {
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  margin-top: var(--e2);
+}
+.groupe-seances {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.groupe-seances li {
+  display: flex;
+  gap: var(--e3);
+  align-items: baseline;
+  padding: var(--e2) 0;
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+.groupe-seances li > a {
+  text-decoration: none;
+  color: var(--ink);
+  display: inline-flex;
+  gap: var(--e3);
+  align-items: baseline;
+}
+.groupe-seances .date {
+  color: var(--accent-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 150px;
+}
+.groupe-seances .meta {
+  margin-left: auto;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+.groupe-seances .a-venir strong {
+  color: var(--ink-soft);
+}
+.usage {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.usage th,
+.usage td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.usage th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
+.usage .faible {
+  color: var(--ink-faint);
+}
+.note-bien {
+  color: var(--ok);
+  font-weight: 600;
+}
+.note-correct {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.note-revoir {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* le bilan, au bas du bord de glace */
+.glace-bilan {
+  margin-top: var(--e6);
+  padding-top: var(--e4);
+  border-top: 2px solid var(--rule);
+}
+.glace-bilan h2 {
+  font-size: 1.3rem;
+  margin-bottom: var(--e1);
+}
+.glace-bilan-aide {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  margin-bottom: var(--e4);
+}
+.bilan-blocs {
+  list-style: none;
+  margin: 0 0 var(--e4);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e2);
+}
+.bilan-blocs li {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  padding: var(--e2) var(--e3);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--e2) var(--e3);
+  align-items: center;
+}
+.bilan-titre {
+  display: flex;
+  gap: var(--e3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+.bilan-fait {
+  margin: 0;
+  font-weight: 400;
+  display: inline-flex;
+  gap: var(--e1);
+  align-items: center;
+}
+.bilan-fait input {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  accent-color: var(--accent);
+}
+.bilan-notes {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--panel);
+  padding: 2px;
+  border-radius: var(--rayon-petit);
+}
+.bilan-notes button {
+  border-color: transparent;
+  background: transparent;
+  min-height: 32px;
+  font-size: 0.85rem;
+}
+.bilan-notes button.actif {
+  background: var(--surface);
+  border-color: var(--accent);
+}
+.bilan-notes button[data-note="1"].actif {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.bilan-notes button[data-note="3"].actif {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+.bilan-blocs input[name="commentaire"] {
+  grid-column: 1 / -1;
+  min-height: 32px;
+  font-size: 0.9rem;
+}
+.bilan-global {
+  display: flex;
+  gap: var(--e5);
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: var(--e3);
+}
+.bilan-global label {
+  margin: 0;
+  width: 120px;
+}
+.bilan-etoiles {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  padding-bottom: 4px;
+}
+.bilan-etoiles span {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-right: var(--e2);
+}
+.bilan-etoiles button {
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  color: var(--rule-controle);
+  padding: 0 2px;
+  min-height: 0;
+  line-height: 1;
+}
+.bilan-etoiles button.actif {
+  color: var(--warning);
+}
+.bilan-pied {
+  display: flex;
+  gap: var(--e2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .groupe-champs {
+    grid-template-columns: 1fr;
+  }
+  .equilibre-ligne {
+    grid-template-columns: 90px minmax(0, 1fr) 70px;
+  }
+  .bilan-blocs li {
+    grid-template-columns: 1fr;
+  }
+}

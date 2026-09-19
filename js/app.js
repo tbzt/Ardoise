@@ -14,6 +14,8 @@ import { Seances } from "./widgets/seances.js";
 import { Seance } from "./widgets/seance.js";
 import { Impression } from "./widgets/impression.js";
 import { BordGlace } from "./widgets/bordglace.js";
+import { Groupes } from "./widgets/groupes.js";
+import { Groupe } from "./widgets/groupe.js";
 
 const main = document.getElementById("main");
 let ecran = null;
@@ -27,11 +29,12 @@ function installerCatalogue(silencieux = false) {
 }
 
 function router() {
-  const h = location.hash.replace(/^#\/?/, "");
+  // un second « # » désigne une ancre dans l'écran (#/seance/x/glace#bilan)
+  const h = location.hash.replace(/^#\/?/, "").split("#")[0];
   const [nom, id, action] = h.split("/");
   if (ecran && ecran.detruire) ecran.detruire();
   ecran = null;
-  window.scrollTo(0, 0);
+  if (!location.hash.includes("#", 1)) window.scrollTo(0, 0);
 
   let actif = "exercices";
   if (nom === "exercice" && id) ecran = Exercice.afficher(main, id);
@@ -47,6 +50,12 @@ function router() {
   } else if (nom === "seance" && id) {
     ecran = Seance.afficher(main, id);
     actif = "seances";
+  } else if (nom === "groupes") {
+    ecran = Groupes.afficher(main);
+    actif = "groupes";
+  } else if (nom === "groupe" && id) {
+    ecran = Groupe.afficher(main, id);
+    actif = "groupes";
   } else ecran = Exercices.afficher(main);
 
   document.querySelectorAll("#modes a").forEach((a) => a.classList.toggle("actif", a.dataset.ecran === actif));
@@ -56,7 +65,8 @@ function router() {
 function compteurs() {
   const e = Store.exercices.tous().length;
   const s = Store.seances.toutes().length;
-  document.getElementById("compteurs").textContent = `${e} exercice${e > 1 ? "s" : ""} · ${s} séance${s > 1 ? "s" : ""}`;
+  const g = Store.groupes.tous().length;
+  document.getElementById("compteurs").textContent = `${e} exercice${e > 1 ? "s" : ""} · ${s} séance${s > 1 ? "s" : ""}${g ? ` · ${g} groupe${g > 1 ? "s" : ""}` : ""}`;
 }
 
 /* ── Démarrage ─────────────────────────────────────────────────── */
@@ -67,6 +77,8 @@ if (!Storage.lire("initialise", false)) {
   installerCatalogue(true);
   Storage.ecrire("initialise", true);
 }
+// les séances d'avant les groupes portaient un nom en texte libre
+Store.rattacherGroupes();
 
 document.getElementById("act-exporter").addEventListener("click", () => Archive.exporter());
 const fichier = document.getElementById("fichier-archive");

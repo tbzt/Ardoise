@@ -20,7 +20,9 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
 
 ```
 4. Orchestration   js/app.js               démarrage, routage par fragment d'URL, barre
-3. Écrans          js/widgets/exercices.js  la bibliothèque (cartes, filtre)
+3. Écrans          js/widgets/groupes.js    la liste des groupes
+                   js/widgets/groupe.js     la fiche d'un groupe : historique, équilibre, conseils, bilans
+                   js/widgets/exercices.js  la bibliothèque (cartes, filtre)
                    js/widgets/exercice.js   la fiche (éditeur + formulaire, auto-enregistrement)
                    js/widgets/seances.js    la liste des séances
                    js/widgets/seance.js     le déroulé (blocs, frise, bibliothèque latérale)
@@ -31,7 +33,8 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/patinoire.js  le rendu SVG : la glace et les objets
                    js/widgets/communs.js    pastilles, filtres, vignettes partagés
                    js/widgets/dialogue.js   une boîte de choix modale
-1. Noyau           js/core/pdf.js           un générateur PDF minimal : Helvetica, traits, rectangles, JPEG
+1. Noyau           js/core/analyse.js       ce qu'un groupe a fait : répartition, usage, répétition, conseils
+                   js/core/pdf.js           un générateur PDF minimal : Helvetica, traits, rectangles, JPEG
                    js/core/store.js         la vérité : exercices + séances, signal de changement
                    js/core/storage.js       la seule porte vers localStorage
                    js/core/archive.js       export / import JSON
@@ -77,16 +80,27 @@ Styles de trait : `patin`, `conduite` (ondulé), `passe` (pointillé), `tir` (do
 ### Séance
 ```js
 {
-  id, titre, date: "AAAA-MM-JJ", heure: "HH:MM", groupe, lieu,
+  id, titre, date: "AAAA-MM-JJ", heure: "HH:MM", groupe, groupeId, lieu,
   duree_glace, objectif, notes,
   blocs: [ { id, exerciceId | null, titre, duree, note } ],
+  bilan: null | { fait, date, presents, note (1-5), retenir,
+                  blocs: { [blocId]: { fait, note (1-3), commentaire } } },
   cree, modifie
 }
 ```
-Un bloc recopie le **titre** de l'exercice au moment de l'ajout : si l'exercice est supprimé plus tard, la séance garde son sens.
+Un bloc recopie le **titre** de l'exercice au moment de l'ajout : si l'exercice est supprimé plus tard, la séance garde son sens. `groupe` (le nom en texte) reste renseigné à côté de `groupeId` : l'impression et le PDF le lisent, et c'est par lui que les séances d'avant les groupes ont été rattachées (`Store.rattacherGroupes()`, idempotent, appelé au démarrage).
+
+### Groupe
+```js
+{ id, nom, niveau, description, cree, modifie }
+```
+Supprimer un groupe détache ses séances, il ne les efface pas.
+
+### Analyse
+`js/core/analyse.js` ne stocke rien : tout se recalcule depuis les séances et leurs bilans. Une séance est **faite** si son bilan le dit, ou si sa date est passée avec un déroulé. Les blocs décochés dans le bilan sont exclus des comptes. `CIBLE` donne la part de temps conseillée par catégorie pour des adultes débutants ; chaque conseil de `conseils()` vient d'une règle nommée (équilibre, absence, répétition, à revoir).
 
 ### Persistance
-Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_theme`, `ardoise_v1_initialise`, et `ardoise_v1_coches_<id de séance>` pour la liste de matériel cochée au bord de la glace. L'export JSON porte `format: "ardoise/1"`.
+Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoise_v1_theme`, `ardoise_v1_initialise`, et `ardoise_v1_coches_<id de séance>` pour la liste de matériel cochée au bord de la glace. L'export JSON porte `format: "ardoise/1"`.
 
 ---
 

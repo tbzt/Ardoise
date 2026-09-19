@@ -6,6 +6,7 @@ import { nouvelId } from "./ids.js";
 
 let exercices = Storage.lire("exercices", []);
 let seances = Storage.lire("seances", []);
+let groupes = Storage.lire("groupes", []);
 const abonnes = new Set();
 
 function notifier(quoi) {
@@ -19,6 +20,10 @@ function persisterExercices() {
 function persisterSeances() {
   Storage.ecrire("seances", seances);
   notifier("seances");
+}
+function persisterGroupes() {
+  Storage.ecrire("groupes", groupes);
+  notifier("groupes");
 }
 
 function aujourdhui() {
@@ -54,14 +59,36 @@ export function seanceVierge() {
     date: aujourdhui(),
     heure: "",
     groupe: "",
+    groupeId: null,
     lieu: "",
     duree_glace: 60,
     objectif: "",
     notes: "",
     blocs: [],
+    bilan: null,
     cree: Date.now(),
     modifie: Date.now(),
   };
+}
+
+/* Un groupe (une équipe, une section) : c'est par lui qu'on garde
+   l'historique — ce qu'on a déjà fait ensemble, comment ça s'est passé. */
+export function groupeVierge() {
+  return {
+    id: nouvelId("gr"),
+    nom: "",
+    niveau: "debutant",
+    description: "",
+    cree: Date.now(),
+    modifie: Date.now(),
+  };
+}
+
+/* Le bilan d'une séance, rempli après coup. Par bloc : fait ou non,
+   une note à trois crans (1 à revoir, 2 correct, 3 bien) et un mot.
+   Global : présents, une note sur cinq, et ce qu'il faut retenir. */
+export function bilanVierge() {
+  return { fait: false, date: null, presents: null, note: null, retenir: "", blocs: {} };
 }
 
 /* Un bloc de séance : soit un exercice de la bibliothèque (exerciceId
@@ -183,24 +210,97 @@ export const Store = {
     },
   },
 
+  groupes: {
+    tous() {
+      return groupes.slice().sort((a, b) => (a.nom || "").localeCompare(b.nom || "", "fr"));
+    },
+    get(id) {
+      return groupes.find((g) => g.id === id) || null;
+    },
+    parNom(nom) {
+      const n = (nom || "").trim().toLowerCase();
+      return n ? groupes.find((g) => (g.nom || "").trim().toLowerCase() === n) || null : null;
+    },
+    sauver(g) {
+      g.modifie = Date.now();
+      const i = groupes.findIndex((x) => x.id === g.id);
+      if (i < 0) groupes.push(g);
+      else groupes[i] = g;
+      persisterGroupes();
+      return g;
+    },
+    creer(base = {}) {
+      return this.sauver({ ...groupeVierge(), ...base });
+    },
+    /* Supprimer un groupe détache ses séances, il ne les efface pas. */
+    supprimer(id) {
+      groupes = groupes.filter((g) => g.id !== id);
+      let touche = false;
+      for (const se of seances) {
+        if (se.groupeId === id) {
+          se.groupeId = null;
+          touche = true;
+        }
+      }
+      if (touche) Storage.ecrire("seances", seances);
+      persisterGroupes();
+    },
+    installer(liste, { mettreAJour = false } = {}) {
+      let ajoutes = 0;
+      let misAJour = 0;
+      for (const g of liste) {
+        const i = groupes.findIndex((x) => x.id === g.id);
+        if (i < 0) {
+          groupes.push(g);
+          ajoutes++;
+        } else if (mettreAJour && (g.modifie || 0) > (groupes[i].modifie || 0)) {
+          groupes[i] = g;
+          misAJour++;
+        }
+      }
+      if (ajoutes || misAJour) persisterGroupes();
+      return { ajoutes, misAJour };
+    },
+  },
+
+  /* Les séances qui ont encore un nom de groupe en texte libre (avant
+     l'existence des groupes) sont rattachées à un groupe du même nom,
+     créé au besoin. Idempotent : on peut l'appeler à chaque démarrage. */
+  rattacherGroupes() {
+    let n = 0;
+    for (const se of seances) {
+      if (se.groupeId && this.groupes.get(se.groupeId)) continue;
+      const nom = (se.groupe || "").trim();
+      if (!nom) continue;
+      let g = this.groupes.parNom(nom);
+      if (!g) g = this.groupes.creer({ nom });
+      se.groupeId = g.id;
+      n++;
+    }
+    if (n) Storage.ecrire("seances", seances);
+    return n;
+  },
+
   /* Durée totale d'une séance, en minutes. */
   dureeSeance(se) {
     return (se.blocs || []).reduce((t, b) => t + (Number(b.duree) || 0), 0);
   },
 
   tout() {
-    return { exercices: exercices.slice(), seances: seances.slice() };
+    return { exercices: exercices.slice(), seances: seances.slice(), groupes: groupes.slice() };
   },
 
-  remplacerTout({ exercices: ex = [], seances: se = [] }) {
+  remplacerTout({ exercices: ex = [], seances: se = [], groupes: gr = [] }) {
     exercices = ex;
     seances = se;
+    groupes = gr;
     Storage.ecrire("exercices", exercices);
     Storage.ecrire("seances", seances);
+    Storage.ecrire("groupes", groupes);
     notifier("tout");
   },
 
   vider() {
-    this.remplacerTout({ exercices: [], seances: [] });
+    this.remplacerTout({ exercices: [], seances: [], groupes: [] });
   },
 };

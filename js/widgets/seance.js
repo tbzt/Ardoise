@@ -5,6 +5,7 @@ import { Store, blocLibre, blocDepuisExercice } from "../core/store.js";
 import { esc, debounce, statut, formaterDuree, heureA } from "../core/dom.js";
 import { CATEGORIES } from "../data/catalogue.js";
 import { chip, barreFiltres, filtrer, trier, exporterPdf } from "./communs.js";
+import { seancesDuGroupe, seancesFaites, usageExercices, recouvrement, aRevoir, libelleUsage, formaterCourt, estFaite } from "../core/analyse.js";
 import { apercu } from "./dialogue.js";
 
 const filtre = { q: "", categorie: "" };
@@ -26,6 +27,7 @@ export const Seance = {
         <span class="etat" data-etat>Enregistré</span>
         <span class="spacer"></span>
         <a class="bouton primaire" href="#/seance/${se.id}/glace" title="La séance vue du banc : matériel, points clés, bloc en cours">Bord de glace</a>
+        <a class="bouton" href="#/seance/${se.id}/glace#bilan" title="Noter comment ça s'est passé">${se.bilan && se.bilan.fait ? "Bilan ✓" : "Bilan"}</a>
         <a class="bouton" href="#/seance/${se.id}/imprimer">Imprimer</a>
         <button type="button" data-act="pdf" title="Télécharger la feuille de séance en PDF">PDF</button>
         <button type="button" data-act="dupliquer">Dupliquer</button>
@@ -35,13 +37,15 @@ export const Seance = {
       <form class="seance-champs" autocomplete="off">
         <label>Date <input type="date" name="date" value="${esc(se.date)}"></label>
         <label>Heure <input type="time" name="heure" value="${esc(se.heure)}"></label>
-        <label>Groupe <input name="groupe" value="${esc(se.groupe)}" placeholder="Adultes débutants"></label>
+        <label>Groupe <select name="groupeId" data-groupe>${optionsGroupes(se)}</select></label>
         <label>Lieu <input name="lieu" value="${esc(se.lieu)}" placeholder="Patinoire"></label>
         <label>Glace (min) <input type="number" name="duree_glace" min="5" max="240" value="${esc(se.duree_glace)}"></label>
         <label class="large">Objectif <input name="objectif" value="${esc(se.objectif)}" placeholder="Le fil rouge de la séance"></label>
       </form>
+      <div data-derniere></div>
       <div class="seance-corps">
         <div class="deroule">
+          <p class="avis" data-repetition hidden></p>
           <div class="deroule-entete">
             <h2>Déroulé</h2>
             <span class="total" data-total></span>
@@ -136,6 +140,7 @@ export const Seance = {
             .join("")
         : `<li class="vide">Le déroulé est vide : ajoutez des exercices depuis la bibliothèque, ou un bloc libre.</li>`;
       peindreTemps();
+      peindreRepetition();
     }
 
     /* Glisser-déposer : on attrape la poignée, la rangée suit le
@@ -222,21 +227,66 @@ export const Seance = {
       }
     });
 
+    /* ── L'historique du groupe, au service de la préparation ── */
+
+    function autresSeances() {
+      return se.groupeId ? seancesDuGroupe(se.groupeId).filter((s) => s.id !== se.id) : [];
+    }
+
+    function peindreRepetition() {
+      const el = sec.querySelector("[data-repetition]");
+      const autres = autresSeances().filter(estFaite);
+      const r = recouvrement(se, autres);
+      if (r.avec && r.ratio >= 0.6 && r.communs >= 3) {
+        el.innerHTML = `Cette séance reprend <strong>${r.communs} exercice${r.communs > 1 ? "s" : ""}</strong> de celle du ${esc(formaterCourt(r.avec.date))}${r.avec.titre ? ` (« ${esc(r.avec.titre)} »)` : ""}. Volontaire ? Sinon, la bibliothèque marque ce qui n'a jamais été fait avec ce groupe.`;
+        el.hidden = false;
+      } else el.hidden = true;
+    }
+
+    function peindreDerniere() {
+      const el = sec.querySelector("[data-derniere]");
+      if (!se.groupeId) {
+        el.innerHTML = "";
+        return;
+      }
+      const faites = seancesFaites(se.groupeId).filter((s) => s.id !== se.id && (!se.date || (s.date || "") <= se.date));
+      const derniere = faites[faites.length - 1];
+      if (!derniere) {
+        el.innerHTML = "";
+        return;
+      }
+      const revoir = aRevoir(faites, 2);
+      const bilan = derniere.bilan && derniere.bilan.fait ? derniere.bilan : null;
+      el.innerHTML = `
+        <details class="derniere">
+          <summary><strong>Dernière fois avec ce groupe</strong> — ${esc(formaterCourt(derniere.date))}${derniere.titre ? ` · ${esc(derniere.titre)}` : ""}${bilan && bilan.note ? ` · ${"★".repeat(bilan.note)}` : ""}${bilan ? "" : " · sans bilan"}</summary>
+          <div class="derniere-corps">
+            <p><strong>Fait :</strong> ${derniere.blocs.map((b) => esc(b.titre)).join(" · ") || "—"}</p>
+            ${bilan && bilan.retenir ? `<p><strong>À retenir :</strong> ${esc(bilan.retenir)}</p>` : ""}
+            ${revoir.length ? `<p><strong>À revoir :</strong> ${revoir.map((r) => esc(r.titre) + (r.commentaire ? ` <small>(${esc(r.commentaire)})</small>` : "")).join(" · ")}</p>` : ""}
+            <p><a href="#/groupe/${se.groupeId}">Voir tout l'historique du groupe →</a></p>
+          </div>
+        </details>`;
+    }
+
     /* ── La bibliothèque ────────────────────────────────────── */
 
     function peindreBibli() {
       const liste = trier(filtrer(Store.exercices.tous(), filtre));
+      const usage = se.groupeId ? usageExercices(autresSeances()) : null;
       bibliEl.innerHTML =
         barreFiltres(filtre) +
         (liste.length
           ? `<ul class="bibli-liste">${liste
-              .map(
-                (ex) => `
+              .map((ex) => {
+                const u = usage ? usage.get(ex.id) : undefined;
+                const indice = usage ? `<span class="indice ${u ? (u.rang === 0 ? "recent" : "") : "jamais"}">${esc(libelleUsage(u))}</span>` : "";
+                return `
               <li>
-                <button type="button" class="bibli-titre" data-apercu="${ex.id}" title="Voir l'exercice"><strong>${esc(ex.nom) || "<em>Sans nom</em>"}</strong><span class="meta">${chip(ex.categorie)} ${formaterDuree(ex.duree)}</span></button>
+                <button type="button" class="bibli-titre" data-apercu="${ex.id}" title="Voir l'exercice"><strong>${esc(ex.nom) || "<em>Sans nom</em>"}</strong><span class="meta">${chip(ex.categorie)} ${formaterDuree(ex.duree)} ${indice}</span></button>
                 <button type="button" data-ajouter="${ex.id}" title="Ajouter au déroulé">+</button>
-              </li>`,
-              )
+              </li>`;
+              })
               .join("")}</ul>`
           : `<p class="vide">Rien ne correspond.</p>`);
       const q = bibliEl.querySelector('input[name="q"]');
@@ -292,8 +342,26 @@ export const Seance = {
       const c = e.target;
       if (!c.name) return;
       if (c.name === "duree_glace") se.duree_glace = Math.max(1, Number(c.value) || 1);
-      else se[c.name] = c.value;
+      else if (c.name === "groupeId") {
+        if (c.value === "__nouveau") {
+          const nom = prompt("Nom du nouveau groupe :", "");
+          if (nom && nom.trim()) {
+            const g = Store.groupes.parNom(nom) || Store.groupes.creer({ nom: nom.trim() });
+            se.groupeId = g.id;
+            se.groupe = g.nom;
+          }
+          c.innerHTML = optionsGroupes(se);
+        } else {
+          se.groupeId = c.value || null;
+          const g = se.groupeId ? Store.groupes.get(se.groupeId) : null;
+          se.groupe = g ? g.nom : "";
+        }
+        peindreDerniere();
+        peindreBibli();
+        peindreRepetition();
+      } else se[c.name] = c.value;
       if (c.name === "duree_glace" || c.name === "heure") peindreTemps();
+      if (c.name === "date") peindreDerniere();
       toucher();
     });
     sec.querySelector(".seance-champs").addEventListener("submit", (e) => e.preventDefault());
@@ -330,6 +398,7 @@ export const Seance = {
 
     peindreBlocs();
     peindreBibli();
+    peindreDerniere();
 
     return {
       detruire() {
@@ -339,3 +408,12 @@ export const Seance = {
     };
   },
 };
+
+function optionsGroupes(se) {
+  const groupes = Store.groupes.tous();
+  return (
+    `<option value=""${se.groupeId ? "" : " selected"}>— aucun —</option>` +
+    groupes.map((g) => `<option value="${g.id}"${se.groupeId === g.id ? " selected" : ""}>${esc(g.nom || "Groupe sans nom")}</option>`).join("") +
+    `<option value="__nouveau">+ Nouveau groupe…</option>`
+  );
+}

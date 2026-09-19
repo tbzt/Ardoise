@@ -36,13 +36,18 @@ export const Archive = {
     if (!d || d.format !== FORMAT || !Array.isArray(d.exercices) || !Array.isArray(d.seances)) {
       throw new Error("Ce fichier n'est pas une archive Ardoise.");
     }
+    const groupes = Array.isArray(d.groupes) ? d.groupes : [];
     if (mode === "remplacer") {
-      Store.remplacerTout({ exercices: d.exercices, seances: d.seances });
+      Store.remplacerTout({ exercices: d.exercices, seances: d.seances, groupes });
+      Store.rattacherGroupes();
       return { exercices: { ajoutes: d.exercices.length, misAJour: 0 }, seances: { ajoutes: d.seances.length, misAJour: 0 } };
     }
-    return {
+    const r = {
       exercices: Store.exercices.installer(d.exercices, { mettreAJour: true }),
       seances: Store.seances.installer(d.seances, { mettreAJour: true }),
     };
+    Store.groupes.installer(groupes, { mettreAJour: true });
+    Store.rattacherGroupes();
+    return r;
   },
 };
