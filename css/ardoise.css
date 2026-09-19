@@ -534,6 +534,12 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   flex-wrap: wrap;
   gap: var(--e2);
   align-items: center;
+  min-width: 0;
+}
+.editeur,
+.fiche-schema {
+  min-width: 0;
+  max-width: 100%;
 }
 .editeur .groupe {
   display: inline-flex;
@@ -585,13 +591,28 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .legende {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--e3) var(--e5);
   background: var(--surface);
   border: 1px solid var(--rule);
   border-radius: var(--rayon);
-  padding: var(--e3) var(--e4);
+  padding: var(--e3) var(--e5) var(--e3) var(--e4);
   font-size: 0.85rem;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+/* `hidden` doit gagner contre la grille ci-dessus, sinon rien ne se masque */
+.legende[hidden] {
+  display: none !important;
+}
+.legende-col {
+  min-width: 0;
+}
+.legende li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .legende h4 {
   margin: 0 0 var(--e1);
