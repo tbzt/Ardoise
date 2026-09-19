@@ -2131,6 +2131,416 @@ export function exercicesDeBase() {
         ],
       },
     }),
+
+    /* ── Sixième fournée : les techniques que le catalogue ne couvrait
+       pas encore, et de quoi occuper un gardien et un groupe joueur. ── */
+
+    ex({
+      id: "cat_grand_huit_echauffement",
+      nom: "Le grand huit à tout le monde",
+      categorie: "echauffement",
+      techniques: ["TS.P 2", "TS.P 7"],
+      forme: "actif",
+      duree: 6,
+      objectif: "Tout le groupe en mouvement dès la première minute, en tournant dans les deux sens.",
+      description:
+        "Tout le monde patine un grand huit autour des deux cercles d'une zone, dans le même sens, à distance les uns des autres. Au sifflet : on inverse le sens (donc les virages changent de côté). Deuxième sifflet : on ajoute une poussée forte à chaque sortie de virage. Troisième : avec palet.\n\nLe coach au croisement du huit voit tout le monde passer et donne un mot à chacun.",
+      points_cles: ["Se pencher vers l'intérieur dans chaque virage", "Sortir du virage en poussant, pas en glissant", "Garder ses distances : le huit se croise"],
+      corrections: ["Regard au sol dans le virage → regarder la sortie du virage", "Virage à plat, sans inclinaison → plier les genoux et se pencher"],
+      materiel: "Aucun.",
+      variantes: "Un huit en marche arrière pour les plus avancés. Le coach fait des passes au passage.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          L("patin", [...tour(100, 80, 55, Math.PI / 2, -1).slice(0, 8), ...tour(100, 220, 55, -Math.PI / 2, 1).slice(0, 8), [100, 135]]),
+          J(100, 150, "C"), J(150, 60), J(60, 40), J(140, 250), J(50, 260),
+          T(180, 150, "Un grand huit autour des deux cercles,\non inverse au sifflet", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_scooter_cercles",
+      nom: "Le scooter sur les cercles",
+      categorie: "patinage",
+      techniques: ["TS.P 5", "TF.M 2"],
+      forme: "groupes3",
+      duree: 6,
+      objectif: "Glisser sur un pied en carre externe pendant que l'autre pousse : le scooter, base des virages et des croisés.",
+      description:
+        "Par trois sur un cercle. Le patin intérieur reste sur la ligne du cercle, en carre externe, genou fléchi, corps penché vers l'intérieur ; le patin extérieur pousse sur le côté comme sur une trottinette et revient au contact de la glace. Trois tours dans un sens, trois dans l'autre (le pied change).\n\nLentement : on cherche l'inclinaison et la glisse, pas la vitesse.",
+      points_cles: ["Le poids sur la jambe de glisse : flexion, carre externe, inclinaison", "Poussée latérale avec toute la lame, extension complète", "Buste droit, épaules en rotation inverse, palette à l'opposé du poids"],
+      corrections: ["Appui en talon, faible prise de carre → genou fléchi, se pencher vers le centre", "Sautillement à chaque poussée → garder le poids sur la jambe de glisse", "Poussée avec la pointe vers l'arrière → pousser sur le côté avec toute la lame"],
+      materiel: "Aucun.",
+      variantes: "Enchaînement de demi-cercles en changeant de pied. Crosse à une main.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          L("patin", [...tour(100, 80, 48, Math.PI / 2, -1)]), J(150, 90), J(120, 125), J(60, 110),
+          L("patin", [...tour(100, 220, 48, -Math.PI / 2, 1)]), J(150, 210), J(120, 175), J(60, 190),
+          T(175, 150, "Patin intérieur sur la ligne en carre externe,\nl'extérieur pousse en trottinette", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_finlandais_ouverture",
+      nom: "Le finlandais : glisser en ouverture",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      techniques: ["TS.P 6", "TS.P 19"],
+      forme: "vagues",
+      duree: 6,
+      objectif: "Ouvrir les hanches et glisser talons resserrés : le geste qui prépare les pivots.",
+      description:
+        "D'abord à la bande, à l'arrêt : un patin glisse en avant, l'autre s'ouvre à 180° et se pose talon contre talon. Puis en mouvement sur la largeur : élan, glisse sur un pied, ouverture du second patin sans contact, pose en ouverture, et on glisse en arc de cercle sur les deux patins ouverts.\n\nUn côté puis l'autre. Les arcs de cercle sont grands au début, plus serrés quand ça tient.",
+      points_cles: ["Buste droit, coudes et mains dégagés, crosse à deux mains sur la glace", "Le poids sur la jambe de glisse avant d'ouvrir", "Talons resserrés et dans le même axe, forte inclinaison vers l'intérieur"],
+      corrections: ["Poids réparti sur les deux patins → glisser d'abord franchement sur un pied", "Dos rond, appui sur la crosse → buste droit, mains devant", "Talons trop écartés → resserrer les talons dans le même axe"],
+      materiel: "Aucun.",
+      variantes: "Saut en ouverture depuis la bande. Enchaîner ouverture puis demi-tour complet.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 70), J(60, 150), J(60, 230),
+          L("patin", [[72, 70], [130, 70]]), L("glisse", [[135, 70], [200, 90], [250, 140]]),
+          L("patin", [[72, 150], [130, 150]]), L("glisse", [[135, 150], [200, 130], [250, 80]]),
+          L("patin", [[72, 230], [130, 230]]), L("glisse", [[135, 230], [200, 250], [250, 290]]),
+          T(60, 30, "Élan, glisse sur un pied, ouverture, arc de cercle talons resserrés", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_demarrage_de_cote",
+      nom: "Démarrage de côté",
+      categorie: "patinage",
+      techniques: ["TS.P 12", "TS.P 11"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Partir vite quand on est de profil : les deux premières poussées, croisées, sans se retourner d'abord.",
+      description:
+        "Face à la bande, de profil par rapport au sens de course. Au sifflet : le patin le plus éloigné pousse en carre interne pendant que l'autre prend sa carre externe, le buste tourne en même temps, et la jambe libre monte en croisant devant. Trois poussées et on se laisse glisser.\n\nCinq départs vers la droite, cinq vers la gauche. Puis départ au signal visuel (le coach lève le bras).",
+      points_cles: ["Poussées interne et externe simultanées sur l'avant des lames", "Le buste tourne avec les poussées, pas avant", "Flexions maintenues sur les poussées suivantes"],
+      corrections: ["Le buste tourne trop tôt → pousser et tourner en même temps", "Genoux et patins resserrés → se poser large, poids sur la première jambe", "Poussées vers l'arrière → pousser sur le côté, monter le genou"],
+      materiel: "1 sifflet",
+      variantes: "Départ de côté puis freinage à la ligne. Départ en marche arrière de côté.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(150, 60), J(150, 110), J(150, 160), J(150, 210),
+          L("acceleration", [[162, 60], [260, 60]]), L("acceleration", [[162, 110], [260, 110]]), L("acceleration", [[162, 160], [260, 160]]), L("acceleration", [[162, 210], [260, 210]]),
+          L("acceleration", [[138, 250], [40, 250]]),
+          J(90, 135, "C"),
+          T(60, 40, "De profil au départ : les deux poussées croisées, le buste tourne avec", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_demarrage_arriere_c",
+      nom: "Démarrage arrière en C",
+      categorie: "patinage",
+      techniques: ["TS.P 13", "TS.P 3"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Partir en marche arrière d'un arrêt, vite : le patin de poussée en C, le patin pivot en pointe.",
+      description:
+        "À l'arrêt, dos au sens de course. Un patin est le pivot, décalé en arrière et en pointe ; l'autre pousse en dessinant un C, avec le poids dessus, jusqu'à l'extension complète. Le buste tourne avec la poussée. Puis on referme la trajectoire, on resserre les genoux et on prépare la seconde poussée avec l'autre pied.\n\nCinq départs par côté, puis départs au sifflet.",
+      points_cles: ["Épaules de face, coudes et mains dégagés", "Poids sur le patin de poussée, patin pivot immobile et en pointe", "Rotation du buste simultanée à la poussée"],
+      corrections: ["Patins en chasse-neige, genoux serrés → un patin pivot, un patin qui pousse", "Poids retiré trop tôt de la jambe de poussée → pousser jusqu'à l'extension", "Épaules de profil → rester de face, coudes dégagés"],
+      materiel: "1 sifflet",
+      variantes: "Départ arrière puis pivot et sprint avant. Avec palet.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(80, 70), J(80, 120), J(80, 170), J(80, 220),
+          L("arriere", [[92, 70], [220, 70]]), L("arriere", [[92, 120], [220, 120]]), L("arriere", [[92, 170], [220, 170]]), L("arriere", [[92, 220], [220, 220]]),
+          L("patin", [[220, 260], [92, 260]]),
+          J(250, 145, "C"),
+          T(60, 30, "Un patin pivot en pointe, l'autre pousse en C", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_freinage_arriere_v",
+      nom: "Freinage arrière en V, puis parallèle",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      techniques: ["TS.P 17", "TS.P 18"],
+      forme: "vagues",
+      duree: 6,
+      objectif: "S'arrêter en marche arrière : d'abord en V (chasse-neige inversé), puis en parallèle pour ceux qui reculent bien.",
+      description:
+        "Marche arrière sur la largeur, freinage à la ligne. Le V : on se redresse un peu pour alléger, on écarte les patins au-delà des épaules, on ouvre les pointes vers l'extérieur et on fléchit en rapprochant les talons — les carres internes freinent.\n\nLe parallèle, ensuite : dans la continuité d'une poussée, allègement, rotation des épaules, les deux patins se mettent en travers, carre interne devant, carre externe derrière, flexion forte.",
+      points_cles: ["Flexions chevilles-genoux maintenues dans toutes les phases", "V : écarter, ouvrir, fléchir progressivement, talons qui se rapprochent", "Parallèle : allègement, rotation des épaules et mise en travers simultanés"],
+      corrections: ["Tassement, dos rond, fesses en arrière → buste droit, flexion par les genoux", "Pression d'un seul côté → répartir sur les deux patins", "Freinage en carre interne seulement → prendre la carre externe du second patin"],
+      materiel: "Aucun.",
+      variantes: "Freinage arrière puis départ avant immédiat. Au sifflet, sans savoir où.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), J(60, 150), J(60, 220),
+          L("arriere", [[72, 80], [200, 80]]), L("arriere", [[72, 150], [200, 150]]), L("arriere", [[72, 220], [200, 220]]),
+          T(215, 80, "V", "rouge", "grand"), T(215, 150, "V", "rouge", "grand"), T(215, 220, "||", "rouge", "grand"),
+          T(60, 270, "En V d'abord ; parallèle pour ceux qui reculent bien", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_demi_pivots_glisses",
+      nom: "Demi-pivots glissés, avant vers arrière",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      techniques: ["TS.P 21", "TS.P 19"],
+      forme: "parcours",
+      duree: 6,
+      objectif: "Se retourner en pleine glisse sans perdre de vitesse : le demi-pivot du défenseur qui recule.",
+      description:
+        "Une ligne de plots espacés de huit mètres. Patinage avant vers le premier plot ; en approchant, on prend une courbe montante comme un virage, patin d'appel en avance et fortement incliné ; au sommet de la courbe, allègement, la jambe d'appel sous le buste sert d'axe, rotation, et on ressort en marche arrière. Au plot suivant, l'inverse.\n\nLes deux sens. Les épaules tournent à l'inverse des hanches pour rester face au jeu.",
+      points_cles: ["Toute la courbe montante en avant, comme un virage, patin d'appel en avance", "Allègement et rotation au sommet, jambe d'appel fléchie sous le buste", "Rotations inverses épaules-hanches pour rester face au jeu"],
+      corrections: ["Le patin de poussée reste en contact → alléger franchement au sommet", "Jambe d'appel pas sous le buste → l'axe de rotation, c'est la jambe fléchie sous soi", "Glisse à deux pieds avant la reprise → pousser dès la sortie"],
+      materiel: "5 plots",
+      variantes: "Avec palet. Demi-pivot au sifflet en pleine ligne droite.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          K(120, 150), K(220, 150), K(320, 150), K(420, 150), K(520, 150),
+          J(50, 150), J(35, 150),
+          L("pivot", [[62, 150], [100, 130], [125, 125]]), L("arriere", [[135, 130], [200, 150], [225, 170]]), L("pivot", [[235, 172], [300, 150], [325, 128]]), L("arriere", [[335, 130], [400, 150], [425, 170]]), L("pivot", [[435, 172], [500, 150], [525, 128]]),
+          T(150, 60, "Avant, demi-pivot au plot, arrière, demi-pivot, avant…", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_dissociation_haut_bas",
+      nom: "Dissociation haut-bas : patiner en jonglant",
+      categorie: "patinage",
+      techniques: ["TF.A 2", "TF.A 1"],
+      forme: "actif",
+      duree: 5,
+      objectif: "Que les jambes patinent sans que les bras s'en mêlent : le haut fait autre chose que le bas.",
+      description:
+        "Tout le monde en patinage libre dans la zone. Consignes qui s'enchaînent toutes les trente secondes, sans arrêter de patiner :\n1. Crosse tenue au-dessus de la tête.\n2. Crosse dans le dos, derrière les coudes.\n3. Mains sur les hanches (crosse posée au sol au passage).\n4. On se passe la crosse d'une main à l'autre autour du corps.\n5. On fait rebondir un palet sur la palette en patinant.\n\nLe patinage ne doit pas changer : même flexion, mêmes poussées.",
+      points_cles: ["Les jambes continuent de pousser normalement, quoi que fassent les bras", "Flexion maintenue quand les bras montent", "Regard devant, jamais sur la crosse"],
+      corrections: ["Le patinage se redresse quand les bras bougent → se refléchir volontairement", "Les épaules suivent les mains → garder les épaules de face"],
+      materiel: "1 palet par joueur",
+      variantes: "En marche arrière. Par deux : l'un donne les consignes à l'autre.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(80, 70), J(140, 100), J(200, 60), J(110, 160), J(180, 190), J(90, 240), J(230, 230), J(240, 140),
+          L("patin", [[92, 75], [130, 110]]), L("patin", [[190, 195], [220, 225]]), L("patin", [[250, 135], [230, 90]]),
+          J(160, 150, "C"),
+          T(60, 30, "Crosse au-dessus de la tête, dans le dos, mains sur les hanches…", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_maniement_entre_plans",
+      nom: "Maniement entre les plans : diagonale, carré, triangle",
+      categorie: "maniement",
+      techniques: ["TS.M 2", "TS.M 1"],
+      forme: "actif",
+      duree: 6,
+      objectif: "Déplacer le palet d'un plan à l'autre — devant, sur le côté, en revers — sans que les patins ne tournent.",
+      description:
+        "Chacun avec un palet, à l'arrêt, patins immobiles. Trente secondes par figure :\n1. Coup droit à revers devant soi, sans faire coulisser les mains.\n2. La diagonale : de latéral coup droit à avant revers.\n3. Le carré : quatre coins autour de soi.\n4. Le triangle.\n5. Le huit entre les patins.\n\nPuis les mêmes figures en glissant lentement en avant. Tête haute dès que la figure est propre.",
+      points_cles: ["C'est le buste qui tourne dans les plans latéraux, pas les patins", "Pas de coulisse des mains dans la zone d'amplitude des bras", "Palet proche des patins, mains devant"],
+      corrections: ["Les patins tournent avec le palet → patins fixes, buste qui tourne", "Palet trop loin, mains trop basses → ramener le palet, main haute devant le buste", "Regard sur le palet → regarder le coach"],
+      materiel: "1 palet par joueur",
+      variantes: "Avec une balle d'abord pour se concentrer sur la posture. À une main.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(90, 80), P(100, 92), J(170, 80), P(180, 92), J(250, 80), P(260, 92),
+          J(90, 160), P(100, 172), J(170, 160), P(180, 172), J(250, 160), P(260, 172),
+          J(90, 240), P(100, 252), J(170, 240), P(180, 252), J(250, 240), P(260, 252),
+          J(50, 160, "C"),
+          T(60, 30, "Diagonale, carré, triangle, huit — patins immobiles", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_ramasses_v_l",
+      nom: "Ramasses en V, en L, en roue",
+      categorie: "maniement",
+      techniques: ["TS.M 4"],
+      forme: "actif",
+      duree: 5,
+      objectif: "Éloigner et ramener le palet : la coulisse des mains, le transfert du poids, la palette qui reste au contact.",
+      description:
+        "Chacun avec un palet, à l'arrêt. On pousse le palet loin devant en faisant coulisser la main du bas vers le bas du manche (sans que les gants se touchent), puis on le ramène en refermant la palette dessus. En V : loin à droite, ramener, loin à gauche, ramener. En L : devant puis sur le côté. En roue : tout autour.\n\nLe poids du corps suit le palet, en flexion.",
+      points_cles: ["Coulisse maximale sans que les gants se touchent", "Le transfert du poids accompagne l'éloignement et le rapprochement", "Coup droit : palette au contact ; revers : la palette quitte la glace pour la reprise"],
+      corrections: ["Coulisse incomplète → aller chercher loin, main basse qui descend", "Main basse trop près de la palette, coude tendu → remonter la main, garder le coude souple", "Patins en trépied → patins à la largeur des épaules, chevilles fléchies"],
+      materiel: "1 palet par joueur",
+      variantes: "En glissant en avant. À une main.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(120, 100), P(130, 112), L("conduite", [[132, 112], [175, 80]]), L("conduite", [[132, 116], [175, 145]]), T(185, 112, "V", "noir", "petit"),
+          J(120, 200), P(130, 212), L("conduite", [[132, 210], [180, 210]]), L("conduite", [[134, 216], [134, 260]]), T(185, 232, "L", "noir", "petit"),
+          J(240, 150), P(250, 162), L("conduite", [[252, 162], [280, 130]]), L("conduite", [[252, 164], [280, 190]]), L("conduite", [[248, 166], [220, 190]]), T(262, 210, "roue", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_carre_quatre_contre_deux",
+      nom: "Le carré : quatre contre deux",
+      categorie: "passe",
+      forme: "groupes3",
+      duree: 8,
+      objectif: "Garder le palet à quatre contre deux : passer avant d'être pris, bouger pour offrir une ligne.",
+      description:
+        "Un carré de douze mètres marqué par des plots. Quatre attaquants sur les bords, deux défenseurs au milieu. Les quatre se passent le palet, les deux le chassent. Dix passes d'affilée = un point. Interception = le passeur et le receveur deviennent défenseurs.\n\nLes attaquants peuvent glisser le long de leur bord pour ouvrir une ligne. Deux manches de trois minutes.",
+      points_cles: ["Passer dès qu'un défenseur arrive, pas quand il est là", "Sans le palet : se déplacer le long du bord pour être visible", "Défenseurs : à deux, l'un sur le porteur, l'autre dans la ligne de passe"],
+      corrections: ["Le porteur attend trop → deux secondes maximum avec le palet", "Les receveurs restent dans les coins → bouger le long du bord"],
+      materiel: "4 plots\n1 palet par carré\nChasubles",
+      variantes: "Trois contre un. Deux touches maximum. Le carré rétrécit.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          K(60, 60), K(240, 60), K(60, 240), K(240, 240),
+          J(150, 62), J(238, 150), J(150, 238), J(62, 150), P(160, 68),
+          J(130, 120, "O", "", "bleu"), J(170, 180, "O", "", "bleu"),
+          L("passe", [[162, 70], [230, 140]], "vert"), L("passe", [[230, 160], [160, 230]], "vert"),
+          T(60, 275, "Dix passes d'affilée = un point", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_reception_revers_tir",
+      nom: "Réception en revers et tir",
+      categorie: "tir",
+      forme: "vagues",
+      duree: 8,
+      objectif: "Recevoir une passe sur le revers, la contrôler et tirer sans perdre de temps.",
+      description:
+        "Une file à la bleue côté revers de chacun (à gauche pour un droitier), un passeur au haut du cercle opposé avec les palets. Le premier part, reçoit la passe sur le revers en mouvement, ramène le palet en coup droit d'une touche et tire. Il récupère son palet et devient passeur.\n\nDeuxième série : tir en revers directement, sans ramener.",
+      points_cles: ["Palette ouverte côté revers, elle amortit", "Une seule touche pour ramener en coup droit", "Tirer dans la foulée, sans reprise"],
+      corrections: ["Le palet rebondit sur la palette → amortir en reculant la palette", "Deux ou trois touches avant de tirer → une touche, puis tir"],
+      materiel: "20 palets",
+      variantes: "Passe dans les patins à contrôler. Tir en revers direct.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(46, 150, "G"),
+          J(230, 230), J(250, 240), J(270, 250),
+          J(150, 80, "O", "", "bleu"), P(160, 72), P(166, 78),
+          L("patin", [[222, 222], [140, 170]]), L("passe", [[145, 90], [138, 165]], "rouge"),
+          L("tir", [[132, 165], [48, 152]], "rouge"),
+          T(170, 150, "Réception sur le revers, une touche, tir", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_gardien_passe_transversale",
+      nom: "Le gardien : suivre la passe transversale",
+      categorie: "gardien",
+      forme: "duo",
+      duree: 8,
+      objectif: "Se déplacer d'un poteau à l'autre sur une passe qui traverse, et être en place avant le tir.",
+      description:
+        "Deux tireurs au haut des cercles, un de chaque côté, avec les palets. Ils se passent le palet en travers ; le gardien suit chaque passe en poussée en T ou en glissade, et se replace face au porteur. Après deux ou trois passes, le porteur tire.\n\nLentement d'abord : le gardien doit être arrêté et en position quand le tir part. Puis on accélère les passes.",
+      points_cles: ["Suivre le palet, pas le joueur : les yeux sur le palet", "Poussée en T ou glissade, puis arrêt en position — jamais en mouvement au moment du tir", "Le bâton reste au sol pendant le déplacement"],
+      corrections: ["Le gardien arrive en retard → partir dès que le palet quitte la palette", "Tir reçu en plein déplacement → les tireurs attendent qu'il soit en place, puis on accélère"],
+      materiel: "20 palets",
+      variantes: "Trois tireurs en triangle. Passe puis tir en une touche.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(48, 150, "G"), L("patin", [[48, 140], [48, 128]], "bleu"), L("patin", [[48, 160], [48, 172]], "bleu"),
+          J(150, 80), P(160, 74), J(150, 220), P(160, 226),
+          L("echange", [[150, 92], [150, 208]], "rouge"),
+          L("tir", [[140, 214], [54, 158]], "rouge"),
+          T(170, 150, "Passes en travers, le gardien suit,\ntir quand il est en place", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_gardien_rebonds",
+      nom: "Le gardien : contrôler les rebonds",
+      categorie: "gardien",
+      forme: "duo",
+      duree: 6,
+      objectif: "Ne pas seulement arrêter : diriger le rebond dans le coin, ou couvrir le palet.",
+      description:
+        "Un tireur dans l'enclave, tirs au sol modérés. Le gardien arrête et, à chaque arrêt, fait une chose : dévier le palet vers le coin avec la jambière ou le bâton, ou le bloquer et le couvrir de la mitaine. Le tireur annonce « coin ! » ou « couvre ! » avant de tirer.\n\nPuis un second joueur attaque le rebond : le gardien doit décider seul.",
+      points_cles: ["Jambière orientée vers le coin, pas vers le milieu", "Couvrir le palet sans hésiter quand personne n'est là", "Se relever face au palet après chaque arrêt"],
+      corrections: ["Rebond rendu au milieu → tourner la jambière vers l'extérieur", "Hésitation entre couvrir et dégager → le tireur annonce, jusqu'à ce que ça devienne un réflexe"],
+      materiel: "20 palets",
+      variantes: "Tirs à mi-hauteur. Deux attaquants au rebond.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(48, 150, "G"), J(130, 150), P(140, 142), P(146, 148), P(141, 156),
+          L("tir", [[120, 150], [54, 150]], "rouge"),
+          L("passe", [[52, 160], [30, 200]], "bleu"), T(20, 220, "coin", "bleu", "petit"),
+          J(120, 210, "O", "", "bleu"), L("patin", [[112, 202], [70, 165]], "bleu"),
+          T(160, 250, "Arrêter, puis diriger dans le coin ou couvrir", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_jeu_trois_zones",
+      nom: "Le jeu des trois zones",
+      categorie: "jeu",
+      forme: "actif",
+      duree: 10,
+      objectif: "Faire avancer le palet par des passes, zone après zone : on ne traverse pas, on transmet.",
+      description:
+        "La glace coupée en trois tiers par les lignes bleues. Deux équipes de six ; dans chaque tiers, deux joueurs de chaque équipe, qui ne peuvent pas en sortir. Pour marquer, le palet doit passer par les trois tiers en passes : la défense sort le palet vers le milieu, le milieu le donne à l'attaque, l'attaque tire.\n\nPalet intercepté : l'autre équipe repart de son tiers défensif. Quatre minutes par manche, puis rotation des tiers.",
+      points_cles: ["Chercher le partenaire du tiers suivant dès qu'on a le palet", "Sans le palet : se démarquer dans son tiers, près de la ligne", "On ne franchit jamais sa ligne, même pour aider"],
+      corrections: ["Tout le monde regarde le palet → chacun regarde son tiers voisin", "Passes trop longues qui sautent un tiers → une zone à la fois"],
+      materiel: "Chasubles\n20 palets",
+      variantes: "Trois joueurs par tiers. Le tiers central peut être traversé par un joueur.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(46, 150, "G"), J(554, 150, "G"),
+          J(120, 100, "X", "", "rouge"), J(120, 200, "X", "", "rouge"), J(160, 150, "O", "", "bleu"), J(200, 90, "O", "", "bleu"),
+          J(280, 100, "X", "", "rouge"), J(320, 200, "X", "", "rouge"), J(300, 60, "O", "", "bleu"), J(300, 240, "O", "", "bleu"),
+          J(480, 100, "X", "", "rouge"), J(440, 200, "X", "", "rouge"), J(460, 150, "O", "", "bleu"), J(500, 220, "O", "", "bleu"),
+          P(130, 200),
+          L("passe", [[132, 196], [270, 108]], "rouge"), L("passe", [[290, 108], [430, 192]], "rouge"), L("tir", [[450, 195], [554, 160]], "rouge"),
+          T(190, 40, "Chacun dans son tiers : le palet avance par passes, zone après zone", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_demenagement",
+      nom: "Le déménagement",
+      categorie: "jeu",
+      forme: "relais",
+      duree: 6,
+      objectif: "Transporter le palet sur la palette sans le manier : de l'équilibre, du contrôle, et des rires.",
+      description:
+        "Relais par équipes de trois. Un tas de palets par équipe à la ligne de but, une « maison » (cercle) à l'autre bout. Chacun à son tour transporte un palet posé à plat sur sa palette — sans le dribbler, sans le toucher de la main — jusqu'à la maison, le dépose et revient taper dans la main du suivant. Palet tombé : on le ramasse avec la crosse et on continue.\n\nL'équipe qui a déménagé tous ses palets la première a gagné.",
+      points_cles: ["Palette à plat, bras souples : le palet ne bouge pas si les mains ne bougent pas", "Patiner en flexion, régulièrement", "Le suivant part à la tape dans la main"],
+      corrections: ["Le palet tombe à chaque poussée → moins de poussée, plus de glisse", "Bras raides → coudes souples, mains devant"],
+      materiel: "5 palets par équipe",
+      variantes: "Deux palets sur la palette. Retour en marche arrière.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(60, 100), J(45, 100), J(30, 100), P(70, 92), P(76, 96), P(72, 102),
+          J(60, 200, "O", "", "bleu"), J(45, 200, "O", "", "bleu"), J(30, 200, "O", "", "bleu"), P(70, 192), P(76, 196), P(72, 202),
+          L("glisse", [[80, 100], [500, 100]]), L("glisse", [[80, 200], [500, 200]], "bleu"),
+          L("depose", [[500, 100], [530, 100]]), L("depose", [[500, 200], [530, 200]], "bleu"),
+          T(330, 40, "Le palet à plat sur la palette, sans le manier", "noir", "petit"),
+        ],
+      },
+    }),
   ];
   return liste.map((e, i) => ({ ...e, cree: t0 + i, modifie: t0 + i }));
 }

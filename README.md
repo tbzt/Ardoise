@@ -6,7 +6,7 @@ Application web à page unique, **100 % locale** : aucun serveur, aucune dépend
 
 → [tbzt.github.io/Ardoise](https://tbzt.github.io/Ardoise)
 
-Livrée avec **84 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
+Livrée avec **100 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
 
 ---
 
