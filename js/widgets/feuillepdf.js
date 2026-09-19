@@ -465,7 +465,7 @@ export async function ficheAtelier(ex, { duree = null, note = "" } = {}) {
   }
   if (fiches.length) {
     yD = titre(colD, yD, "Fiches techniques");
-    yD = para(colD, yD, fiches.map((fi) => `${fi.code} ${fi.nom}`).join(" · "), { taille: 9, couleur: GRIS }) + 6;
+    yD = para(colD, yD, fiches.map((fi) => fi.nom).join(" · "), { taille: 9, couleur: GRIS }) + 6;
   }
 
   // pied : les repères pour tenir l'atelier

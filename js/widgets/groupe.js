@@ -320,7 +320,7 @@ function couverture(faites) {
       ([fam, liste]) => `<div class="couverture-famille"><h4>${esc(FAMILLES[fam])}</h4><ul>${liste
         .map((fi) => {
           const n = compte[fi.code] || 0;
-          return `<li class="${n ? "vu" : "jamais"} ${fi.socle ? "socle" : ""}" title="${fi.socle ? "technique de base pour des débutants" : ""}"><b>${fi.code}</b> ${esc(fi.nom)} <span class="mono">${n ? `${n}×` : "—"}</span></li>`;
+          return `<li class="${n ? "vu" : "jamais"} ${fi.socle ? "socle" : ""}" title="${fi.socle ? "technique de base pour des débutants" : ""}">${esc(fi.nom)} <span class="mono">${n ? `${n}×` : "—"}</span></li>`;
         })
         .join("")}</ul></div>`,
     )
@@ -351,7 +351,7 @@ function cyclesHtml(g) {
           .join("")}</div>
         <details class="techniques"><summary>Techniques à viser <small>${(cy.techniques || []).length || "aucune"}</small></summary>
           ${Object.entries(fichesParFamille())
-            .map(([fam, liste]) => `<div class="techniques-famille"><h4>${esc(FAMILLES[fam])}</h4>${liste.map((fi) => `<label class="technique"><input type="checkbox" name="techniques" value="${fi.code}" ${(cy.techniques || []).includes(fi.code) ? "checked" : ""}> <b>${fi.code}</b> ${esc(fi.nom)}</label>`).join("")}</div>`)
+            .map(([fam, liste]) => `<div class="techniques-famille"><h4>${esc(FAMILLES[fam])}</h4>${liste.map((fi) => `<label class="technique"><input type="checkbox" name="techniques" value="${fi.code}" ${(cy.techniques || []).includes(fi.code) ? "checked" : ""}> ${esc(fi.nom)}</label>`).join("")}</div>`)
             .join("")}
         </details>
         <label>Note <input name="note" value="${esc(cy.note || "")}" placeholder="Ce qu'on veut voir à la fin du cycle"></label>

@@ -11,6 +11,7 @@
    niveau du groupe — et on évite ce qu'on a fait la dernière fois. */
 import { Store, blocDepuisExercice, blocLibre } from "./store.js";
 import { CATEGORIES } from "../data/catalogue.js";
+import { fiche } from "../data/referentiel.js";
 import { CIBLE, seancesFaites, repartition, usageExercices, formaterCourt, cycleCourant } from "./analyse.js";
 
 const ORDRE = ["echauffement", "patinage", "maniement", "passe", "tir", "jeu", "retour"];
@@ -118,13 +119,13 @@ export function proposerDeroule(se) {
         const neuves = (e.techniques || []).filter((c) => !techniquesVues.has(c));
         if (neuves.length && faites.length) {
           sc.s += 1;
-          sc.raisons.push(`technique pas encore travaillée (${neuves[0]})`);
+          sc.raisons.push(`technique pas encore travaillée : ${(fiche(neuves[0]) || { nom: neuves[0] }).nom.toLowerCase()}`);
         }
         if (cycle) {
           const visees = (e.techniques || []).filter((c) => (cycle.techniques || []).includes(c));
           if (visees.length) {
             sc.s += 2.5;
-            sc.raisons.push(`technique visée par le cycle « ${cycle.nom || "en cours"} » (${visees[0]})`);
+            sc.raisons.push(`technique visée par le cycle « ${cycle.nom || "en cours"} » : ${(fiche(visees[0]) || { nom: visees[0] }).nom.toLowerCase()}`);
           } else if ((cycle.categories || []).includes(e.categorie)) {
             sc.s += 0.5;
           }

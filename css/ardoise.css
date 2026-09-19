@@ -566,6 +566,22 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   width: 48px;
   height: 15px;
   display: block;
+  background: #f6fafc;
+  border-radius: 3px;
+}
+.legende {
+  position: relative;
+}
+.legende-fermer {
+  position: absolute;
+  top: var(--e2);
+  right: var(--e2);
+  min-height: 28px;
+  min-width: 28px;
+  padding: 0;
+  justify-content: center;
+  font-size: 1.1rem;
+  line-height: 1;
 }
 .legende {
   display: grid;

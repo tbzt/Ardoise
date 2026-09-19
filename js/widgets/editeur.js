@@ -115,9 +115,10 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         <button type="button" data-act="retablir" title="Rétablir (Ctrl+Y)">Rétablir</button>
         <button type="button" data-act="effacer" title="Repartir d'une glace vierge">Tout effacer</button>
       </div>
-      <button type="button" data-act="legende" class="${Storage.lire("legende_editeur", false) ? "actif" : ""}" title="Afficher ou masquer les symboles et leur nom">Légende</button>
+      <button type="button" data-act="legende" class="${Storage.lire("legende_editeur", false) ? "actif" : ""}" title="Afficher ou masquer les symboles et leur nom">${Storage.lire("legende_editeur", false) ? "Masquer la légende" : "Légende"}</button>
     </div>
     <div class="legende" data-legende ${Storage.lire("legende_editeur", false) ? "" : "hidden"}>
+      <button type="button" class="legende-fermer" data-act="legende" aria-label="Masquer la légende" title="Masquer la légende">×</button>
       <div class="legende-col"><h4>Symboles</h4><ul>${LEGENDE.symboles.map((x) => `<li>${x.svg}<span>${x.nom}</span></li>`).join("")}</ul></div>
       <div class="legende-col"><h4>Déplacements et passes</h4><ul>${LEGENDE.traits.map((x) => `<li>${x.svg}<span>${x.nom}</span></li>`).join("")}</ul></div>
     </div>
@@ -431,7 +432,9 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
     if (b.dataset.act === "legende") {
       const l = conteneur.querySelector("[data-legende]");
       l.hidden = !l.hidden;
-      b.classList.toggle("actif", !l.hidden);
+      const bouton = outilsEl.querySelector('[data-act="legende"]');
+      bouton.classList.toggle("actif", !l.hidden);
+      bouton.textContent = l.hidden ? "Légende" : "Masquer la légende";
       Storage.ecrire("legende_editeur", !l.hidden);
       return;
     }
@@ -446,6 +449,8 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
       commettre(avant);
     }
   });
+
+  conteneur.querySelector(".legende-fermer").addEventListener("click", () => outilsEl.querySelector('[data-act="legende"]').click());
 
   vueEl.addEventListener("change", () => {
     const avant = clone(schema);

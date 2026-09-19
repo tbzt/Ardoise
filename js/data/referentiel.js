@@ -18,9 +18,9 @@ export const FORMES_TRAVAIL = {
 };
 
 export const FAMILLES = {
-  TF: "Habiletés fondamentales",
-  TSP: "Techniques spécifiques — patinage",
-  TSM: "Techniques spécifiques — maniement et conduite",
+  TF: "Fondamentaux",
+  TSP: "Patinage",
+  TSM: "Maniement et conduite",
 };
 
 const f = (code, famille, nom, points = [], corrections = [], socle = false) => ({ code, famille, nom, points, corrections, socle });

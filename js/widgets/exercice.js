@@ -64,7 +64,7 @@ export const Exercice = {
             ${Object.entries(fichesParFamille())
               .map(
                 ([fam, liste]) => `<div class="techniques-famille"><h4>${esc(FAMILLES[fam])}</h4>${liste
-                  .map((fi) => `<label class="technique"><input type="checkbox" name="techniques" value="${fi.code}" ${(ex.techniques || []).includes(fi.code) ? "checked" : ""}> <b>${fi.code}</b> ${esc(fi.nom)}</label>`)
+                  .map((fi) => `<label class="technique"><input type="checkbox" name="techniques" value="${fi.code}" ${(ex.techniques || []).includes(fi.code) ? "checked" : ""}> ${esc(fi.nom)}</label>`)
                   .join("")}</div>`,
               )
               .join("")}

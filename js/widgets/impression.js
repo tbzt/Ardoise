@@ -77,7 +77,7 @@ export const Impression = {
               ${ex.description ? `<p class="description">${esc(ex.description).replace(/\n/g, "<br>")}</p>` : ""}
               ${ex.points_cles && ex.points_cles.length ? `<ul class="points">${ex.points_cles.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
               ${ex.materiel ? `<p class="materiel"><strong>Matériel :</strong> ${esc(ex.materiel)}</p>` : ""}
-              ${codesTechniques(ex).length ? `<p class="materiel"><strong>Fiches techniques :</strong> ${codesTechniques(ex).map((fi) => `${fi.code} ${esc(fi.nom)}`).join(" · ")}</p>` : ""}
+              ${codesTechniques(ex).length ? `<p class="materiel"><strong>Fiches techniques :</strong> ${codesTechniques(ex).map((fi) => esc(fi.nom)).join(" · ")}</p>` : ""}
               ${ex.corrections && ex.corrections.length ? `<p class="materiel"><strong>Corrections :</strong> ${ex.corrections.map(esc).join(" · ")}</p>` : ""}
               ${b.note ? `<p class="note"><strong>Pour cette séance :</strong> ${esc(b.note)}</p>` : ""}
             </div>

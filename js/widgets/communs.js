@@ -114,7 +114,7 @@ export function blocTechnique(ex, { ouvert = false } = {}) {
       ${ex.corrections && ex.corrections.length ? `<p class="corrections-titre"><strong>Corrections</strong></p><ul class="corrections">${ex.corrections.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
       ${codes
         .map(
-          (fi) => `<details class="fiche-technique" ${ouvert ? "open" : ""}><summary><b>${fi.code}</b> ${esc(fi.nom)} <small>fiche technique</small></summary>
+          (fi) => `<details class="fiche-technique" ${ouvert ? "open" : ""}><summary>${esc(fi.nom)} <small>fiche technique</small></summary>
             ${fi.points.length ? `<p class="mini-titre">Points clés</p><ul>${fi.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
             ${fi.corrections.length ? `<p class="mini-titre">Corrections</p><ul class="corrections">${fi.corrections.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
           </details>`,
