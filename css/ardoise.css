@@ -542,11 +542,14 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   max-width: 100%;
 }
 .editeur .groupe {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   gap: 2px;
   background: var(--panel);
   padding: 2px;
   border-radius: var(--rayon-petit);
+  max-width: 100%;
+  min-width: 0;
 }
 .editeur .groupe button {
   border-color: transparent;
