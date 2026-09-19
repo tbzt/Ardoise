@@ -9,7 +9,7 @@
    annuler et rétablir sont donc infaillibles, à défaut d'être
    économes, et à cette échelle ça n'a aucune importance. */
 
-import { VUES, COULEURS, FORMES, STYLES_TRAIT, contenu, viewBox } from "./patinoire.js";
+import { VUES, COULEURS, FORMES, STYLES_TRAIT, OBJETS, contenu, viewBox, legende } from "./patinoire.js";
 import { nouvelId } from "../core/ids.js";
 import { esc } from "../core/dom.js";
 
@@ -20,17 +20,12 @@ const HAUTEUR = 300;
 const clone = (o) => JSON.parse(JSON.stringify(o));
 const arrondi = (n) => Math.round(n * 2) / 2;
 
-const ICONES_TRAIT = {
-  patin: '<path d="M2,7 L28,7"/><path d="M27,3 L35,7 L27,11 Z" class="pointe"/>',
-  conduite: '<path d="M2,7 q3,-6 6,0 t6,0 t6,0 t6,0"/><path d="M27,3 L35,7 L27,11 Z" class="pointe"/>',
-  passe: '<path d="M2,7 L28,7" stroke-dasharray="5 3"/><path d="M27,3 L35,7 L27,11 Z" class="pointe"/>',
-  tir: '<path d="M2,5 L27,5 M2,9 L27,9"/><path d="M27,2 L36,7 L27,12 Z" class="pointe"/>',
-  arriere: '<path d="M2,8 a3,3 0 0 1 6,0 a3,3 0 0 1 6,0 a3,3 0 0 1 6,0 a3,3 0 0 1 6,0"/><path d="M27,4 L35,8 L27,12 Z" class="pointe"/>',
-  libre: '<path d="M2,9 c4,-8 8,-8 12,-2 s8,6 12,-2 s6,-4 9,0"/>',
-};
-
+/* Les icônes des traits sont le vrai rendu, en miniature : ce qu'on
+   voit sur le bouton est ce qu'on obtient sur la glace. */
+const LEGENDE = legende();
 function icone(style) {
-  return `<svg class="icone-trait" viewBox="0 0 38 14" aria-hidden="true">${ICONES_TRAIT[style]}</svg>`;
+  const t = LEGENDE.traits.find((x) => x.nom === STYLES_TRAIT[style]);
+  return t ? t.svg.replace('class="legende-svg"', 'class="icone-trait"') : '<svg class="icone-trait" viewBox="0 0 64 20"><path d="M4,12 c6,-10 10,-10 16,-2 s10,8 16,-2 s8,-6 12,0" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
 }
 
 /* Ramer-Douglas-Peucker : garde les points qui comptent. */
@@ -90,12 +85,17 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         <button type="button" class="outil" data-outil="sel" title="Sélectionner, déplacer (Échap)">Sélection</button>
       </div>
       <div class="groupe" role="group" aria-label="Poser">
-        <button type="button" class="outil glyphe" data-outil="jX" title="Joueur X">X</button>
-        <button type="button" class="outil glyphe" data-outil="jO" title="Joueur O">O</button>
+        <button type="button" class="outil glyphe" data-outil="jX" title="Joueur (X)">X</button>
+        <button type="button" class="outil glyphe" data-outil="jO" title="Joueur (O)">O</button>
+        <button type="button" class="outil glyphe" data-outil="jF" title="Avant (F)">F</button>
+        <button type="button" class="outil glyphe" data-outil="jD" title="Défenseur (D)">D</button>
         <button type="button" class="outil glyphe" data-outil="jG" title="Gardien">G</button>
-        <button type="button" class="outil glyphe" data-outil="jC" title="Coach">C</button>
+        <button type="button" class="outil glyphe" data-outil="jC" title="Entraîneur">C</button>
         <button type="button" class="outil glyphe" data-outil="palet" title="Palet">●</button>
-        <button type="button" class="outil glyphe" data-outil="cone" title="Cône">▲</button>
+        <button type="button" class="outil glyphe" data-outil="cone" title="Plot">▲</button>
+        <button type="button" class="outil glyphe" data-outil="cerceau" title="Cerceau, cercle à la bombe">◯</button>
+        <button type="button" class="outil glyphe" data-outil="passeur" title="Passeur caoutchouc">▬</button>
+        <button type="button" class="outil glyphe" data-outil="fantome" title="Triangle / faux joueur">△</button>
         <button type="button" class="outil" data-outil="cage" title="Cage mobile">Cage</button>
         <button type="button" class="outil glyphe" data-outil="texte" title="Texte">Aa</button>
       </div>
@@ -114,6 +114,12 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         <button type="button" data-act="retablir" title="Rétablir (Ctrl+Y)">Rétablir</button>
         <button type="button" data-act="effacer" title="Repartir d'une glace vierge">Tout effacer</button>
       </div>
+      <button type="button" data-act="legende" title="Les symboles et leur nom, d'après la fiche générale n° 1 du guide fédéral">Légende</button>
+    </div>
+    <div class="legende" data-legende hidden>
+      <div class="legende-col"><h4>Symboles</h4><ul>${LEGENDE.symboles.map((x) => `<li>${x.svg}<span>${x.nom}</span></li>`).join("")}</ul></div>
+      <div class="legende-col"><h4>Déplacements et passes</h4><ul>${LEGENDE.traits.map((x) => `<li>${x.svg}<span>${x.nom}</span></li>`).join("")}</ul></div>
+      <p class="legende-source">D'après la « Fiche générale n° 1 — Légende des symboles » du Guide fédéral de l'école de hockey (FFHG) et le lexique de la formation aide-entraîneur.</p>
     </div>
     <div class="props" hidden></div>
     <div class="cadre"><svg class="patinoire interactive" data-uid="${UID}" xmlns="http://www.w3.org/2000/svg"></svg></div>
@@ -184,8 +190,16 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         `<label>Ouverte vers <select name="sens">${[["gauche", "la gauche"], ["droite", "la droite"], ["haut", "le haut"], ["bas", "le bas"]]
           .map(([k, v]) => `<option value="${k}"${(o.sens || "gauche") === k ? " selected" : ""}>${v}</option>`)
           .join("")}</select></label>`;
+    } else if (o.t === "passeur") {
+      champs +=
+        `<span class="prop-nom">Passeur caoutchouc</span>` +
+        `<label>Orientation <select name="angle">${[0, 45, 90, 135].map((a) => `<option value="${a}"${Number(o.angle || 0) === a ? " selected" : ""}>${a}°</option>`).join("")}</select></label>`;
+    } else if (o.t === "cerceau") {
+      champs += `<span class="prop-nom">Cerceau</span>`;
+    } else if (o.t === "fantome") {
+      champs += `<span class="prop-nom">Faux joueur</span>`;
     } else if (o.t === "cone") {
-      champs += `<span class="prop-nom">Cône</span>`;
+      champs += `<span class="prop-nom">Plot</span>`;
     } else {
       champs += `<span class="prop-nom">Palet</span>`;
     }
@@ -252,9 +266,20 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
     switch (outil) {
       case "jX":
       case "jO":
+      case "jF":
+      case "jD":
       case "jG":
       case "jC":
         o = { ...base, t: "joueur", forme: outil[1], label: "", couleur };
+        break;
+      case "cerceau":
+        o = { ...base, t: "cerceau", couleur: couleur === "noir" ? "bleu" : couleur };
+        break;
+      case "passeur":
+        o = { ...base, t: "passeur", angle: 0, couleur };
+        break;
+      case "fantome":
+        o = { ...base, t: "fantome", couleur };
         break;
       case "palet":
         o = { ...base, t: "palet" };
@@ -401,6 +426,12 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         o.couleur = couleur;
         commettre(avant);
       } else peindreOutils();
+      return;
+    }
+    if (b.dataset.act === "legende") {
+      const l = conteneur.querySelector("[data-legende]");
+      l.hidden = !l.hidden;
+      b.classList.toggle("actif", !l.hidden);
       return;
     }
     if (b.dataset.act === "annuler") annuler();

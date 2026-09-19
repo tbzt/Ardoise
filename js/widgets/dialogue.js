@@ -3,6 +3,7 @@
 import { esc, formaterDuree } from "../core/dom.js";
 import { svg } from "./patinoire.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
+import { blocTechnique } from "./communs.js";
 
 export function choisir({ titre, options, vide = "Rien à proposer." }) {
   return new Promise((resoudre) => {
@@ -54,6 +55,7 @@ export function apercu(ex) {
             ${ex.points_cles && ex.points_cles.length ? `<ul>${ex.points_cles.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
             ${ex.materiel ? `<p class="materiel"><strong>Matériel :</strong> ${esc(ex.materiel)}</p>` : ""}
             ${ex.variantes ? `<p class="materiel"><strong>Variantes :</strong> ${esc(ex.variantes)}</p>` : ""}
+            ${blocTechnique(ex)}
           </div>
         </div>
         <div class="dialogue-pied">

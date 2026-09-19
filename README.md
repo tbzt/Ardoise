@@ -14,12 +14,15 @@ Livrée avec **84 exercices** et deux séances types pour **adultes débutants**
 
 ### Dessiner — l'éditeur de schémas
 - Une patinoire aux proportions IIHF (60 × 30 m), **entière ou demi-glace**.
-- On **pose** d'un clic : joueurs `X` et `O`, gardien `G`, coach `C`, palets, cônes, textes, et des **cages mobiles** orientables pour les matchs en travers.
-- On **trace** d'un glissé, au doigt, au stylet ou à la souris : patinage, patinage avec palet (ondulé), passe (pointillé), tir (double trait), marche arrière (petits arcs), trait libre.
+- Les symboles suivent la **légende fédérale** (fiche générale n° 1 du Guide de l'école de hockey, FFHG) et le lexique de la formation aide-entraîneur. On **pose** d'un clic : joueurs `X` et `O`, avant `F`, défenseur `D`, gardien `G`, entraîneur `C`, palets, plots, cerceaux, passeur caoutchouc, faux joueur, textes, et des **cages mobiles** orientables.
+- On **trace** d'un glissé, au doigt, au stylet ou à la souris : patiner en avant sans ou avec palet, en arrière sans ou avec palet, patiner et freiner, glisser sur deux patins, accélérer, pivoter, passer, échange de passes, tirer, abandonner le palet sur place, trait libre.
+- Un bouton **Légende** affiche chaque symbole avec son nom ; la même légende figure au bas de la feuille imprimée, pour que quelqu'un qui n'a jamais vu l'appli sache lire un schéma.
 - Cinq couleurs, sélection, déplacement, étiquettes sur les joueurs, annuler / rétablir, raccourcis (`Suppr`, `Ctrl+Z`, `Ctrl+Y`, `Échap`).
 
 ### Ranger — la bibliothèque
-- Chaque exercice a sa fiche : catégorie, niveau, durée, objectif, description, points clés, matériel, variantes, et son schéma.
+- Chaque exercice a sa fiche : catégorie, niveau, durée, objectif, description, **points clés et corrections** (le format des fiches fédérales), matériel, variantes, **forme de travail** (les six formes d'atelier du Module A fédéral), et son schéma.
+- Un exercice se rattache aux **fiches techniques FFHG** du Programme de développement du joueur à long terme (TF.M, TF.A, TS.P 1 à 23, TS.M 1 à 4) : leurs points clés et corrections s'affichent dans l'aperçu, au bord de la glace et sur la fiche atelier, et le groupe sait quelles techniques il a travaillées.
+- **Fiche atelier (PDF)** : une page par exercice pour l'aide-entraîneur qui tient l'atelier — schéma en grand, organisation, points clés, corrections, matériel, forme de travail, et les repères de la formation fédérale (quinze minutes avant, une consigne d'une phrase, temps d'attente limité, feedback un collectif trois individuels). Depuis une séance, la fiche reprend la note du bloc.
 - Huit catégories : échauffement, patinage, maniement, passes, tirs, jeu, gardien, retour au calme.
 - Recherche plein texte et filtre par catégorie ; duplication pour décliner un exercice.
 - Tout s'enregistre tout seul, un instant après la frappe.
@@ -40,13 +43,13 @@ Livrée avec **84 exercices** et deux séances types pour **adultes débutants**
 ### Suivre — les groupes et leur historique
 - Chaque séance se rattache à un **groupe** (une équipe, une section). Le groupe garde la mémoire : séances faites, temps de glace, exercices déjà faits (combien de fois, la dernière date, comment ça s'est passé), et ceux jamais essayés.
 - Un **bilan** se remplit en deux minutes au bas du bord de glace : par bloc, fait ou non, à revoir / correct / bien, un mot ; pour la séance, présents, une note sur cinq, et ce qu'il faut retenir.
-- La fiche du groupe **analyse** l'historique : équilibre du temps par catégorie face à une part conseillée pour des adultes débutants, catégories absentes depuis plusieurs séances, séance qui en répète une autre, blocs à retravailler d'après les bilans.
+- La fiche du groupe montre les **techniques FFHG travaillées** (et celles jamais abordées, avec les priorités de la programmation U9 comme socle) et **analyse** l'historique : équilibre du temps par catégorie face à une part conseillée pour des adultes débutants, catégories absentes depuis plusieurs séances, séance qui en répète une autre, blocs à retravailler d'après les bilans.
 - En préparant une séance, la bibliothèque indique **« jamais fait »** ou **« fait il y a N séances »** pour ce groupe, un panneau rappelle la **dernière fois** (ce qui a été fait, à retenir, à revoir), et une alerte signale une séance qui **répète** une précédente.
 
 ### Imprimer — la feuille de séance
 - Le plan en tête (heure, durée, bloc, note), puis chaque exercice avec son schéma, sa description et ses points clés.
 - Mise en page prévue pour A4 ; lisible aussi à l'écran, sur téléphone.
-- **Export PDF** en un clic, fabriqué dans le navigateur sans aucune bibliothèque : un vrai fichier à envoyer au groupe ou à garder sur le téléphone.
+- **Export PDF** en un clic, fabriqué dans le navigateur sans aucune bibliothèque : la **feuille complète** (plan puis chaque exercice avec son schéma) ou la **carte de poche** (une seule page, gros caractères, sans schéma : horaires, deux points clés par bloc, matériel, à plier dans la poche).
 
 ### Système
 - **Exporter / Importer** toutes les données en un fichier JSON (fusion ou remplacement), ou **un exercice seul** depuis sa fiche — le fichier se réimporte chez soi ou chez un autre coach, et met à jour l'exercice s'il est plus récent.

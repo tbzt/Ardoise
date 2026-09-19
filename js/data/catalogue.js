@@ -46,6 +46,9 @@ function ex(base) {
     materiel: "",
     variantes: "",
     points_cles: [],
+    corrections: [],
+    techniques: [],
+    forme: "",
     cree: 0,
     modifie: 0,
     ...base,
@@ -58,6 +61,8 @@ export function exercicesDeBase() {
   const liste = [
     ex({
       id: "cat_tour_de_piste",
+      techniques: ["TS.P 2"],
+      forme: "actif",
       nom: "Tour de piste en patinage libre",
       categorie: "echauffement",
       duree: 5,
@@ -78,6 +83,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_tomber_relever",
+      techniques: ["TS.P 1", "TF.A 1"],
+      forme: "actif",
       nom: "Tomber et se relever",
       categorie: "patinage",
       duree: 5,
@@ -99,6 +106,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_freinages",
+      techniques: ["TS.P 15"],
+      forme: "vagues",
       nom: "Freinages de ligne en ligne",
       categorie: "patinage",
       duree: 10,
@@ -112,8 +121,8 @@ export function exercicesDeBase() {
         vue: "entiere",
         objets: [
           J(50, 90), J(50, 130), J(50, 170), J(50, 210),
-          L("patin", [[62, 90], [222, 90]]), L("patin", [[236, 90], [294, 90]]), L("patin", [[308, 90], [364, 90]]), L("patin", [[378, 90], [550, 90]]),
-          L("patin", [[62, 130], [222, 130]]), L("patin", [[236, 130], [294, 130]]), L("patin", [[308, 130], [364, 130]]), L("patin", [[378, 130], [550, 130]]),
+          L("freinage", [[62, 90], [222, 90]]), L("freinage", [[236, 90], [294, 90]]), L("freinage", [[308, 90], [364, 90]]), L("freinage", [[378, 90], [550, 90]]),
+          L("freinage", [[62, 130], [222, 130]]), L("freinage", [[236, 130], [294, 130]]), L("freinage", [[308, 130], [364, 130]]), L("freinage", [[378, 130], [550, 130]]),
           T(215, 40, "Stop", "bleu"), T(288, 40, "Stop", "rouge"), T(357, 40, "Stop", "bleu"), T(535, 40, "Stop", "rouge"),
           J(300, 250, "C"),
         ],
@@ -122,6 +131,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_cinq_cercles",
+      techniques: ["TS.P 7", "TS.P 9"],
+      forme: "parcours",
       nom: "Les cinq cercles",
       categorie: "patinage",
       duree: 8,
@@ -154,6 +165,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_marche_arriere",
+      techniques: ["TS.P 3", "TS.P 4"],
+      forme: "vagues",
       nom: "Marche arrière — poussées en C",
       categorie: "patinage",
       duree: 8,
@@ -177,6 +190,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_maniement_sur_place",
+      techniques: ["TS.M 1", "TS.M 2"],
+      forme: "actif",
       nom: "Maniement sur place — balayages et huit",
       categorie: "maniement",
       duree: 5,
@@ -200,6 +215,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_slalom_cones",
+      techniques: ["TS.M 3.1", "TS.M 3.2"],
+      forme: "parcours",
       nom: "Slalom de cônes avec palet",
       categorie: "maniement",
       duree: 10,
@@ -225,6 +242,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_passes_paires",
+      techniques: [],
+      forme: "duo",
       nom: "Passes en paires, à l'arrêt",
       categorie: "passe",
       duree: 8,
@@ -237,10 +256,10 @@ export function exercicesDeBase() {
       schema: {
         vue: "moitie",
         objets: [
-          J(90, 70), J(210, 70, "O", "", "bleu"), L("passe", [[102, 66], [198, 66]], "rouge"), L("passe", [[198, 74], [102, 74]], "bleu"),
-          J(90, 120), J(210, 120, "O", "", "bleu"), L("passe", [[102, 116], [198, 116]], "rouge"), L("passe", [[198, 124], [102, 124]], "bleu"),
-          J(90, 180), J(210, 180, "O", "", "bleu"), L("passe", [[102, 176], [198, 176]], "rouge"), L("passe", [[198, 184], [102, 184]], "bleu"),
-          J(90, 230), J(210, 230, "O", "", "bleu"), L("passe", [[102, 226], [198, 226]], "rouge"), L("passe", [[198, 234], [102, 234]], "bleu"),
+          J(90, 70), J(210, 70, "O", "", "bleu"), L("echange", [[102, 70], [198, 70]], "rouge"),
+          J(90, 120), J(210, 120, "O", "", "bleu"), L("echange", [[102, 120], [198, 120]], "rouge"),
+          J(90, 180), J(210, 180, "O", "", "bleu"), L("echange", [[102, 180], [198, 180]], "rouge"),
+          J(90, 230), J(210, 230, "O", "", "bleu"), L("echange", [[102, 230], [198, 230]], "rouge"),
           T(90, 28, "Coup droit deux minutes, puis revers", "noir", "petit"),
           J(270, 150, "C"),
         ],
@@ -249,6 +268,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_passe_et_suit",
+      techniques: [],
+      forme: "vagues",
       nom: "Passe et suit",
       categorie: "passe",
       duree: 8,
@@ -273,6 +294,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_montee_a_deux",
+      techniques: [],
+      forme: "duo",
       nom: "Montée à deux avec passes",
       categorie: "passe",
       duree: 10,
@@ -297,6 +320,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_tir_poignet",
+      techniques: [],
+      forme: "vagues",
       nom: "Tirs du poignet depuis le haut du cercle",
       categorie: "tir",
       duree: 10,
@@ -322,6 +347,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_cone_et_tir",
+      techniques: [],
+      forme: "vagues",
       nom: "Contourner le cône et tirer",
       categorie: "tir",
       duree: 10,
@@ -346,6 +373,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_relais",
+      techniques: [],
+      forme: "relais",
       nom: "Relais par équipes",
       categorie: "jeu",
       duree: 8,
@@ -460,6 +489,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_marche_glisse",
+      techniques: ["TS.P 1", "TF.M 3"],
+      forme: "actif",
       nom: "Marcher, puis glisser",
       categorie: "patinage",
       duree: 8,
@@ -482,6 +513,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_trottinette",
+      techniques: ["TS.P 2", "TS.P 5", "TF.M 1"],
+      forme: "vagues",
       nom: "Poussées en trottinette",
       categorie: "patinage",
       duree: 6,
@@ -503,6 +536,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_arret_bandes",
+      techniques: ["TS.P 15"],
+      forme: "vagues",
       nom: "Arrêt hockey face à la bande",
       categorie: "patinage",
       duree: 8,
@@ -516,7 +551,7 @@ export function exercicesDeBase() {
         vue: "moitie",
         objets: [
           J(160, 110), J(160, 150), J(160, 190),
-          L("patin", [[160, 98], [160, 30]]), L("patin", [[160, 202], [160, 270]]),
+          L("freinage", [[160, 98], [160, 30]]), L("freinage", [[160, 202], [160, 270]]),
           T(175, 45, "Arrêt", "rouge"), T(175, 262, "Arrêt", "rouge"),
           J(240, 150, "C"),
           T(60, 150, "Glisser lentement, tourner\nles hanches, raboter la glace", "noir", "petit"),
@@ -526,6 +561,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_croises_cercle",
+      techniques: ["TS.P 9"],
+      forme: "groupes3",
       nom: "Croisés sur le cercle",
       categorie: "patinage",
       niveau: "intermediaire",
@@ -549,6 +586,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_glisse_un_pied",
+      techniques: ["TF.A 1", "TF.M 2", "TF.M 3"],
+      forme: "vagues",
       nom: "Glisse sur un pied et serpents",
       categorie: "patinage",
       duree: 6,
@@ -564,6 +603,7 @@ export function exercicesDeBase() {
           J(50, 100), J(50, 200),
           L("patin", [[62, 100], [225, 100]]), L("patin", [[62, 200], [225, 200]]),
           T(90, 70, "élan", "noir", "petit"),
+          L("glisse", [[236, 100], [364, 100]]), L("glisse", [[236, 200], [364, 200]]),
           L("libre", [[236, 100], [260, 88], [290, 112], [320, 88], [350, 112], [368, 100]]),
           L("libre", [[236, 200], [260, 188], [290, 212], [320, 188], [350, 212], [368, 200]]),
           T(240, 150, "glisse sur un pied jusqu'à la rouge, puis serpents", "noir", "petit"),
@@ -573,6 +613,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_virages_serres",
+      techniques: ["TS.P 7"],
+      forme: "parcours",
       nom: "Virages serrés autour des cônes",
       categorie: "patinage",
       duree: 8,
@@ -594,6 +636,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_transition_avant_arriere",
+      techniques: ["TS.P 19", "TS.P 20"],
+      forme: "vagues",
       nom: "Avant, demi-tour, arrière",
       categorie: "patinage",
       niveau: "intermediaire",
@@ -608,8 +652,8 @@ export function exercicesDeBase() {
         vue: "entiere",
         objets: [
           J(50, 100), J(50, 200),
-          L("patin", [[62, 100], [220, 100]]), L("arriere", [[236, 100], [364, 100]]), L("patin", [[378, 100], [550, 100]]),
-          L("patin", [[62, 200], [220, 200]]), L("arriere", [[236, 200], [364, 200]]), L("patin", [[378, 200], [550, 200]]),
+          L("pivot", [[62, 100], [225, 100]]), L("arriere", [[236, 100], [364, 100]]), L("pivot", [[368, 100], [550, 100]]),
+          L("pivot", [[62, 200], [225, 200]]), L("arriere", [[236, 200], [364, 200]]), L("pivot", [[368, 200], [550, 200]]),
           T(150, 40, "Avant → demi-tour → arrière → demi-tour → avant"),
         ],
       },
@@ -617,6 +661,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_conduite_tete_haute",
+      techniques: ["TS.M 1"],
+      forme: "actif",
       nom: "Conduite tête haute",
       categorie: "maniement",
       duree: 6,
@@ -638,6 +684,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_requins_sardines",
+      techniques: ["TS.M 3.1"],
+      forme: "actif",
       nom: "Requins et sardines",
       categorie: "jeu",
       duree: 8,
@@ -683,6 +731,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_passes_revers",
+      techniques: [],
+      forme: "groupes3",
       nom: "Triangle de passes, en revers",
       categorie: "passe",
       duree: 8,
@@ -706,6 +756,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_passe_bande",
+      techniques: [],
+      forme: "actif",
       nom: "Passe contre la bande",
       categorie: "passe",
       duree: 6,
@@ -730,6 +782,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_tir_revers",
+      techniques: [],
+      forme: "vagues",
       nom: "Tir du revers",
       categorie: "tir",
       duree: 8,
@@ -754,6 +808,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_passe_coin_tir",
+      techniques: [],
+      forme: "vagues",
       nom: "Passe du coin, tir en mouvement",
       categorie: "tir",
       duree: 10,
@@ -803,6 +859,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_chat_glace",
+      techniques: ["TS.P 7", "TS.P 15"],
+      forme: "actif",
       nom: "Chat glacé",
       categorie: "jeu",
       duree: 5,
@@ -876,6 +934,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_suivez_le_guide",
+      techniques: [],
+      forme: "duo",
       nom: "Suivez le guide",
       categorie: "echauffement",
       duree: 5,
@@ -922,6 +982,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_arrets_departs_sifflet",
+      techniques: ["TS.P 11", "TS.P 15"],
+      forme: "actif",
       nom: "Arrêts-départs au sifflet",
       categorie: "patinage",
       duree: 6,
@@ -935,8 +997,8 @@ export function exercicesDeBase() {
         vue: "entiere",
         objets: [
           J(60, 70), J(60, 110), J(60, 150), J(60, 190), J(60, 230),
-          L("patin", [[72, 70], [160, 70]]), L("patin", [[175, 70], [260, 70]]), L("patin", [[275, 70], [360, 70]]),
-          L("patin", [[72, 230], [160, 230]]), L("patin", [[175, 230], [260, 230]]), L("patin", [[275, 230], [360, 230]]),
+          L("acceleration", [[72, 70], [160, 70]]), L("freinage", [[175, 70], [260, 70]]), L("acceleration", [[275, 70], [360, 70]]),
+          L("acceleration", [[72, 230], [160, 230]]), L("freinage", [[175, 230], [260, 230]]), L("acceleration", [[275, 230], [360, 230]]),
           T(150, 40, "Sifflet : départ — Sifflet : arrêt — gauche, droite, gauche…"),
           J(450, 150, "C"),
         ],
@@ -945,6 +1007,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_slalom_marche_arriere",
+      techniques: ["TS.P 3", "TS.P 8"],
+      forme: "parcours",
       nom: "Slalom en marche arrière",
       categorie: "patinage",
       niveau: "intermediaire",
@@ -968,6 +1032,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_parcours_agilite",
+      techniques: ["TS.P 7", "TS.P 15", "TS.P 3"],
+      forme: "parcours",
       nom: "Le parcours d'agilité",
       categorie: "patinage",
       duree: 10,
@@ -993,6 +1059,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_protection_palet",
+      techniques: ["TS.M 3.1"],
+      forme: "duo",
       nom: "Protéger le palet, un contre un",
       categorie: "maniement",
       duree: 8,
@@ -1017,6 +1085,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_feintes_cone",
+      techniques: ["TS.M 2", "TS.M 4"],
+      forme: "parcours",
       nom: "Feintes autour du cône",
       categorie: "maniement",
       duree: 6,
@@ -1042,6 +1112,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_carre_signal",
+      techniques: ["TS.M 1"],
+      forme: "actif",
       nom: "Le carré : conduite au signal",
       categorie: "maniement",
       duree: 6,
@@ -1087,6 +1159,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_passes_longues",
+      techniques: [],
+      forme: "duo",
       nom: "Passes longues, réception en glissant",
       categorie: "passe",
       duree: 6,
@@ -1133,6 +1207,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_tir_tour_de_cage",
+      techniques: [],
+      forme: "vagues",
       nom: "Tour de cage et tir",
       categorie: "tir",
       duree: 8,
@@ -1157,6 +1233,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_tir_et_rebond",
+      techniques: [],
+      forme: "vagues",
       nom: "Tir et rebond",
       categorie: "tir",
       duree: 8,
@@ -1327,6 +1405,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_miroir",
+      techniques: [],
+      forme: "duo",
       nom: "Le miroir",
       categorie: "echauffement",
       duree: 5,
@@ -1371,6 +1451,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_croises_lateraux",
+      techniques: ["TS.P 9", "TS.P 12"],
+      forme: "vagues",
       nom: "Croisés latéraux sur la ligne",
       categorie: "patinage",
       niveau: "intermediaire",
@@ -1395,6 +1477,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_sauts_equilibre",
+      techniques: ["TF.A 1", "TF.A 2"],
+      forme: "vagues",
       nom: "Petits sauts et réceptions",
       categorie: "patinage",
       duree: 5,
@@ -1417,6 +1501,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_arret_en_t",
+      techniques: ["TS.P 16"],
+      forme: "vagues",
       nom: "L'arrêt en T",
       categorie: "patinage",
       duree: 5,
@@ -1439,6 +1525,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_cercle_marche_arriere",
+      techniques: ["TS.P 8", "TS.P 10"],
+      forme: "groupes3",
       nom: "Marche arrière sur le cercle",
       categorie: "patinage",
       niveau: "intermediaire",
@@ -1486,6 +1574,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_slalom_crosses",
+      techniques: ["TS.M 4", "TS.M 2"],
+      forme: "parcours",
       nom: "Slalom entre les crosses",
       categorie: "maniement",
       duree: 6,
@@ -1508,6 +1598,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_soulever_palet",
+      techniques: ["TS.M 4"],
+      forme: "actif",
       nom: "Soulever le palet",
       categorie: "maniement",
       duree: 5,
@@ -1577,6 +1669,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_relais_passes",
+      techniques: [],
+      forme: "relais",
       nom: "Relais de passes en ligne",
       categorie: "passe",
       duree: 6,
@@ -1600,6 +1694,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_tirs_en_mouvement_bleue",
+      techniques: [],
+      forme: "vagues",
       nom: "Tirs en mouvement depuis la bleue",
       categorie: "tir",
       duree: 8,
@@ -1622,6 +1718,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_tir_precision_cibles",
+      techniques: [],
+      forme: "vagues",
       nom: "Tirs de précision sur cibles",
       categorie: "tir",
       duree: 8,
@@ -1691,6 +1789,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_roi_du_cercle",
+      techniques: ["TS.M 1"],
+      forme: "actif",
       nom: "Le roi du cercle",
       categorie: "jeu",
       duree: 5,
@@ -1736,6 +1836,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_stations_quatre_ateliers",
+      techniques: [],
+      forme: "groupes3",
       nom: "Quatre ateliers en rotation",
       categorie: "patinage",
       niveau: "tous",
@@ -1760,6 +1862,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_enchainement_patinage_tir",
+      techniques: [],
+      forme: "vagues",
       nom: "L'enchaînement complet : patiner, recevoir, tirer",
       categorie: "tir",
       duree: 10,
@@ -1785,6 +1889,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_conduite_marche_arriere",
+      techniques: ["TS.M 1", "TS.P 3"],
+      forme: "vagues",
       nom: "Conduite de palet en marche arrière",
       categorie: "maniement",
       niveau: "intermediaire",
@@ -1799,7 +1905,7 @@ export function exercicesDeBase() {
         vue: "moitie",
         objets: [
           J(60, 80), P(72, 84), J(60, 150), P(72, 154), J(60, 220), P(72, 224),
-          L("arriere", [[80, 80], [240, 80]]), L("arriere", [[80, 150], [240, 150]]), L("arriere", [[80, 220], [240, 220]]),
+          L("arriere_palet", [[80, 80], [240, 80]]), L("arriere_palet", [[80, 150], [240, 150]]), L("arriere_palet", [[80, 220], [240, 220]]),
           L("patin", [[240, 260], [80, 260]]),
           J(280, 150, "C"),
           T(90, 40, "Le palet devant soi, tiré à petits coups", "noir", "petit"),
@@ -1809,6 +1915,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_echappee_un_contre_gardien",
+      techniques: [],
+      forme: "vagues",
       nom: "L'échappée : seul face au gardien",
       categorie: "tir",
       duree: 8,
@@ -1879,6 +1987,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_chasse_au_tresor",
+      techniques: [],
+      forme: "actif",
       nom: "La chasse aux palets",
       categorie: "jeu",
       duree: 6,
@@ -1926,6 +2036,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_test_patinage_chrono",
+      techniques: ["TS.P 2", "TS.P 3", "TS.P 15"],
+      forme: "parcours",
       nom: "Le test de patinage du mois",
       categorie: "patinage",
       niveau: "tous",
@@ -1949,6 +2061,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_conduite_a_une_main",
+      techniques: ["TS.M 3.1"],
+      forme: "vagues",
       nom: "Conduite à une main et protection",
       categorie: "maniement",
       niveau: "intermediaire",
@@ -1972,6 +2086,8 @@ export function exercicesDeBase() {
 
     ex({
       id: "cat_relais_navette_lignes",
+      techniques: ["TS.P 11", "TS.P 15"],
+      forme: "vagues",
       nom: "Navettes sur les lignes",
       categorie: "patinage",
       duree: 6,

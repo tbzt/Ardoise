@@ -4,7 +4,7 @@
 import { Store, blocLibre, blocDepuisExercice } from "../core/store.js";
 import { esc, debounce, statut, formaterDuree, heureA, formaterDate } from "../core/dom.js";
 import { CATEGORIES } from "../data/catalogue.js";
-import { chip, barreFiltres, filtrer, trier, exporterPdf } from "./communs.js";
+import { chip, barreFiltres, filtrer, trier, exporterPdf, exporterCarte, exporterFicheAtelier } from "./communs.js";
 import { seancesDuGroupe, seancesFaites, usageExercices, recouvrement, aRevoir, libelleUsage, formaterCourt, estFaite } from "../core/analyse.js";
 import { apercu, choisir } from "./dialogue.js";
 import { proposerDeroule } from "../core/brouillon.js";
@@ -30,7 +30,13 @@ export const Seance = {
         <a class="bouton primaire" href="#/seance/${se.id}/glace" title="La séance vue du banc : matériel, points clés, bloc en cours">Bord de glace</a>
         <a class="bouton" href="#/seance/${se.id}/glace#bilan" title="Noter comment ça s'est passé">${se.bilan && se.bilan.fait ? "Bilan ✓" : "Bilan"}</a>
         <a class="bouton" href="#/seance/${se.id}/imprimer">Imprimer</a>
-        <button type="button" data-act="pdf" title="Télécharger la feuille de séance en PDF">PDF</button>
+        <details class="menu">
+          <summary class="bouton" title="Télécharger en PDF">PDF ▾</summary>
+          <div class="menu-liste">
+            <button type="button" data-act="carte" title="Une page, gros caractères, sans schéma : à plier dans la poche">Carte de poche</button>
+            <button type="button" data-act="pdf" title="Le plan et chaque exercice avec son schéma">Feuille complète</button>
+          </div>
+        </details>
         <button type="button" data-act="dupliquer">Dupliquer</button>
         <button type="button" data-act="vers-groupe" title="Copier cette séance dans un groupe, ou la déplacer">Vers un groupe…</button>
         <button type="button" class="danger" data-act="supprimer">Supprimer</button>
@@ -135,6 +141,7 @@ export const Seance = {
                   <label class="duree"><input type="number" name="duree" min="1" max="120" value="${esc(b.duree)}" aria-label="Durée en minutes"> min</label>
                   <input class="note" name="note" value="${esc(b.note)}" placeholder="Consigne, variante, remarque…" aria-label="Note">
                   <div class="bloc-actions">
+                    ${ex ? `<button type="button" data-act="atelier" title="Fiche atelier (PDF) pour l'aide-entraîneur, avec la note de ce bloc">Fiche</button>` : ""}
                     <button type="button" data-act="monter" title="Monter" ${i === 0 ? "disabled" : ""}>▲</button>
                     <button type="button" data-act="descendre" title="Descendre" ${i === se.blocs.length - 1 ? "disabled" : ""}>▼</button>
                     <button type="button" data-act="retirer" class="danger" title="Retirer de la séance">×</button>
@@ -208,6 +215,11 @@ export const Seance = {
       if (!btn || !li) return;
       const i = se.blocs.findIndex((x) => x.id === li.dataset.id);
       if (i < 0) return;
+      if (btn.dataset.act === "atelier") {
+        const ex = Store.exercices.get(se.blocs[i].exerciceId);
+        if (ex) exporterFicheAtelier(ex, btn, { duree: se.blocs[i].duree, note: se.blocs[i].note });
+        return;
+      }
       if (btn.dataset.act === "monter" && i > 0) {
         [se.blocs[i - 1], se.blocs[i]] = [se.blocs[i], se.blocs[i - 1]];
       } else if (btn.dataset.act === "descendre" && i < se.blocs.length - 1) {
@@ -444,9 +456,11 @@ export const Seance = {
           statut(`Séance copiée dans « ${g.nom} ».`);
           location.hash = `#/seance/${copie.id}`;
         }
-      } else if (b.dataset.act === "pdf") {
+      } else if (b.dataset.act === "pdf" || b.dataset.act === "carte") {
         Store.seances.sauver(se);
-        await exporterPdf(se, b);
+        if (b.closest("details")) b.closest("details").open = false;
+        if (b.dataset.act === "carte") await exporterCarte(se, b);
+        else await exporterPdf(se, b);
       } else if (b.dataset.act === "dupliquer") {
         Store.seances.sauver(se);
         const copie = Store.seances.dupliquer(se.id);

@@ -88,6 +88,12 @@ export function proposerDeroule(se) {
   const groupe = se.groupeId ? Store.groupes.get(se.groupeId) : null;
   const faites = se.groupeId ? seancesFaites(se.groupeId).filter((s) => s.id !== se.id) : [];
   const usage = usageExercices(faites);
+  // les fiches FFHG déjà travaillées par le groupe, via les exercices faits
+  const techniquesVues = new Set();
+  for (const u of usage.values()) {
+    const ex = Store.exercices.get(u.exerciceId);
+    for (const code of (ex && ex.techniques) || []) techniquesVues.add(code);
+  }
   const D = Math.max(20, Number(se.duree_glace) || 60);
   const pause = D >= 50 ? 2 : 0;
   const dispo = D - pause;
@@ -104,7 +110,15 @@ export function proposerDeroule(se) {
     let n = 0;
     const candidats = bibli
       .filter((e) => e.categorie === cat && !pris.has(e.id))
-      .map((e) => ({ e, ...score(e, usage.get(e.id), groupe, faites.length) }))
+      .map((e) => {
+        const sc = score(e, usage.get(e.id), groupe, faites.length);
+        const neuves = (e.techniques || []).filter((c) => !techniquesVues.has(c));
+        if (neuves.length && faites.length) {
+          sc.s += 1;
+          sc.raisons.push(`technique FFHG pas encore travaillée (${neuves[0]})`);
+        }
+        return { e, ...sc };
+      })
       .sort((a, b) => b.s - a.s);
     while (restant > 2 && n < MAXIMUM[cat] && candidats.length) {
       // le meilleur qui tient dans le temps restant (avec une tolérance

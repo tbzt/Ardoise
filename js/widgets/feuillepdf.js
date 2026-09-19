@@ -6,7 +6,8 @@
 import { Store } from "../core/store.js";
 import { nouveauDocument, couperLignes, largeurTexte } from "../core/pdf.js";
 import { formaterDate, formaterDuree, heureA } from "../core/dom.js";
-import { CATEGORIES } from "../data/catalogue.js";
+import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
+import { FORMES_TRAVAIL, fiche } from "../data/referentiel.js";
 import { svg, VUES } from "./patinoire.js";
 
 const ENCRE = [24, 35, 46];
@@ -229,6 +230,256 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
     const num = `${i + 1} / ${n}`;
     p.texte(MARGE + LARGEUR_UTILE - largeurTexte(num, "normal", 7.5), A4.hauteur - 24, num, { taille: 7.5, couleur: GRIS });
   });
+
+  return new Blob([doc.generer()], { type: "application/pdf" });
+}
+
+/* ── La carte de poche ──────────────────────────────────────────
+   Une seule page, gros caractères, pas de schéma : ce qu'on lit d'un
+   coup d'œil au banc, un gant à la main. Si la séance est longue, la
+   mise en page se resserre d'elle-même (un point clé au lieu de deux,
+   puis des caractères plus petits) plutôt que de déborder. */
+
+function materielDe(se) {
+  const carte = new Map();
+  for (const b of se.blocs) {
+    const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
+    if (!ex || !ex.materiel) continue;
+    const brut = ex.materiel.trim().replace(/[.\s]+$/, "");
+    if (!brut || /^aucun/i.test(brut)) continue;
+    const cle = brut.toLowerCase();
+    if (!carte.has(cle)) carte.set(cle, brut);
+  }
+  return [...carte.values()];
+}
+
+export async function carteDePoche(se) {
+  const total = Store.dureeSeance(se);
+  let t = 0;
+  const lignes = se.blocs.map((b) => {
+    const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
+    const debut = t;
+    t += Number(b.duree) || 0;
+    return { b, ex, debut };
+  });
+  const materiel = materielDe(se);
+
+  /* On essaie des réglages de plus en plus serrés jusqu'à tenir. */
+  const reglages = [
+    { points: 2, k: 1 },
+    { points: 2, k: 0.92 },
+    { points: 1, k: 0.92 },
+    { points: 1, k: 0.84 },
+    { points: 0, k: 0.84 },
+    { points: 0, k: 0.76 },
+  ];
+  let doc;
+  for (const r of reglages) {
+    doc = composerCarte(se, lignes, materiel, total, r);
+    if (doc.pages.length === 1) break;
+  }
+  return new Blob([doc.generer()], { type: "application/pdf" });
+}
+
+function composerCarte(se, lignes, materiel, total, { points, k }) {
+  const doc = nouveauDocument(A4);
+  let page = doc.nouvellePage();
+  const M = 36;
+  const L = A4.largeur - 2 * M;
+  const BASF = A4.hauteur - 30;
+  let y = 40;
+  const T = (n) => n * k; // taille de caractère mise à l'échelle
+
+  const ecrire = (x, yy, texte, opts) => page.texte(x, yy, texte, opts);
+
+  // en-tête : titre, méta, objectif
+  const lignesTitre = couperLignes(se.titre || "Séance", "gras", T(22), L);
+  y += T(20);
+  y = page.lignes(M, y, lignesTitre, { police: "gras", taille: T(22), couleur: ENCRE, interligne: 1.12 });
+  const meta = [formaterDate(se.date), se.heure ? `${se.heure} – ${heureA(se.heure, total)}` : "", se.groupe, se.lieu, `${formaterDuree(total)} sur ${formaterDuree(se.duree_glace)}`].filter(Boolean).join("  ·  ");
+  y = page.lignes(M, y + 2, couperLignes(meta, "normal", T(11), L), { taille: T(11), couleur: GRIS });
+  if (se.objectif) y = page.lignes(M, y + 2, couperLignes(se.objectif, "oblique", T(11.5), L), { police: "oblique", taille: T(11.5), couleur: ENCRE });
+  y += 6;
+  page.ligne(M, y, M + L, y, { epaisseur: 1.4, couleur: ENCRE });
+  y += 12;
+
+  // à sortir + à avoir en tête, dans un cadre
+  const encadre = [];
+  if (materiel.length) encadre.push({ titre: "À SORTIR", lignes: couperLignes(materiel.join("  ·  "), "gras", T(11), L - 20) });
+  if (se.notes) encadre.push({ titre: "EN TÊTE", lignes: couperLignes(se.notes, "normal", T(10.5), L - 20).slice(0, 4) });
+  if (encadre.length) {
+    const h = encadre.reduce((a, e) => a + 14 + e.lignes.length * T(11) * 1.3, 0) + 12;
+    page.rect(M, y, L, h, { remplissage: [242, 245, 248], contour: REGLE, epaisseur: 0.6 });
+    let yy = y + 13;
+    for (const e of encadre) {
+      ecrire(M + 10, yy, e.titre, { police: "gras", taille: T(7.5), couleur: GRIS });
+      yy += 12;
+      yy = page.lignes(M + 10, yy, e.lignes, { police: e.titre === "À SORTIR" ? "gras" : "normal", taille: T(e.titre === "À SORTIR" ? 11 : 10.5), couleur: ENCRE, interligne: 1.3 });
+      yy += 2;
+    }
+    y += h + 14;
+  }
+
+  // les blocs
+  const xHeure = M;
+  const xTexte = M + 62;
+  const largeurTexte = L - 62;
+  lignes.forEach(({ b, ex, debut }, i) => {
+    const titre = `${i + 1}. ${b.titre || (ex && ex.nom) || ""}`;
+    const lTitre = couperLignes(titre, "gras", T(13), largeurTexte);
+    const cles = ex && ex.points_cles ? ex.points_cles.slice(0, points) : [];
+    const lCles = cles.map((c) => couperLignes(c, "normal", T(10.5), largeurTexte - 12));
+    const lNote = b.note ? couperLignes(b.note, "gras", T(10.5), largeurTexte - 12) : [];
+    const libre = !ex;
+    const hauteur = libre
+      ? T(13) * 1.2 + 10
+      : lTitre.length * T(13) * 1.2 + lCles.reduce((a, l) => a + l.length * T(10.5) * 1.3, 0) + lNote.length * T(10.5) * 1.3 + 12;
+    if (y + hauteur > BASF) {
+      page = doc.nouvellePage();
+      y = 40;
+    }
+    page.ligne(M, y, M + L, y, { epaisseur: libre ? 0.4 : 0.6, couleur: REGLE });
+    y += 6;
+    const yb = y + T(13);
+    ecrire(xHeure, yb, heureA(se.heure, debut), { police: "gras", taille: T(13), couleur: libre ? GRIS : ENCRE });
+    ecrire(xHeure, yb + T(10) * 1.2, `${b.duree} min`, { taille: T(9), couleur: GRIS });
+    let yt = page.lignes(xTexte, yb, lTitre, { police: "gras", taille: T(13), couleur: libre ? GRIS : ENCRE, interligne: 1.2 });
+    for (const l of lCles) {
+      ecrire(xTexte, yt, "•", { taille: T(10.5), couleur: GRIS });
+      yt = page.lignes(xTexte + 12, yt, l, { taille: T(10.5), couleur: ENCRE, interligne: 1.3 });
+    }
+    if (lNote.length) {
+      ecrire(xTexte, yt, "»", { police: "gras", taille: T(10.5), couleur: [154, 98, 0] });
+      yt = page.lignes(xTexte + 12, yt, lNote, { police: "gras", taille: T(10.5), couleur: [154, 98, 0], interligne: 1.3 });
+    }
+    y = Math.max(y + hauteur, yt - T(13) + 6);
+  });
+  page.ligne(M, y, M + L, y, { epaisseur: 1.2, couleur: ENCRE });
+
+  // pied
+  doc.pages.forEach((p, i) => {
+    p.texte(M, A4.hauteur - 16, `${se.titre || "Séance"}  ·  carte de poche  ·  Ardoise`, { taille: 7, couleur: GRIS });
+    if (doc.pages.length > 1) {
+      const num = `${i + 1} / ${doc.pages.length}`;
+      p.texte(M + L - largeurTexte(num, "normal", 7), A4.hauteur - 16, num, { taille: 7, couleur: GRIS });
+    }
+  });
+  return doc;
+}
+
+/* ── La fiche atelier ───────────────────────────────────────────
+   Une page par exercice, pour l'aide-entraîneur qui tient l'atelier :
+   le schéma en grand, l'objectif, l'organisation, les points clés, les
+   corrections, le matériel — et les repères de la formation fédérale
+   (forme de travail, temps d'activité, feedback). C'est la fiche qu'on
+   lui donne quinze minutes avant, comme le demande la formation. */
+export async function ficheAtelier(ex, { duree = null, note = "" } = {}) {
+  const doc = nouveauDocument(A4);
+  const page = doc.nouvellePage();
+  const M = 40;
+  const L = A4.largeur - 2 * M;
+  let y = 40;
+
+  const cat = CATEGORIES[ex.categorie] || { libelle: ex.categorie, couleur: "#888" };
+  y += 18;
+  y = page.lignes(M, y, couperLignes(ex.nom || "Exercice", "gras", 20, L - 120), { police: "gras", taille: 20, couleur: ENCRE, interligne: 1.12 });
+  const bandeau = [cat.libelle, NIVEAUX[ex.niveau] || "", `${duree || ex.duree} min`].filter(Boolean).join("  ·  ");
+  page.texte(M, y, bandeau, { police: "gras", taille: 10, couleur: hex(cat.couleur) });
+  page.texte(M + L - largeurTexte("FICHE ATELIER", "gras", 9), 52, "FICHE ATELIER", { police: "gras", taille: 9, couleur: GRIS });
+  y += 14;
+  if (ex.objectif) y = page.lignes(M, y, couperLignes(ex.objectif, "oblique", 11.5, L), { police: "oblique", taille: 11.5, couleur: ENCRE });
+  y += 4;
+  page.ligne(M, y, M + L, y, { epaisseur: 1.2, couleur: ENCRE });
+  y += 12;
+
+  // le schéma en grand
+  const image = await rasteriser(ex.schema, 3);
+  const largeurImage = Math.min(L, 320 / image.ratio);
+  const hImage = largeurImage * image.ratio;
+  const xImage = M + (L - largeurImage) / 2;
+  page.image(doc.ajouterImage(image.octets, image.w, image.h), xImage, y, largeurImage, hImage);
+  page.rect(xImage, y, largeurImage, hImage, { contour: REGLE, epaisseur: 0.5 });
+  y += hImage + 14;
+
+  // deux colonnes : organisation à gauche, points clés et corrections à droite
+  const colG = M;
+  const colD = M + L / 2 + 10;
+  const largeurCol = L / 2 - 10;
+  const bas = A4.hauteur - 60;
+  let yG = y;
+  let yD = y;
+  const titre = (x, yy, t) => {
+    page.texte(x, yy, t.toUpperCase(), { police: "gras", taille: 7.5, couleur: GRIS });
+    return yy + 11;
+  };
+  const para = (x, yy, texte, opts = {}) => {
+    const lignes = couperLignes(texte, opts.police || "normal", opts.taille || 9.5, largeurCol - (opts.retrait || 0));
+    for (const l of lignes) {
+      if (yy > bas) break;
+      if (l) page.texte(x + (opts.retrait || 0), yy, l, { police: opts.police || "normal", taille: opts.taille || 9.5, couleur: opts.couleur || ENCRE });
+      yy += (opts.taille || 9.5) * 1.32;
+    }
+    return yy;
+  };
+  const puces = (x, yy, liste, couleur = ENCRE, puce = "•") => {
+    for (const item of liste) {
+      if (yy > bas) break;
+      page.texte(x, yy, puce, { taille: 9.5, couleur: GRIS });
+      yy = para(x, yy, item, { retrait: 11, couleur });
+    }
+    return yy;
+  };
+
+  // gauche
+  if (ex.description) {
+    yG = titre(colG, yG, "Organisation et déroulé");
+    yG = para(colG, yG, ex.description) + 6;
+  }
+  if (ex.forme && FORMES_TRAVAIL[ex.forme]) {
+    yG = titre(colG, yG, "Forme de travail");
+    yG = para(colG, yG, FORMES_TRAVAIL[ex.forme]) + 6;
+  }
+  if (ex.materiel) {
+    yG = titre(colG, yG, "Matériel");
+    yG = para(colG, yG, ex.materiel) + 6;
+  }
+  if (ex.variantes) {
+    yG = titre(colG, yG, "Adapter : plus facile, plus dur");
+    yG = para(colG, yG, ex.variantes) + 6;
+  }
+  if (note) {
+    yG = titre(colG, yG, "Pour cette séance");
+    yG = para(colG, yG, note, { police: "gras", couleur: [154, 98, 0] }) + 6;
+  }
+
+  // droite
+  if (ex.points_cles && ex.points_cles.length) {
+    yD = titre(colD, yD, "Points clés — ce qu'on dit, ce qu'on regarde");
+    yD = puces(colD, yD, ex.points_cles) + 6;
+  }
+  const fiches = (ex.techniques || []).map(fiche).filter(Boolean);
+  const corrections = [...(ex.corrections || [])];
+  for (const fi of fiches) for (const c of fi.corrections.slice(0, 3)) corrections.push(c);
+  if (corrections.length) {
+    yD = titre(colD, yD, "Corrections — ce qu'on voit souvent");
+    yD = puces(colD, yD, corrections.slice(0, 8), ROUGE, "✗".normalize ? "x" : "x") + 6;
+  }
+  if (fiches.length) {
+    yD = titre(colD, yD, "Fiches techniques FFHG");
+    yD = para(colD, yD, fiches.map((fi) => `${fi.code} ${fi.nom}`).join(" · "), { taille: 9, couleur: GRIS }) + 6;
+  }
+
+  // pied : les repères de la formation aide-entraîneur
+  const reperes = couperLignes(
+    "Sur place 15 min avant, matériel prêt · une consigne d'une phrase pour lancer · temps d'attente 30 % au plus · feedback : 1 collectif, 3 individuels · se placer pour voir tout l'atelier",
+    "normal",
+    7.5,
+    L,
+  );
+  const yPied = A4.hauteur - 34 - reperes.length * 10;
+  page.ligne(M, yPied - 10, M + L, yPied - 10, { epaisseur: 0.6, couleur: REGLE });
+  const yFin = page.lignes(M, yPied, reperes, { taille: 7.5, couleur: GRIS, interligne: 1.33 });
+  page.texte(M, yFin + 2, `${ex.nom || "Exercice"}  ·  fiche atelier  ·  Ardoise`, { taille: 7, couleur: GRIS });
 
   return new Blob([doc.generer()], { type: "application/pdf" });
 }

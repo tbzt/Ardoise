@@ -21,20 +21,44 @@ export const COULEURS = {
   orange: "#ef6c00",
 };
 
+/* Les symboles suivent la « Fiche générale n° 1 — Légende des symboles »
+   du Guide fédéral de l'école de hockey (FFHG) et le lexique de la
+   formation aide-entraîneur : X et O pour les joueurs, F pour les avants,
+   D pour les défenseurs, G le gardien, C l'entraîneur. */
 export const FORMES = {
   X: "Joueur (X)",
   O: "Joueur (O)",
+  F: "Avant (F)",
+  D: "Défenseur (D)",
   G: "Gardien",
-  C: "Coach",
+  C: "Entraîneur",
 };
 
 export const STYLES_TRAIT = {
-  patin: "Patinage",
-  conduite: "Patinage avec palet",
-  passe: "Passe",
-  tir: "Tir",
-  arriere: "Marche arrière",
+  patin: "Patiner en avant sans palet",
+  conduite: "Patiner en avant avec palet",
+  arriere: "Patiner en arrière sans palet",
+  arriere_palet: "Patiner en arrière avec palet",
+  freinage: "Patiner et freiner",
+  glisse: "Glisser sur deux patins",
+  acceleration: "Accélérer",
+  pivot: "Pivoter",
+  passe: "Passer",
+  echange: "Échange de passes",
+  tir: "Tirer",
+  depose: "Abandonner le palet sur place",
   libre: "Trait libre",
+};
+
+/* Les objets qu'on pose, avec leur nom dans la légende. */
+export const OBJETS = {
+  palet: "Palet",
+  cone: "Plot",
+  cerceau: "Cerceau, cercle à la bombe",
+  passeur: "Passeur caoutchouc",
+  fantome: "Triangle / faux joueur",
+  cage: "Cage mobile",
+  texte: "Texte",
 };
 
 const GLACE = "#f6fafc";
@@ -126,6 +150,64 @@ function reechantillonner(pts, pas) {
   return out;
 }
 
+function longueurDe(pts) {
+  let l = 0;
+  for (let i = 1; i < pts.length; i++) l += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+  return l;
+}
+
+/* Le point à la distance `d` le long de la polyligne, et sa tangente. */
+function pointA(pts, d) {
+  let reste = d;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i];
+    const b = pts[i + 1];
+    const seg = Math.hypot(b.x - a.x, b.y - a.y) || 1e-9;
+    if (reste <= seg) {
+      const t = reste / seg;
+      return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, tx: (b.x - a.x) / seg, ty: (b.y - a.y) / seg };
+    }
+    reste -= seg;
+  }
+  const a = pts[pts.length - 2];
+  const b = pts[pts.length - 1];
+  const seg = Math.hypot(b.x - a.x, b.y - a.y) || 1e-9;
+  return { x: b.x, y: b.y, tx: (b.x - a.x) / seg, ty: (b.y - a.y) / seg };
+}
+
+/* Des boucles le long du chemin (une cycloïde allongée) : la marche
+   arrière avec palet, dessinée comme une suite de « e » cursifs. */
+function boucles(pts, pas = 11, rayon = 3.2) {
+  const L = longueurDe(pts);
+  if (L < 6) return lisser(pts);
+  const n = Math.max(1, Math.round(L / pas));
+  const pasReel = L / n;
+  const N = Math.max(12, Math.round(L / 1.2));
+  const out = [];
+  for (let i = 0; i <= N; i++) {
+    const d = (L * i) / N;
+    const q = pointA(pts, d);
+    const a = (2 * Math.PI * d) / pasReel;
+    const along = -rayon * 1.6 * Math.sin(a);
+    const perp = rayon * (Math.cos(a) - 1);
+    out.push(`${r(q.x + q.tx * along - q.ty * perp)},${r(q.y + q.ty * along + q.tx * perp)}`);
+  }
+  const fin = pts[pts.length - 1];
+  out[out.length - 1] = `${fin.x},${fin.y}`;
+  return "M" + out.join(" L");
+}
+
+/* De petites barres en travers du chemin : l'accélération. */
+function hachures(pts, pas = 5, demi = 3.2) {
+  const L = longueurDe(pts);
+  let d = "";
+  for (let x = pas; x < L - 6; x += pas) {
+    const q = pointA(pts, x);
+    d += `M${r(q.x - q.ty * demi)},${r(q.y + q.tx * demi)} L${r(q.x + q.ty * demi)},${r(q.y - q.tx * demi)} `;
+  }
+  return d;
+}
+
 /* Une ondulation le long du chemin : la conduite de palet. */
 function vague(pts, pas = 8, amp = 3.5) {
   const ech = reechantillonner(pts, pas);
@@ -174,8 +256,14 @@ function joueur(o, uid, inter) {
       break;
     case "C":
       corps =
-        `<rect x="-8" y="-8" width="16" height="16" rx="3" fill="${c}"/>` +
-        `<text y="0.5" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" dominant-baseline="central">C</text>`;
+        `<circle r="8.5" fill="#fff" stroke="${c}" stroke-width="2.2"/>` +
+        `<text y="0.5" font-size="11" font-weight="800" fill="${c}" text-anchor="middle" dominant-baseline="central">C</text>`;
+      break;
+    case "F":
+      corps = `<circle r="7" fill="${c}" stroke="#fff" stroke-width="1.5"/>`;
+      break;
+    case "D":
+      corps = `<path d="M0,-8.5 L8.5,6.5 L-8.5,6.5 Z" fill="${c}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>`;
       break;
     case "O":
       corps = `<circle r="7.5" fill="#fff" fill-opacity="0.85" stroke="${c}" stroke-width="3"/>`;
@@ -211,6 +299,27 @@ function cage(o, inter) {
   return `<g class="obj obj-cage" data-id="${o.id}" transform="translate(${o.x},${o.y}) rotate(${rot})">${halo}<path d="M0,-9 L-12,-9 L-12,9 L0,9" fill="#e9eef2" stroke="${ROUGE}" stroke-width="1.8" stroke-linejoin="round"/><line x1="0" y1="-9" x2="0" y2="9" stroke="${ROUGE}" stroke-width="2.4"/></g>`;
 }
 
+function cerceau(o, inter) {
+  const c = o.couleur ? couleurDe(o) : COULEURS.bleu;
+  const halo = inter ? `<circle r="10" fill="transparent"/><circle class="halo" r="11" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>` : "";
+  return `<g class="obj obj-cerceau" data-id="${o.id}" transform="translate(${o.x},${o.y})">${halo}<circle r="6" fill="none" stroke="${c}" stroke-width="2.2"/></g>`;
+}
+
+/* Le passeur caoutchouc : une barre contre laquelle on se fait une passe. */
+function passeur(o, inter) {
+  const c = o.couleur ? couleurDe(o) : COULEURS.noir;
+  const angle = Number(o.angle) || 0;
+  const halo = inter ? `<rect x="-17" y="-8" width="34" height="16" fill="transparent"/><rect class="halo" x="-17" y="-8" width="34" height="16" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>` : "";
+  return `<g class="obj obj-passeur" data-id="${o.id}" transform="translate(${o.x},${o.y}) rotate(${angle})">${halo}<rect x="-15" y="-2.5" width="30" height="5" rx="1" fill="${c}"/></g>`;
+}
+
+/* Le faux joueur : un triangle et une crosse, l'obstacle qui a une forme. */
+function fantome(o, inter) {
+  const c = o.couleur ? couleurDe(o) : COULEURS.noir;
+  const halo = inter ? `<circle r="13" fill="transparent"/><circle class="halo" r="14" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>` : "";
+  return `<g class="obj obj-fantome" data-id="${o.id}" transform="translate(${o.x},${o.y})">${halo}<path d="M0,-9 L8,7 L-8,7 Z" fill="none" stroke="${c}" stroke-width="2"/><line x1="5" y1="-1" x2="16" y2="8" stroke="${c}" stroke-width="2.2" stroke-linecap="round"/></g>`;
+}
+
 function texte(o, inter) {
   const c = couleurDe(o);
   const taille = o.taille === "grand" ? 15 : o.taille === "petit" ? 9 : 11.5;
@@ -229,10 +338,57 @@ function trait(o, uid, inter) {
   if (pts.length < 2) return "";
   const fleche = `marker-end="url(#fl-${uid}-${o.couleur || "noir"})"`;
   let d, corps;
+  const fin = pointA(pts, longueurDe(pts));
+  const bout = (k) => ({ x: r(fin.x + fin.tx * k), y: r(fin.y + fin.ty * k) });
+  const barre = (k, demi) => {
+    const p = bout(k);
+    return `<line x1="${r(p.x - fin.ty * demi)}" y1="${r(p.y + fin.tx * demi)}" x2="${r(p.x + fin.ty * demi)}" y2="${r(p.y - fin.tx * demi)}" stroke="${c}" stroke-width="2.2" stroke-linecap="round"/>`;
+  };
   switch (o.style) {
     case "conduite":
       d = vague(pts);
       corps = `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>`;
+      break;
+    case "arriere_palet":
+      d = boucles(pts);
+      corps = `<path d="${d}" fill="none" stroke="${c}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>`;
+      break;
+    case "freinage":
+      d = lisser(pts);
+      corps = `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>` + barre(5, 5) + barre(8.5, 5);
+      break;
+    case "glisse":
+      d = lisser(pts);
+      corps =
+        `<path d="${d}" fill="none" stroke="${c}" stroke-width="5" stroke-linecap="butt" stroke-linejoin="round"/>` +
+        `<path d="${d}" fill="none" stroke="${GLACE}" stroke-width="2" stroke-linecap="butt" stroke-linejoin="round"/>`;
+      break;
+    case "acceleration":
+      d = lisser(pts);
+      corps =
+        `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>` +
+        `<path d="${hachures(pts)}" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round"/>`;
+      break;
+    case "pivot": {
+      d = lisser(pts);
+      const p = bout(-5);
+      corps =
+        `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>` +
+        `<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="${GLACE}" stroke="${c}" stroke-width="2"/>`;
+      break;
+    }
+    case "depose": {
+      d = lisser(pts);
+      const p = bout(-10);
+      corps =
+        `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>` +
+        `<circle cx="${p.x}" cy="${p.y}" r="2.8" fill="#1b1f24"/>` +
+        barre(-5.5, 5);
+      break;
+    }
+    case "echange":
+      d = lisser(pts);
+      corps = `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-dasharray="8 6" stroke-linecap="round" marker-start="url(#fl-${uid}-${o.couleur || "noir"})" ${fleche}/>`;
       break;
     case "passe":
       d = lisser(pts);
@@ -245,8 +401,8 @@ function trait(o, uid, inter) {
         `<path d="${d}" fill="none" stroke="${GLACE}" stroke-width="2" stroke-linecap="butt" stroke-linejoin="round"/>`;
       break;
     case "arriere":
-      d = arcs(pts);
-      corps = `<path d="${d}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" ${fleche}/>`;
+      d = vague(pts, 14, 5.5);
+      corps = `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" ${fleche}/>`;
       break;
     case "libre":
       d = lisser(pts);
@@ -275,6 +431,12 @@ export function objet(o, uid, inter = false) {
       return cone(o, inter);
     case "cage":
       return cage(o, inter);
+    case "cerceau":
+      return cerceau(o, inter);
+    case "passeur":
+      return passeur(o, inter);
+    case "fantome":
+      return fantome(o, inter);
     case "texte":
       return texte(o, inter);
     case "trait":
@@ -290,7 +452,7 @@ function defs(uid) {
     Object.entries(COULEURS)
       .map(
         ([nom, c]) =>
-          `<marker id="fl-${uid}-${nom}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="${c}"/></marker>`,
+          `<marker id="fl-${uid}-${nom}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="${c}"/></marker>`,
       )
       .join("") +
     "</defs>"
@@ -327,4 +489,27 @@ export function viewBox(vue) {
 
 function esc(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/* La légende : chaque symbole en vignette, avec son nom. Servie à
+   l'éditeur, à la feuille imprimée et à l'aperçu, pour que quelqu'un
+   qui n'a jamais vu l'appli sache lire un schéma. */
+export function legende() {
+  const uid = "lg";
+  const mini = (contenu, w = 64, h = 20) =>
+    `<svg class="legende-svg" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" aria-hidden="true">${defs(uid)}${contenu}</svg>`;
+  const trait = (style) => mini(objet({ id: "l", t: "trait", style, couleur: "noir", pts: [{ x: 4, y: 10 }, { x: 56, y: 10 }] }, uid));
+  const centre = (o) => mini(`<g transform="translate(14,10)">${objet({ id: "l", ...o }, uid).replace(/transform="translate\([^)]*\)/, 'transform="translate(0,0)')}</g>`, 28, 20);
+  const symboles = [];
+  for (const [forme, nom] of Object.entries(FORMES)) symboles.push({ nom, svg: centre({ t: "joueur", forme, x: 0, y: 0, couleur: "noir" }) });
+  symboles.push({ nom: OBJETS.palet, svg: centre({ t: "palet", x: 0, y: 0 }) });
+  symboles.push({ nom: OBJETS.cone, svg: centre({ t: "cone", x: 0, y: 0 }) });
+  symboles.push({ nom: OBJETS.cerceau, svg: centre({ t: "cerceau", x: 0, y: 0 }) });
+  symboles.push({ nom: OBJETS.passeur, svg: centre({ t: "passeur", x: 0, y: 0, angle: 0 }) });
+  symboles.push({ nom: OBJETS.fantome, svg: centre({ t: "fantome", x: 0, y: 0 }) });
+  symboles.push({ nom: OBJETS.cage, svg: centre({ t: "cage", x: 0, y: 0, sens: "droite" }) });
+  const traits = Object.entries(STYLES_TRAIT)
+    .filter(([k]) => k !== "libre")
+    .map(([k, nom]) => ({ nom, svg: trait(k) }));
+  return { symboles, traits };
 }

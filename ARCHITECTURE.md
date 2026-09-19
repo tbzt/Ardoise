@@ -42,7 +42,8 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/core/theme.js         clair / sombre / système
                    js/core/dom.js           esc, debounce, formats de date et de durée, statut
                    js/core/ids.js           identifiants courts
-0. Données         js/data/catalogue.js     catégories, niveaux, exercices et séance fournis
+0. Données         js/data/catalogue.js     catégories, niveaux, exercices et séances fournis
+                   js/data/referentiel.js   fiches techniques FFHG (codes, points clés, corrections), formes de travail
 ```
 
 `patinoire.js` ne connaît ni le DOM interactif ni le Store : il transforme un schéma en chaîne SVG. L'éditeur, les vignettes des cartes, l'impression et le PDF s'en servent tous — un seul dessin, quatre usages. Les zones de saisie et halos de sélection ne sont émis qu'en mode interactif (`objet(o, uid, true)`), si bien que le SVG reste juste même sans la feuille de style — c'est ce qui permet de le rendre dans un `<img>` puis un canvas pour le PDF.
@@ -58,6 +59,9 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
 {
   id, nom, categorie, niveau, duree,          // durée en minutes
   objectif, description, points_cles: [],     // texte
+  corrections: [],                            // « erreur → correction », format des fiches FFHG
+  techniques: [],                             // codes de fiches FFHG : "TS.P 15", "TS.M 1"…
+  forme: "" | actif|vagues|groupes3|parcours|duo|relais,   // forme de travail (Module A)
   materiel, variantes,
   schema: { vue: "entiere" | "moitie", objets: [ ... ] },
   cree, modifie                               // horodatages
@@ -67,16 +71,19 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
 ### Objets d'un schéma
 Le repère est la patinoire entière en décimètres : `600 × 300`, origine en haut à gauche. La vue n'est qu'un cadrage (`viewBox`).
 
-| `t`      | champs                                             |
-|----------|----------------------------------------------------|
-| `joueur` | `x, y, forme: X\|O\|G\|C, label, couleur`           |
-| `palet`  | `x, y`                                             |
-| `cone`   | `x, y, couleur`                                    |
-| `cage`   | `x, y, sens: gauche\|droite\|haut\|bas`            |
-| `texte`  | `x, y, texte, taille: petit\|moyen\|grand, couleur` |
-| `trait`  | `pts: [{x,y}…], style, couleur`                    |
+| `t`       | champs                                                   |
+|-----------|----------------------------------------------------------|
+| `joueur`  | `x, y, forme: X\|O\|F\|D\|G\|C, label, couleur`           |
+| `palet`   | `x, y`                                                   |
+| `cone`    | `x, y, couleur`                                          |
+| `cerceau` | `x, y, couleur`                                          |
+| `passeur` | `x, y, angle: 0\|45\|90\|135, couleur`                  |
+| `fantome` | `x, y, couleur`                                          |
+| `cage`    | `x, y, sens: gauche\|droite\|haut\|bas`                  |
+| `texte`   | `x, y, texte, taille: petit\|moyen\|grand, couleur`       |
+| `trait`   | `pts: [{x,y}…], style, couleur`                          |
 
-Styles de trait : `patin`, `conduite` (ondulé), `passe` (pointillé), `tir` (double), `arriere` (arcs), `libre` (sans flèche). Les points d'un trait sont ceux que l'utilisateur a tracés, simplifiés (Ramer-Douglas-Peucker) ; le lissage, l'ondulation et les arcs sont recalculés au rendu.
+Styles de trait, d'après la légende fédérale : `patin`, `conduite` (ondulé), `arriere` (ondulation large), `arriere_palet` (boucles), `freinage` (flèche et deux barres), `glisse` (double trait sans flèche), `acceleration` (hachures), `pivot` (boucle en bout), `passe` (pointillé), `echange` (pointillé à deux pointes), `tir` (double trait), `depose` (palet et barre), `libre`. `legende()` rend chaque symbole en vignette pour l'éditeur et la feuille imprimée. Les points d'un trait sont ceux que l'utilisateur a tracés, simplifiés (Ramer-Douglas-Peucker) ; le lissage, l'ondulation et les arcs sont recalculés au rendu.
 
 ### Séance
 ```js
@@ -99,6 +106,9 @@ Supprimer un groupe détache ses séances, il ne les efface pas.
 
 ### Brouillon
 `js/core/brouillon.js` compose un déroulé en trois temps : (1) les minutes visées par catégorie — `CIBLE` corrigée par l'écart des quatre dernières séances, correction amortie tant que l'historique est court, patinage jamais sous 22 % ; (2) dans chaque catégorie, les exercices classés par un score lisible (jamais fait +3, fait la dernière fois −3, « à revoir » au dernier bilan +3, niveau inadapté −4, un peu de hasard) et pris tant que le temps reste ; (3) un ajustement au temps de glace qui donne le reste à la catégorie la plus en dessous de son objectif et rogne celles qui dépassent le plus. Chaque bloc ressort avec ses raisons, affichées au coach.
+
+### Référentiel
+`js/data/referentiel.js` reprend, condensées, les fiches du « Programme de développement du joueur à long terme » (Peythieu et Charrier, DTN FFHG, 2016) : code, nom, points clés, corrections, et un drapeau `u9` pour celles que la programmation U9 travaille en priorité. Il est purement descriptif : les exercices s'y rattachent par code, et tout ce qui en découle (affichage, couverture par groupe, bonus dans le brouillon) se calcule.
 
 ### Analyse
 `js/core/analyse.js` ne stocke rien : tout se recalcule depuis les séances et leurs bilans. Une séance est **faite** si son bilan le dit, ou si sa date est passée avec un déroulé. Les blocs décochés dans le bilan sont exclus des comptes. `CIBLE` donne la part de temps conseillée par catégorie pour des adultes débutants ; chaque conseil de `conseils()` vient d'une règle nommée (équilibre, absence, répétition, à revoir).

@@ -8,8 +8,8 @@
 import { Store, bilanVierge } from "../core/store.js";
 import { Storage } from "../core/storage.js";
 import { esc, debounce, statut, formaterDate, formaterDuree, heureA } from "../core/dom.js";
-import { chip, vignette } from "./communs.js";
-import { exporterPdf } from "./communs.js";
+import { chip, vignette, blocTechnique } from "./communs.js";
+import { exporterPdf, exporterCarte } from "./communs.js";
 
 function minutesDe(heure) {
   const m = /^(\d{1,2}):(\d{2})$/.exec(heure || "");
@@ -70,7 +70,8 @@ export const BordGlace = {
         <a class="retour" href="#/seance/${se.id}">← Préparer</a>
         <span class="spacer"></span>
         <a class="bouton" href="#/seance/${se.id}/imprimer">Feuille</a>
-        <button type="button" data-act="pdf">PDF</button>
+        <button type="button" data-act="carte" title="Une page à plier dans la poche">Carte de poche</button>
+        <button type="button" data-act="pdf" title="La feuille complète en PDF">PDF</button>
       </div>
       <header class="glace-tete">
         <h1>${esc(se.titre) || "Séance"}</h1>
@@ -95,6 +96,7 @@ export const BordGlace = {
             : `<p class="glace-rien">Rien à sortir : les exercices choisis n'ont pas de matériel.</p>`
         }
         ${se.notes ? `<h2>À avoir en tête</h2><p class="glace-notes">${esc(se.notes).replace(/\n/g, "<br>")}</p>` : ""}
+        <p class="glace-rappels">Feedback : 1 collectif, 3 individuels · le temps d'attente ne dépasse pas 30 % · une consigne d'une phrase pour lancer, puis on corrige en jouant.</p>
       </section>
 
       <ol class="glace-blocs">
@@ -113,7 +115,7 @@ export const BordGlace = {
             ${b.note ? `<p class="glace-note">${esc(b.note)}</p>` : ""}
             ${
               ex
-                ? `<details class="glace-details"><summary>Schéma et déroulé</summary>${vignette(ex.schema)}${ex.description ? `<p>${esc(ex.description).replace(/\n/g, "<br>")}</p>` : ""}${ex.materiel ? `<p class="glace-materiel-ex"><strong>Matériel :</strong> ${esc(ex.materiel)}</p>` : ""}${ex.variantes ? `<p class="glace-materiel-ex"><strong>Variantes :</strong> ${esc(ex.variantes)}</p>` : ""}</details>`
+                ? `${ex.corrections && ex.corrections.length ? `<ul class="glace-corrections">${ex.corrections.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}<details class="glace-details"><summary>Schéma et déroulé</summary>${vignette(ex.schema)}${ex.description ? `<p>${esc(ex.description).replace(/\n/g, "<br>")}</p>` : ""}${ex.materiel ? `<p class="glace-materiel-ex"><strong>Matériel :</strong> ${esc(ex.materiel)}</p>` : ""}${ex.variantes ? `<p class="glace-materiel-ex"><strong>Variantes :</strong> ${esc(ex.variantes)}</p>` : ""}${blocTechnique({ ...ex, corrections: [] })}</details>`
                 : ""
             }
           </li>`,
@@ -172,6 +174,7 @@ export const BordGlace = {
     }
 
     sec.querySelector("[data-act='pdf']").addEventListener("click", (e) => exporterPdf(se, e.currentTarget));
+    sec.querySelector("[data-act='carte']").addEventListener("click", (e) => exporterCarte(se, e.currentTarget));
 
     /* ── Le bilan ──────────────────────────────────────────── */
     const bilanEl = sec.querySelector(".glace-bilan");

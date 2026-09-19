@@ -4,8 +4,10 @@ import { Store, blocDepuisExercice } from "../core/store.js";
 import { esc, debounce, statut, formaterDate } from "../core/dom.js";
 import { Archive } from "../core/archive.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
+import { FORMES_TRAVAIL, FAMILLES, fichesParFamille } from "../data/referentiel.js";
 import { creerEditeur } from "./editeur.js";
 import { choisir } from "./dialogue.js";
+import { exporterFicheAtelier } from "./communs.js";
 
 export const Exercice = {
   afficher(main, id) {
@@ -24,6 +26,7 @@ export const Exercice = {
         <span class="etat" data-etat>Enregistré</span>
         <span class="spacer"></span>
         <button type="button" data-act="seance">Ajouter à une séance…</button>
+        <button type="button" data-act="atelier" title="Une page pour l'aide-entraîneur qui tient cet atelier : schéma, organisation, points clés, corrections">Fiche atelier (PDF)</button>
         <button type="button" data-act="exporter" title="Télécharger cet exercice seul, en JSON, pour le partager ou le garder">Exporter</button>
         <button type="button" data-act="dupliquer">Dupliquer</button>
         <button type="button" class="danger" data-act="supprimer">Supprimer</button>
@@ -50,6 +53,22 @@ export const Exercice = {
           <label>Objectif <input name="objectif" value="${esc(ex.objectif)}" placeholder="Ce que les joueurs doivent avoir appris à la fin"></label>
           <label>Description <textarea name="description" rows="8" placeholder="Mise en place, déroulé, consignes…">${esc(ex.description)}</textarea></label>
           <label>Points clés <small>un par ligne</small> <textarea name="points_cles" rows="4" placeholder="Genoux fléchis&#10;Regard devant">${esc((ex.points_cles || []).join("\n"))}</textarea></label>
+          <label>Corrections <small>erreur → correction, une par ligne</small> <textarea name="corrections" rows="3" placeholder="Dos rond → genoux fléchis, regard loin devant">${esc((ex.corrections || []).join("\n"))}</textarea></label>
+          <label>Forme de travail <small>Module A fédéral</small>
+            <select name="forme"><option value="">—</option>${Object.entries(FORMES_TRAVAIL)
+              .map(([k, v]) => `<option value="${k}"${ex.forme === k ? " selected" : ""}>${esc(v)}</option>`)
+              .join("")}</select>
+          </label>
+          <details class="techniques" ${(ex.techniques || []).length ? "open" : ""}>
+            <summary>Fiches techniques FFHG <small>${(ex.techniques || []).length ? `${ex.techniques.length} rattachée${ex.techniques.length > 1 ? "s" : ""}` : "aucune"}</small></summary>
+            ${Object.entries(fichesParFamille())
+              .map(
+                ([fam, liste]) => `<div class="techniques-famille"><h4>${esc(FAMILLES[fam])}</h4>${liste
+                  .map((fi) => `<label class="technique"><input type="checkbox" name="techniques" value="${fi.code}" ${(ex.techniques || []).includes(fi.code) ? "checked" : ""}> <b>${fi.code}</b> ${esc(fi.nom)}</label>`)
+                  .join("")}</div>`,
+              )
+              .join("")}
+          </details>
           <label>Matériel <input name="materiel" value="${esc(ex.materiel)}" placeholder="Cônes, palets, chasubles…"></label>
           <label>Variantes <textarea name="variantes" rows="3" placeholder="Plus facile, plus dur, pour les gardiens…">${esc(ex.variantes)}</textarea></label>
         </form>
@@ -81,7 +100,12 @@ export const Exercice = {
       const c = e.target;
       if (!c.name) return;
       if (c.name === "points_cles") ex.points_cles = c.value.split("\n").map((l) => l.trim()).filter(Boolean);
-      else if (c.name === "duree") ex.duree = Math.max(1, Number(c.value) || 1);
+      else if (c.name === "corrections") ex.corrections = c.value.split("\n").map((l) => l.trim()).filter(Boolean);
+      else if (c.name === "techniques") {
+        ex.techniques = [...sec.querySelectorAll('input[name="techniques"]:checked')].map((x) => x.value);
+        const sm = sec.querySelector(".techniques summary small");
+        if (sm) sm.textContent = ex.techniques.length ? `${ex.techniques.length} rattachée${ex.techniques.length > 1 ? "s" : ""}` : "aucune";
+      } else if (c.name === "duree") ex.duree = Math.max(1, Number(c.value) || 1);
       else ex[c.name] = c.value;
       toucher();
     });
@@ -89,7 +113,10 @@ export const Exercice = {
     sec.querySelector(".entete").addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.act === "exporter") {
+      if (b.dataset.act === "atelier") {
+        Store.exercices.sauver(ex);
+        await exporterFicheAtelier(ex, b);
+      } else if (b.dataset.act === "exporter") {
         Store.exercices.sauver(ex);
         Archive.exporterExercice(ex);
         statut("Exercice exporté.");

@@ -1,8 +1,9 @@
 /* Ce que plusieurs écrans partagent : la pastille de catégorie, le
    filtre de bibliothèque (recherche + catégories), les vignettes. */
 import { esc, statut, telechargerBlob, slug } from "../core/dom.js";
-import { seanceEnPdf } from "./feuillepdf.js";
+import { seanceEnPdf, carteDePoche, ficheAtelier } from "./feuillepdf.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
+import { FORMES_TRAVAIL, fiche } from "../data/referentiel.js";
 import { svg } from "./patinoire.js";
 
 export function chip(categorie) {
@@ -71,6 +72,75 @@ export async function exporterPdf(se, bouton) {
   } catch (e) {
     console.error(e);
     alert(`Le PDF n'a pas pu être fabriqué : ${e.message}`);
+  } finally {
+    if (bouton) {
+      bouton.disabled = false;
+      bouton.textContent = libelle;
+    }
+  }
+}
+
+/* La carte de poche : une page, gros caractères, sans schéma. */
+export async function exporterCarte(se, bouton) {
+  const libelle = bouton ? bouton.textContent : "";
+  if (bouton) {
+    bouton.disabled = true;
+    bouton.textContent = "Fabrication…";
+  }
+  try {
+    const blob = await carteDePoche(se);
+    telechargerBlob(`carte-${slug(se.titre) || se.id}${se.date ? `-${se.date}` : ""}.pdf`, blob);
+    statut("Carte de poche téléchargée.");
+  } catch (e) {
+    console.error(e);
+    alert(`La carte n'a pas pu être fabriquée : ${e.message}`);
+  } finally {
+    if (bouton) {
+      bouton.disabled = false;
+      bouton.textContent = libelle;
+    }
+  }
+}
+
+/* Ce qu'un exercice doit à ses fiches FFHG : les codes, et, repliés,
+   les points clés et corrections de chaque fiche. */
+export function blocTechnique(ex, { ouvert = false } = {}) {
+  const codes = (ex.techniques || []).map(fiche).filter(Boolean);
+  const forme = ex.forme && FORMES_TRAVAIL[ex.forme];
+  if (!codes.length && !forme && !(ex.corrections && ex.corrections.length)) return "";
+  return `
+    <div class="technique-bloc">
+      ${forme ? `<p class="forme-travail"><strong>Forme de travail :</strong> ${esc(forme)}</p>` : ""}
+      ${ex.corrections && ex.corrections.length ? `<p class="corrections-titre"><strong>Corrections</strong></p><ul class="corrections">${ex.corrections.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
+      ${codes
+        .map(
+          (fi) => `<details class="fiche-ffhg" ${ouvert ? "open" : ""}><summary><b>${fi.code}</b> ${esc(fi.nom)} <small>fiche FFHG</small></summary>
+            ${fi.points.length ? `<p class="mini-titre">Points clés</p><ul>${fi.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+            ${fi.corrections.length ? `<p class="mini-titre">Corrections</p><ul class="corrections">${fi.corrections.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+          </details>`,
+        )
+        .join("")}
+    </div>`;
+}
+
+export function codesTechniques(ex) {
+  return (ex.techniques || []).map(fiche).filter(Boolean);
+}
+
+/* La fiche atelier d'un exercice, pour l'aide-entraîneur. */
+export async function exporterFicheAtelier(ex, bouton, opts = {}) {
+  const libelle = bouton ? bouton.textContent : "";
+  if (bouton) {
+    bouton.disabled = true;
+    bouton.textContent = "Fabrication…";
+  }
+  try {
+    const blob = await ficheAtelier(ex, opts);
+    telechargerBlob(`atelier-${slug(ex.nom) || ex.id}.pdf`, blob);
+    statut("Fiche atelier téléchargée.");
+  } catch (e) {
+    console.error(e);
+    alert(`La fiche n'a pas pu être fabriquée : ${e.message}`);
   } finally {
     if (bouton) {
       bouton.disabled = false;

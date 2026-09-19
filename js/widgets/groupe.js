@@ -7,6 +7,8 @@ import { esc, debounce, statut, formaterDate, formaterDuree } from "../core/dom.
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { chip } from "./communs.js";
 import { choisir } from "./dialogue.js";
+import { FICHES, FAMILLES } from "../data/referentiel.js";
+import { blocsFaits } from "../core/analyse.js";
 import { CIBLE, seancesDuGroupe, seancesFaites, estFaite, repartition, usageExercices, conseils, aRevoir, noteMoyenne, formaterCourt } from "../core/analyse.js";
 
 const etoiles = (n) => (n ? "★".repeat(n) + "☆".repeat(5 - n) : "");
@@ -82,6 +84,11 @@ export const Groupe = {
         <section class="groupe-section">
           <h2>Équilibre <small>${faites.length ? `sur ${Math.min(faites.length, 4)} dernière${faites.length > 1 ? "s" : ""} séance${faites.length > 1 ? "s" : ""}` : ""}</small></h2>
           ${equilibre(faites.slice(-4))}
+        </section>
+
+        <section class="groupe-section">
+          <h2>Techniques FFHG travaillées <small>${couvertureTechniques(faites).faites} sur ${FICHES.length}</small></h2>
+          ${couverture(faites)}
         </section>
 
         <section class="groupe-section">
@@ -243,4 +250,35 @@ function equilibre(seances) {
       return `<div class="equilibre-ligne"><span class="lib">${esc(lib)}</span><span class="barre"><i style="width:${Math.min(100, part)}%;background:${coul}"></i>${cible ? `<b style="left:${cible}%" title="conseillé : ${cible} %"></b>` : ""}</span><span class="mono val">${Math.round(part)} %${cible ? ` <small>/ ${cible}</small>` : ""}</span></div>`;
     })
     .join("")}<p class="legende">La barre pleine, c'est le temps réellement passé ; le trait, la part conseillée pour des adultes débutants. Un écart n'est pas une faute : c'est une information.</p></div>`;
+}
+
+/* Combien de séances ont travaillé chaque fiche FFHG, via les exercices
+   qui s'y rattachent. */
+function couvertureTechniques(faites) {
+  const compte = {};
+  for (const se of faites) {
+    const vus = new Set();
+    for (const b of blocsFaits(se)) {
+      const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
+      for (const code of (ex && ex.techniques) || []) vus.add(code);
+    }
+    for (const code of vus) compte[code] = (compte[code] || 0) + 1;
+  }
+  return { compte, faites: Object.keys(compte).length };
+}
+
+function couverture(faites) {
+  const { compte } = couvertureTechniques(faites);
+  const parFamille = {};
+  for (const fi of FICHES) (parFamille[fi.famille] = parFamille[fi.famille] || []).push(fi);
+  return `<div class="couverture">${Object.entries(parFamille)
+    .map(
+      ([fam, liste]) => `<div class="couverture-famille"><h4>${esc(FAMILLES[fam])}</h4><ul>${liste
+        .map((fi) => {
+          const n = compte[fi.code] || 0;
+          return `<li class="${n ? "vu" : "jamais"} ${fi.u9 ? "u9" : ""}" title="${fi.u9 ? "priorité U9 dans la programmation fédérale" : ""}"><b>${fi.code}</b> ${esc(fi.nom)} <span class="mono">${n ? `${n}×` : "—"}</span></li>`;
+        })
+        .join("")}</ul></div>`,
+    )
+    .join("")}<p class="legende">D'après le Programme de développement du joueur à long terme (DTN FFHG). Les fiches marquées ● sont celles que la programmation U9 travaille en priorité — un bon socle pour des adultes qui débutent. Une fiche compte quand un exercice qui s'y rattache a été fait.</p></div>`;
 }

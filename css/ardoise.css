@@ -563,17 +563,48 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   justify-content: center;
 }
 .editeur .icone-trait {
-  width: 38px;
-  height: 14px;
+  width: 48px;
+  height: 15px;
   display: block;
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
-  stroke-linecap: round;
 }
-.editeur .icone-trait .pointe {
-  fill: currentColor;
-  stroke: none;
+.legende {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--e3) var(--e5);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  padding: var(--e3) var(--e4);
+  font-size: 0.85rem;
+}
+.legende h4 {
+  margin: 0 0 var(--e1);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+.legende ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.legende li {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: 2px 0;
+}
+.legende-svg {
+  flex: none;
+  background: #f6fafc;
+  border-radius: 3px;
+}
+.legende-source {
+  grid-column: 1 / -1;
+  color: var(--ink-faint);
+  font-size: 0.78rem;
+  margin: 0;
 }
 .editeur .vue {
   width: auto;
@@ -1717,4 +1748,210 @@ details.groupe-section[open] summary::before {
   color: var(--ink-soft);
   font-size: 0.85rem;
   margin: 0;
+}
+
+/* ── Petit menu déroulant (PDF ▾) ───────────────────────────── */
+
+details.menu {
+  position: relative;
+  display: inline-block;
+}
+details.menu summary {
+  list-style: none;
+  cursor: pointer;
+}
+details.menu summary::-webkit-details-marker {
+  display: none;
+}
+.menu-liste {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  background: var(--surface);
+  border: 1px solid var(--rule-controle);
+  border-radius: var(--rayon-petit);
+  box-shadow: var(--ombre);
+  padding: var(--e1);
+}
+.menu-liste button {
+  border: none;
+  background: transparent;
+  justify-content: flex-start;
+  text-align: left;
+  border-radius: var(--rayon-petit);
+}
+.menu-liste button:hover {
+  background: var(--accent-soft);
+}
+
+/* ── Fiches FFHG, formes de travail, corrections ─────────────── */
+
+.techniques {
+  margin-bottom: var(--e3);
+  font-size: 0.9rem;
+}
+.techniques summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: var(--e1) 0;
+}
+.techniques-famille h4 {
+  margin: var(--e2) 0 var(--e1);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+.technique {
+  display: flex;
+  gap: var(--e2);
+  align-items: center;
+  font-weight: 400;
+  margin: 0;
+  padding: 2px 0;
+  color: var(--ink);
+}
+.technique input {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  accent-color: var(--accent);
+}
+.technique b {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent-ink);
+}
+.technique-bloc {
+  margin-top: var(--e3);
+  font-size: 0.92rem;
+}
+.forme-travail,
+.corrections-titre {
+  margin-bottom: var(--e1);
+}
+.corrections {
+  margin: 0 0 var(--e2);
+  padding-left: 1.2em;
+  color: var(--danger);
+}
+.corrections li::marker {
+  content: "✗ ";
+}
+.fiche-ffhg {
+  border-left: 3px solid var(--accent);
+  padding: var(--e1) var(--e3);
+  margin: var(--e2) 0;
+  background: var(--surface);
+  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
+}
+.fiche-ffhg summary {
+  cursor: pointer;
+}
+.fiche-ffhg summary b {
+  font-family: var(--mono);
+  color: var(--accent-ink);
+}
+.fiche-ffhg .mini-titre {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  margin: var(--e2) 0 2px;
+}
+.fiche-ffhg ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.glace-corrections {
+  margin: 0 0 var(--e2);
+  padding-left: 1.2em;
+  color: var(--danger);
+  font-size: 0.95rem;
+}
+.glace-corrections li::marker {
+  content: "✗ ";
+}
+.glace-rappels {
+  margin: var(--e3) 0 0;
+  padding-top: var(--e2);
+  border-top: 1px dashed var(--rule);
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+.couverture {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--e3) var(--e5);
+  font-size: 0.88rem;
+}
+.couverture h4 {
+  margin: 0 0 var(--e1);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+.couverture ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.couverture li {
+  display: flex;
+  gap: var(--e2);
+  align-items: baseline;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.couverture li b {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--accent-ink);
+  min-width: 62px;
+}
+.couverture li .mono {
+  margin-left: auto;
+  color: var(--ink-faint);
+}
+.couverture li.vu .mono {
+  color: var(--ok);
+  font-weight: 700;
+}
+.couverture li.jamais {
+  color: var(--ink-soft);
+}
+.couverture li.u9::after {
+  content: "●";
+  color: var(--accent);
+  font-size: 0.6rem;
+  order: -1;
+}
+.couverture .legende {
+  grid-column: 1 / -1;
+  display: block;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+}
+.legende-impr {
+  margin-top: var(--e5);
+  border-top: 1px solid #ddd;
+  background: transparent;
+  border-radius: 0;
+  padding: var(--e4) 0 0;
+  color: #333;
+}
+@media print {
+  .legende-impr {
+    break-inside: avoid;
+    font-size: 8pt;
+  }
 }
