@@ -2541,6 +2541,514 @@ export function exercicesDeBase() {
         ],
       },
     }),
+
+    /* ── Septième fournée : des éducatifs, courts et techniques, qui
+       suivent la progression des fiches — à la bande d'abord, puis en
+       glisse, puis en mouvement. ── */
+
+    ex({
+      id: "cat_educ_bande_position",
+      nom: "À la bande : la position de base",
+      categorie: "patinage",
+      techniques: ["TS.P 1", "TF.M 3"],
+      forme: "actif",
+      duree: 5,
+      objectif: "Trouver et sentir la position de base, à l'arrêt puis en glisse, avant de vouloir aller vite.",
+      description:
+        "Tout le monde le long de la bande, une main dessus :\n1. Flexion groupée, bras tendus devant : on descend jusqu'à ce que les genoux cachent les pointes des patins, on tient dix secondes, on remonte. Cinq fois.\n2. Glisse avant sur deux pieds en position de base, depuis une poussée sur la bande.\n3. Même chose en glisse arrière.\n4. Glisse arrière avec la crosse tenue derrière les genoux : impossible de se redresser.\n5. Flexion groupée pendant la glisse, avant puis arrière.\n\nLe coach passe derrière chacun et vérifie : chevilles fléchies, dos droit, mains devant.",
+      points_cles: ["Flexion prononcée des chevilles, genoux alignés aux pointes des patins", "Mains et coudes dégagés en avant du buste", "Toute la lame de la palette sur la glace, regard vers l'avant"],
+      corrections: ["Chevilles raides, fesses en arrière → plier les chevilles d'abord, les genoux suivent", "Coudes collés au corps → mains devant, comme pour porter un plateau", "Dos rond → tête droite, regard loin"],
+      materiel: "Aucun.",
+      variantes: "Flexion groupée en tenant un palet sur la palette. Glisse à un pied en position de base.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(30, 60), J(30, 100), J(30, 140), J(30, 180), J(30, 220), J(30, 260),
+          L("glisse", [[42, 60], [130, 60]]), L("glisse", [[42, 140], [130, 140]]), L("glisse", [[42, 220], [130, 220]]),
+          J(110, 100, "C"),
+          T(150, 150, "Une main sur la bande : flexion groupée,\npuis glisse sur deux pieds en position", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_transfert_bande",
+      nom: "Transfert du poids à la bande",
+      categorie: "patinage",
+      techniques: ["TS.P 2", "TF.M 1"],
+      forme: "actif",
+      duree: 5,
+      objectif: "Comprendre la poussée sans avancer : le poids passe d'une jambe sur l'autre, la jambe de poussée finit tendue.",
+      description:
+        "Face à la bande, les deux mains dessus, en position de base :\n1. Transfert statique : on passe tout le poids sur la jambe gauche, la droite se tend sur le côté sans quitter la glace, on ramène ; puis l'inverse. Dix fois.\n2. Extension contre la bande : on pousse la bande avec les bras pendant qu'une jambe s'étend complètement sur le côté, flexion maintenue sur l'autre. Dix par jambe.\n3. Poussée dans le vide : même geste, mais le patin de poussée finit en l'air, flexion tenue sur la jambe d'appui, et revient se poser sous le corps.\n\nOn cherche l'extension complète — hanche, genou, cheville — et le retour du patin sous soi.",
+      points_cles: ["Le poids sur la jambe qui glisse, genou devant la pointe du patin", "Extension complète de la jambe de poussée, sur le côté", "Retour du patin sous le corps, dans l'axe"],
+      corrections: ["Poussée vers l'arrière → pousser vers le côté, à 45°", "La flexion disparaît pendant la poussée → garder le genou d'appui fléchi", "Retour du patin loin du corps → ramener sous la hanche"],
+      materiel: "Aucun.",
+      variantes: "Transfert au-dessus d'une crosse posée au sol. Puis en glisse : transfert en avançant.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(28, 60), J(28, 100), J(28, 140), J(28, 180), J(28, 220), J(28, 260),
+          L("patin", [[36, 60], [60, 60]]), L("patin", [[36, 100], [60, 100]]), L("patin", [[36, 140], [60, 140]]), L("patin", [[36, 180], [60, 180]]), L("patin", [[36, 220], [60, 220]]), L("patin", [[36, 260], [60, 260]]),
+          J(120, 160, "C"),
+          T(120, 60, "Face à la bande, mains dessus :\ntransfert, extension, poussée dans le vide", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_saut_pied_a_pied",
+      nom: "Saut d'un pied sur l'autre",
+      categorie: "patinage",
+      techniques: ["TS.P 2", "TF.A 1"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Maîtriser son poids en l'air et à la réception : sauter d'un pied sur l'autre en avançant.",
+      description:
+        "Sur la largeur, en glisse lente. On saute du pied droit pour se recevoir sur le pied gauche, genou fléchi, on glisse deux secondes, puis on saute du gauche sur le droit. La réception se fait sans bruit, sur toute la lame, en flexion.\n\nDeuxième passage : même chose avec une poussée sautée — on pousse sur le côté et le saut prolonge la poussée. Troisième : réception sur un pied puis glisse sur ce pied jusqu'à la ligne.",
+      points_cles: ["Réception genou fléchi, sur toute la lame, sans bruit", "Le poids entièrement sur la jambe de réception", "Bras devant, buste stable"],
+      corrections: ["Réception sur les deux pieds → un seul pied, l'autre reste en l'air", "Réception raide, bruyante → plier en arrivant, amortir", "Buste qui se penche en avant → tête haute, regard devant"],
+      materiel: "Aucun.",
+      variantes: "Saut avec quart de tour. Sauts d'un pied sur l'autre en cercle.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), J(60, 150), J(60, 220),
+          L("patin", [[72, 80], [120, 72]]), L("patin", [[125, 72], [170, 88]]), L("patin", [[175, 88], [220, 72]]), L("patin", [[225, 72], [270, 80]]),
+          L("patin", [[72, 150], [120, 142]]), L("patin", [[125, 142], [170, 158]]), L("patin", [[175, 158], [220, 142]]), L("patin", [[225, 142], [270, 150]]),
+          L("patin", [[72, 220], [120, 212]]), L("patin", [[125, 212], [170, 228]]), L("patin", [[175, 228], [220, 212]]), L("patin", [[225, 212], [270, 220]]),
+          T(60, 30, "Saut du droit sur le gauche, glisse, saut du gauche sur le droit", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_poussee_sur_palet",
+      nom: "Poussée et recouvrement, pointe sur le palet",
+      categorie: "patinage",
+      techniques: ["TS.P 2"],
+      forme: "actif",
+      duree: 4,
+      objectif: "Isoler le geste de la jambe de poussée : pousser, s'étendre, revenir — sans avancer.",
+      description:
+        "Un palet posé au sol devant chaque joueur. La pointe du patin d'appui reste posée sur le palet (il ne bouge pas). L'autre jambe fait la poussée complète sur le côté, jusqu'à l'extension, puis revient sous le corps en frôlant la glace. Dix de chaque côté.\n\nOn regarde la trajectoire du patin : il part sur le côté, revient droit sous la hanche, jamais en arrière.",
+      points_cles: ["Extension complète : hanche, genou, cheville", "Retour du patin sous le corps, dans l'axe, lame près de la glace", "La jambe d'appui reste fléchie tout du long"],
+      corrections: ["Le patin revient en traînant sur la glace → le lever d'un centimètre", "Retour croisé ou en V → revenir droit sous la hanche", "L'appui se redresse pendant la poussée → tenir la flexion"],
+      materiel: "1 palet par joueur",
+      variantes: "Même geste en marche arrière (coupe en C, pointe sur le palet).",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(90, 80), P(96, 92), J(160, 80), P(166, 92), J(230, 80), P(236, 92),
+          J(90, 160), P(96, 172), J(160, 160), P(166, 172), J(230, 160), P(236, 172),
+          J(90, 240), P(96, 252), J(160, 240), P(166, 252), J(230, 240), P(236, 252),
+          J(50, 160, "C"),
+          T(60, 30, "La pointe du patin d'appui sur le palet, l'autre jambe pousse et revient", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_resistance_partenaire",
+      nom: "Patiner contre résistance, puis en survitesse",
+      categorie: "patinage",
+      techniques: ["TS.P 2", "TS.P 11"],
+      forme: "duo",
+      duree: 6,
+      objectif: "Sentir une vraie poussée : d'abord retenu par un partenaire, puis tiré plus vite qu'on ne sait aller.",
+      description:
+        "Par deux, une crosse tenue entre les deux (chacun un bout). Le premier patine en avant, le second, derrière, retient légèrement en marche arrière : le premier doit pousser fort, bas, complet. Une largeur, on inverse.\n\nPuis la survitesse : le premier est devant en marche avant et tire le second, qui patine en avant lui aussi, plus vite qu'il n'irait seul, et doit garder des poussées propres à cette vitesse. Résistance légère, adaptée : c'est un éducatif, pas un bras de fer.",
+      points_cles: ["Contre résistance : poussées longues, basses, complètes", "En survitesse : ne pas se laisser porter, continuer à pousser", "Buste stable, mains sur la crosse sans tirer dessus"],
+      corrections: ["Le retenu se redresse pour tirer → rester bas, pousser avec les jambes", "Le tiré glisse sans pousser → poussées plus courtes mais présentes", "Résistance trop forte → le partenaire ralentit à peine, il ne bloque pas"],
+      materiel: "1 crosse par duo",
+      variantes: "Pousser un partenaire qui freine doucement. Départs en V contre résistance.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(80, 100), J(105, 100, "O", "", "bleu"), L("libre", [[88, 100], [97, 100]]), L("acceleration", [[115, 100], [300, 100]]),
+          J(80, 200, "O", "", "bleu"), J(105, 200), L("libre", [[88, 200], [97, 200]]), L("acceleration", [[115, 200], [300, 200]]),
+          T(120, 60, "Retenu par le partenaire : pousser fort et bas", "noir", "petit"),
+          T(120, 250, "Tiré par le partenaire : garder des poussées propres", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_pompe_arriere",
+      nom: "La pompe : coupes en C à deux pieds",
+      categorie: "patinage",
+      techniques: ["TS.P 3", "TS.P 4"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Avancer en marche arrière avec les deux patins ensemble : la pompe, puis les C alternés.",
+      description:
+        "Sur la largeur, dos au sens de course, patins parallèles. La pompe : les deux patins s'écartent en même temps en dessinant chacun un C (talons vers l'extérieur), puis se rapprochent, et on recommence — comme une pompe. Genoux fléchis, on descend quand les patins s'écartent, on remonte un peu quand ils se rapprochent.\n\nPuis les C alternés : un patin dessine son C pendant que l'autre glisse, puis l'inverse. Courts et rapides sur une largeur, longs et amples sur la suivante.",
+      points_cles: ["Talons vers l'extérieur, pression sur la carre interne jusqu'au talon", "Descendre à l'écartement, remonter au rapprochement — le rythme de la pompe", "Dos droit, regard par-dessus l'épaule"],
+      corrections: ["Patins qui s'écartent sans revenir → refermer à chaque C", "Poussée avec la pointe seulement → utiliser la carre jusqu'au talon", "Buste cassé → se redresser, les hanches basses"],
+      materiel: "Aucun.",
+      variantes: "La pompe puis C alternés au sifflet. En cercle, C asymétriques (un côté seulement).",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), J(60, 150), J(60, 220),
+          L("arriere", [[72, 80], [270, 80]]), L("arriere", [[72, 150], [270, 150]]), L("arriere", [[72, 220], [270, 220]]),
+          T(60, 30, "Les deux patins dessinent un C en même temps, puis en alternance", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_huit_arriere",
+      nom: "Le huit en marche arrière",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      techniques: ["TS.P 3", "TS.P 8", "TF.M 2"],
+      forme: "groupes3",
+      duree: 6,
+      objectif: "Reculer en courbe des deux côtés : un huit autour de deux plots, carre interne puis carre externe.",
+      description:
+        "Deux plots à six mètres. Un huit en marche arrière autour des deux : dans chaque boucle, le patin extérieur pousse en C et l'intérieur guide. Première série : on privilégie la carre interne du patin extérieur. Deuxième série : on cherche la carre externe du patin intérieur, en se penchant plus.\n\nPar trois sur chaque huit, un départ toutes les cinq secondes.",
+      points_cles: ["Regard par-dessus l'épaule intérieure, épaules vers l'intérieur", "Patin extérieur en avance, en carre interne", "Inclinaison vers l'intérieur du virage"],
+      corrections: ["Le huit se fait sur deux patins parallèles sans inclinaison → se pencher, un patin devant l'autre", "Le buste tourne vers l'extérieur → regarder dans la boucle"],
+      materiel: "2 plots par huit",
+      variantes: "Avec palet. Un huit avant, un huit arrière, sans s'arrêter.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          K(100, 90), K(100, 210),
+          L("arriere", [...tour(100, 90, 45, Math.PI / 2, -1).slice(0, 8), ...tour(100, 210, 45, -Math.PI / 2, 1).slice(0, 8), [100, 135]]),
+          J(170, 150), J(185, 155), J(200, 160),
+          T(180, 60, "Autour des deux plots, en marche arrière", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_talons_pivot",
+      nom: "Talons en pivot, rapide sur les talons",
+      categorie: "patinage",
+      techniques: ["TS.P 4"],
+      forme: "vagues",
+      duree: 4,
+      objectif: "Le C-cut par le bout : sentir que la poussée finit sur le talon, patins écartés.",
+      description:
+        "Sur la largeur, patins écartés plus que les épaules. On avance en pivotant sur les talons : les pointes s'ouvrent et se ferment alternativement, les talons restent presque sur place — puis de plus en plus vite. Le corps reste bas et immobile, seuls les patins travaillent.\n\nPuis le « twist » : les deux patins pivotent ensemble, talons vers l'extérieur puis vers l'intérieur, et on avance sans lever les pieds. Puis on alterne twist et talons en pivot.",
+      points_cles: ["Les talons restent au contact, la poussée finit dessus", "Bas et stable, le haut du corps ne bouge pas", "Rapide : la fréquence fait avancer"],
+      corrections: ["Les pieds se lèvent → tout se fait sans quitter la glace", "Le buste se balance → mains devant, regard fixe"],
+      materiel: "Aucun.",
+      variantes: "En marche arrière. Avec palet.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), J(60, 150), J(60, 220),
+          L("conduite", [[72, 80], [270, 80]]), L("conduite", [[72, 150], [270, 150]]), L("conduite", [[72, 220], [270, 220]]),
+          T(60, 30, "Patins écartés : pivoter sur les talons, de plus en plus vite", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_godille",
+      nom: "La godille et le pied d'appel",
+      categorie: "patinage",
+      techniques: ["TS.P 7", "TF.M 2"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Engager le virage avec le patin intérieur : la godille, puis l'alternance des pieds d'appel entre les crosses.",
+      description:
+        "La godille : en glisse sur deux pieds, on serpente en basculant d'une carre à l'autre, sans lever les patins, le patin intérieur au virage légèrement devant. De plus en plus serré.\n\nPuis des crosses posées au sol en ligne, à trois mètres : on passe entre elles en changeant de pied d'appel à chaque crosse — le patin intérieur au prochain virage engage, l'autre suit. Deux largeurs, puis avec palet.",
+      points_cles: ["Le patin intérieur engage le virage, légèrement en avance", "Compression à l'entrée de chaque virage, genoux fléchis", "Crosse et regard vers la sortie du virage"],
+      corrections: ["Virage engagé avec le patin extérieur → avancer le patin intérieur d'abord", "Regard bas dans le virage → regarder la sortie", "Godille à plat, sans inclinaison → plier et se pencher"],
+      materiel: "5 crosses par file",
+      variantes: "Virage à 360° autour d'un plot au milieu. Godille en marche arrière.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), L("libre", [[72, 80], [100, 65], [130, 95], [160, 65], [190, 95], [220, 65], [250, 80]]),
+          J(60, 200), L("libre", [[100, 185], [100, 215]], "orange"), L("libre", [[150, 185], [150, 215]], "orange"), L("libre", [[200, 185], [200, 215]], "orange"), L("libre", [[250, 185], [250, 215]], "orange"),
+          L("patin", [[72, 200], [100, 180], [150, 220], [200, 180], [250, 220], [280, 200]]),
+          T(60, 30, "Godille sur deux pieds, puis pied d'appel alterné entre les crosses", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_virage_360",
+      nom: "Virage à 360° autour du plot",
+      categorie: "patinage",
+      techniques: ["TS.P 7"],
+      forme: "parcours",
+      duree: 5,
+      objectif: "Un tour complet autour d'un plot sans s'arrêter, dans les deux sens, puis avec palet.",
+      description:
+        "Trois plots sur la largeur, à cinq mètres. On arrive sur le premier, tour complet autour dans le sens horaire, on repart vers le deuxième, tour complet dans l'autre sens, troisième plot, sens horaire. Retour par le côté.\n\nOn cherche à garder de la vitesse dans le tour : compression à l'entrée, patins décalés, on ressort en poussant. Puis avec palet, le palet à l'extérieur du tour.",
+      points_cles: ["Compression à l'entrée, patin intérieur en avance", "Carre interne du patin extérieur, carre externe de l'intérieur", "Ressortir du tour en poussant"],
+      corrections: ["Arrêt au milieu du tour → réduire le rayon plutôt que de freiner", "Tour à plat, sans se pencher → main basse vers la glace"],
+      materiel: "3 plots par file\n1 palet par joueur",
+      variantes: "Deux tours par plot. Tour à 360° en marche arrière.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          K(100, 150), K(170, 150), K(240, 150),
+          J(45, 150), J(30, 150),
+          L("patin", [[57, 150], [85, 150], ...tour(100, 150, 20, Math.PI, 1), [155, 150], ...tour(170, 150, 20, Math.PI, -1), [225, 150], ...tour(240, 150, 20, Math.PI, 1), [280, 150]]),
+          T(60, 60, "Tour complet autour de chaque plot, en changeant de sens", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_ciseaux",
+      nom: "Petits ciseaux, grands ciseaux",
+      categorie: "patinage",
+      techniques: ["TS.P 9", "TS.P 10"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Le mouvement de croisé isolé : les jambes se croisent et se décroisent sur une ligne, sans virage.",
+      description:
+        "Sur une ligne, de côté, face au coach. Les petits ciseaux : le pied extérieur passe devant l'autre, puis l'autre ressort sur le côté, petits pas rapides, on avance latéralement. Une largeur vers la droite, une vers la gauche.\n\nLes grands ciseaux : même chose en grand, avec une vraie glisse sur chaque pied et une montée de genou à chaque croisement. Puis les grands ciseaux avec balancement des bras, puis en marche arrière.",
+      points_cles: ["Le pied extérieur croise devant, le pied intérieur pousse en carre externe", "Épaules face au coach, ligne des épaules horizontale", "Grands ciseaux : montée de genou, glisse sur chaque pied"],
+      corrections: ["Le pied croise derrière → toujours devant", "Le corps se tourne dans le sens du déplacement → rester de face", "Pas de glisse entre les croisements → laisser rouler"],
+      materiel: "Aucun.",
+      variantes: "Ciseaux avec crosse au-dessus de la tête. Ciseaux en arrière.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(80, 70), J(80, 120), J(80, 170), J(80, 220),
+          L("patin", [[92, 70], [250, 70]]), L("patin", [[92, 120], [250, 120]]), L("patin", [[92, 170], [250, 170]]), L("patin", [[92, 220], [250, 220]]),
+          J(160, 270, "C"),
+          T(60, 30, "De côté, face au coach : le pied extérieur croise devant", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_croisement_crosse",
+      nom: "Croisement au-dessus de la crosse",
+      categorie: "patinage",
+      techniques: ["TS.P 9", "TF.A 2"],
+      forme: "duo",
+      duree: 4,
+      objectif: "Le premier croisé, sans peur : à l'arrêt, une crosse au sol, le pied passe par-dessus.",
+      description:
+        "Par deux, une crosse posée au sol entre les deux, perpendiculaire. À l'arrêt, une main sur l'épaule du partenaire si besoin : le pied extérieur passe par-dessus la crosse et se pose de l'autre côté, en carre interne ; le poids passe dessus ; l'autre pied ressort et se repose à côté. Dix fois dans chaque sens, sans reprise d'appui entre les deux.\n\nPuis la même chose en glissant lentement le long de la crosse, puis sans la crosse, sur un cercle.",
+      points_cles: ["Le pied qui croise se pose en carre interne, le poids passe dessus tout de suite", "Le pied intérieur ressort sur le côté, en carre externe", "Buste droit, épaules horizontales"],
+      corrections: ["Le pied croise derrière → toujours devant, par-dessus la crosse", "Poids resté sur le pied intérieur → transférer entièrement sur celui qui a croisé"],
+      materiel: "1 crosse par duo",
+      variantes: "Croisement sans reprise d'appui, orteils vers l'intérieur. Fente latérale au-dessus de la crosse.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(100, 70), J(140, 70, "O", "", "bleu"), L("libre", [[120, 55], [120, 85]], "orange"),
+          J(100, 150), J(140, 150, "O", "", "bleu"), L("libre", [[120, 135], [120, 165]], "orange"),
+          J(100, 230), J(140, 230, "O", "", "bleu"), L("libre", [[120, 215], [120, 245]], "orange"),
+          T(170, 150, "Une crosse au sol entre les deux :\nle pied extérieur passe par-dessus", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_ski_jump",
+      nom: "Le ski jump : freiner à deux pieds",
+      categorie: "patinage",
+      techniques: ["TS.P 15", "TS.P 18"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Mettre les deux patins en travers en même temps, par un petit saut : le freinage sans réfléchir.",
+      description:
+        "À l'arrêt d'abord : petit saut sur place, réception avec les deux patins tournés d'un quart de tour, en travers, genoux fléchis. Dix fois à gauche, dix à droite. Puis en ligne : glisse lente, saut, réception en travers — on dérape et on s'arrête. Puis en cercle.\n\nEnsuite sans saut : allègement, rotation des deux patins ensemble, dérapage latéral sur les carres internes, en pas chassés.",
+      points_cles: ["Allègement puis rotation des deux patins ensemble", "Réception genoux fléchis, poids réparti sur les deux patins", "Épaules qui restent face au sens de course : rotation inverse du buste"],
+      corrections: ["Un patin tourne avant l'autre → les deux ensemble, par le saut", "Réception jambes tendues → plier en arrivant", "Le buste tourne avec les patins → épaules de face"],
+      materiel: "Aucun.",
+      variantes: "Ski jump en marche arrière (freinage parallèle arrière). Au sifflet, côté annoncé.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), J(60, 150), J(60, 220),
+          L("freinage", [[72, 80], [150, 80]]), L("freinage", [[165, 80], [240, 80]]),
+          L("freinage", [[72, 150], [150, 150]]), L("freinage", [[165, 150], [240, 150]]),
+          L("freinage", [[72, 220], [150, 220]]), L("freinage", [[165, 220], [240, 220]]),
+          T(60, 30, "Glisse, petit saut, réception les deux patins en travers", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_derapage_un_pied",
+      nom: "Dérapage sur un pied, carre interne puis externe",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      techniques: ["TS.P 15", "TF.M 2"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Décomposer le freinage : un seul patin qui dérape, sur sa carre interne, puis sur sa carre externe.",
+      description:
+        "Glisse sur deux pieds, puis on lève légèrement un patin et on met l'autre en travers, carre interne, en appuyant progressivement : dérapage sur un pied jusqu'à l'arrêt. Cinq de chaque pied.\n\nPuis la carre externe : le patin en travers, mais le poids sur l'extérieur de la lame, corps penché de l'autre côté — c'est le rôle du second patin dans le freinage complet. Plus difficile : on commence lentement.",
+      points_cles: ["Le patin en travers, pression progressive", "Carre interne : pencher vers l'intérieur ; carre externe : pencher vers l'extérieur", "Flexion de la jambe de dérapage pour absorber"],
+      corrections: ["Le patin dérape puis accroche → pression plus progressive, moins d'angle", "Carre externe impossible → réduire la vitesse, incliner plus le patin avant de charger"],
+      materiel: "Aucun.",
+      variantes: "Enchaîner : dérapage carre interne d'un pied, puis carre externe de l'autre = freinage complet.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(60, 80), J(60, 150), J(60, 220),
+          L("glisse", [[72, 80], [150, 80]]), L("freinage", [[155, 80], [220, 80]]),
+          L("glisse", [[72, 150], [150, 150]]), L("freinage", [[155, 150], [220, 150]]),
+          L("glisse", [[72, 220], [150, 220]]), L("freinage", [[155, 220], [220, 220]]),
+          T(60, 30, "Glisse, puis un seul patin en travers qui dérape", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_saut_plonge",
+      nom: "Départ en pointe et saut en longueur",
+      categorie: "patinage",
+      techniques: ["TS.P 11", "TF.A 1"],
+      forme: "vagues",
+      duree: 5,
+      objectif: "Le démarrage part des pointes et va vers l'avant : le sentir par un saut.",
+      description:
+        "À la bande, face au jeu : on se met sur les pointes des patins, talons resserrés, genoux fléchis, on tient trois secondes. Puis depuis cet équilibre, un saut en longueur vers l'avant, réception sur les deux pieds fléchis, et on enchaîne trois poussées courtes. Cinq fois.\n\nPuis le saut plongé : le saut se prolonge par une première poussée longue vers l'avant, sans se redresser. C'est le démarrage en V, en exagéré.",
+      points_cles: ["Talons resserrés, pointes ouvertes, déséquilibre vers l'avant", "Première poussée longue vers l'avant, pas vers le haut", "Premiers appuis courts et rapides, genoux qui montent"],
+      corrections: ["On se grandit sur les pointes → rester fléchi, le déséquilibre fait partir", "Saut vers le haut → sauter loin, pas haut", "Foulées longues dès le départ → trois appuis courts d'abord"],
+      materiel: "Aucun.",
+      variantes: "Départ en pointe au sifflet, sans saut. Partir d'un équilibre en pointe sur un pied.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(30, 80), J(30, 150), J(30, 220),
+          L("acceleration", [[42, 80], [160, 80]]), L("acceleration", [[42, 150], [160, 150]]), L("acceleration", [[42, 220], [160, 220]]),
+          T(60, 30, "À la bande, sur les pointes : saut en longueur, puis trois poussées", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_pointe_talon_z",
+      nom: "Pointe-talon et le Z",
+      categorie: "maniement",
+      techniques: ["TS.M 1", "TS.M 2"],
+      forme: "actif",
+      duree: 5,
+      objectif: "Manier avec la pointe et le talon de la palette, pas seulement à plat : le palet devient plus vif.",
+      description:
+        "Chacun avec un palet, à l'arrêt. Pointe-talon : on tire le palet vers soi avec la pointe de la palette, on le repousse avec le talon, dans le plan avant coup droit. Trente secondes. Puis le même geste dans le plan arrière, puis en revers.\n\nLe Z : le palet dessine un Z devant soi — latéral, diagonale vers l'arrière, latéral — en enchaînant pointe et talon. Puis en glissant.",
+      points_cles: ["Les poignets tournent la palette : pointe pour tirer, talon pour pousser", "Mains devant, coudes dégagés, le palet reste près", "Tête haute dès que le geste tient"],
+      corrections: ["Palette toujours à plat → tourner les poignets, ouvrir et fermer", "Le Z devient un arc de cercle → trois segments nets, un arrêt au bout de chacun"],
+      materiel: "1 palet par joueur",
+      variantes: "En marche arrière. À une main. Avec une balle pour aller plus vite.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(90, 90), P(100, 102), J(170, 90), P(180, 102), J(250, 90), P(260, 102),
+          J(90, 190), P(100, 202), J(170, 190), P(180, 202), J(250, 190), P(260, 202),
+          T(60, 30, "Tirer avec la pointe, pousser avec le talon ; puis le Z", "noir", "petit"),
+          L("conduite", [[120, 250], [160, 250]]), L("conduite", [[160, 250], [130, 275]]), L("conduite", [[130, 275], [170, 275]]), T(180, 262, "Z", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_deux_palets",
+      nom: "Maniement à deux palets",
+      categorie: "maniement",
+      techniques: ["TS.M 1"],
+      forme: "actif",
+      duree: 4,
+      objectif: "Deux palets sur la palette : forcer la douceur des mains et la largeur du geste.",
+      description:
+        "Deux palets côte à côte devant chaque joueur. On les manie ensemble, comme s'ils n'en faisaient qu'un : balayages larges d'abord, puis courts, puis coup droit-revers. Ils doivent rester collés. Trente secondes par consigne.\n\nPuis avec trois palets en ligne pour les plus habiles, puis en glissant lentement.",
+      points_cles: ["Palette bien à plat, en contact avec les deux palets", "Geste ample et doux, pas de coups", "Le regard sur le coach, pas sur les palets"],
+      corrections: ["Les palets se séparent → ralentir, palette à plat, moins de force", "Le geste se rétrécit → revenir aux balayages larges"],
+      materiel: "2 palets par joueur",
+      variantes: "Trois palets. Deux palets en marche arrière.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(90, 80), P(97, 92), P(105, 92), J(170, 80), P(177, 92), P(185, 92), J(250, 80), P(257, 92), P(265, 92),
+          J(90, 160), P(97, 172), P(105, 172), J(170, 160), P(177, 172), P(185, 172), J(250, 160), P(257, 172), P(265, 172),
+          J(90, 240), P(97, 252), P(105, 252), J(170, 240), P(177, 252), P(185, 252), J(250, 240), P(257, 252), P(265, 252),
+          J(50, 160, "C"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_entre_les_jambes",
+      nom: "Le palet entre les jambes, par l'avant et par l'arrière",
+      categorie: "maniement",
+      techniques: ["TS.M 2"],
+      forme: "actif",
+      duree: 5,
+      objectif: "Faire passer le palet d'un côté à l'autre entre ses patins : le geste qui sauve un palet coincé.",
+      description:
+        "À l'arrêt, patins écartés. Par l'avant : le palet est devant à droite, on le pousse entre les patins vers la gauche, on le récupère en revers derrière la jambe gauche et on le ramène devant. Par l'arrière : le palet est derrière à droite, on le glisse entre les patins vers l'avant gauche. Dix fois chaque, puis en glissant.\n\nPuis le grand huit : le palet fait le tour d'un patin, passe entre les jambes, fait le tour de l'autre.",
+      points_cles: ["Patins écartés, genoux fléchis : il faut de la place", "Le buste tourne pour aller chercher le palet derrière, pas les patins", "Le palet est poussé, pas tapé"],
+      corrections: ["Les patins tournent avec le palet → patins fixes, buste qui pivote", "Le palet part trop loin derrière → petites touches, palette au contact"],
+      materiel: "1 palet par joueur",
+      variantes: "Entre les jambes en glisse avant, puis avec le patin (passer le palet avec le pied).",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(100, 100), P(112, 90), L("conduite", [[112, 92], [100, 112], [88, 96]]),
+          J(180, 100), P(192, 90), L("conduite", [[192, 92], [180, 112], [168, 96]]),
+          J(100, 200), P(112, 210), L("conduite", [[112, 208], [100, 188], [88, 204]]),
+          J(180, 200), P(192, 210), L("conduite", [[192, 208], [180, 188], [168, 204]]),
+          T(60, 40, "Par l'avant, par l'arrière, puis le grand huit", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_lever_rabattre",
+      nom: "Lever et rabattre le palet",
+      categorie: "maniement",
+      techniques: ["TS.M 4"],
+      forme: "actif",
+      duree: 4,
+      objectif: "Soulever le palet avec la palette et le rabattre à plat : le contrôle qui prépare les passes et tirs levés.",
+      description:
+        "À l'arrêt, un palet. La palette se glisse sous le bord du palet, un petit coup de poignet le lève de quelques centimètres, et on le rabat aussitôt à plat avec le dessus de la palette. Dix fois. Puis on le lève un peu plus haut, puis on le fait retomber sur la palette et on l'y garde une seconde.\n\nPuis lever, rabattre, et repartir en conduite, sans temps mort.",
+      points_cles: ["Palette sous le palet, poignets qui tournent, pas les bras", "Rabattre tout de suite, à plat", "Les mains restent devant le corps"],
+      corrections: ["Le palet saute trop haut et part → moins d'amplitude, plus de poignets", "On tape le palet au lieu de le glisser → la palette se glisse dessous"],
+      materiel: "1 palet par joueur",
+      variantes: "Jongler deux fois sur la palette. Lever par-dessus une crosse au sol.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(90, 90), P(100, 102), J(170, 90), P(180, 102), J(250, 90), P(260, 102),
+          J(90, 180), P(100, 192), J(170, 180), P(180, 192), J(250, 180), P(260, 192),
+          J(50, 135, "C"),
+          T(60, 30, "Glisser la palette sous le palet, lever, rabattre à plat", "noir", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_educ_inversion_prise",
+      nom: "Inversion de la prise de crosse",
+      categorie: "maniement",
+      techniques: ["TS.M 1", "TF.A 2"],
+      forme: "actif",
+      duree: 4,
+      objectif: "Changer de main sur la crosse sans perdre le palet : de la dextérité, et un palet protégé de l'autre côté.",
+      description:
+        "À l'arrêt, un palet. On manie en coup droit, puis on inverse les mains (la main du bas devient la main du haut) et on continue de manier de l'autre côté, puis on revient. Dix inversions. Puis en glissant lentement en avant.\n\nCe n'est pas un geste de match pour tout le monde, mais il apprend aux deux mains à travailler — et il amuse.",
+      points_cles: ["L'inversion se fait pendant que le palet est immobile devant soi", "Les deux mains gardent la crosse dégagée du corps", "Le geste est lent avant d'être rapide"],
+      corrections: ["Le palet part pendant l'inversion → l'arrêter d'abord, inverser, repartir", "Le corps se tourne → seules les mains changent"],
+      materiel: "1 palet par joueur",
+      variantes: "Inversion en glisse avant. Inversion puis passe de l'autre côté.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(90, 90), P(100, 102), J(170, 90), P(180, 102), J(250, 90), P(260, 102),
+          J(90, 180), P(100, 192), J(170, 180), P(180, 192), J(250, 180), P(260, 192),
+          J(50, 135, "C"),
+          T(60, 30, "Manier, inverser les mains, manier de l'autre côté, revenir", "noir", "petit"),
+        ],
+      },
+    }),
   ];
   return liste.map((e, i) => ({ ...e, cree: t0 + i, modifie: t0 + i }));
 }
