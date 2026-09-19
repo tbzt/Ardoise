@@ -8,6 +8,7 @@ import { nouveauDocument, couperLignes, largeurTexte } from "../core/pdf.js";
 import { formaterDate, formaterDuree, heureA } from "../core/dom.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { FORMES_TRAVAIL, fiche } from "../data/referentiel.js";
+import { cumulMateriel, libelleMateriel } from "../core/materiel.js";
 import { svg, VUES } from "./patinoire.js";
 
 const ENCRE = [24, 35, 46];
@@ -241,16 +242,14 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
    puis des caractères plus petits) plutôt que de déborder. */
 
 function materielDe(se) {
-  const carte = new Map();
-  for (const b of se.blocs) {
-    const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
-    if (!ex || !ex.materiel) continue;
-    const brut = ex.materiel.trim().replace(/[.\s]+$/, "");
-    if (!brut || /^aucun/i.test(brut)) continue;
-    const cle = brut.toLowerCase();
-    if (!carte.has(cle)) carte.set(cle, brut);
-  }
-  return [...carte.values()];
+  return cumulMateriel(
+    se.blocs
+      .map((b) => {
+        const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
+        return ex && ex.materiel ? { titre: b.titre || ex.nom, materiel: ex.materiel } : null;
+      })
+      .filter(Boolean),
+  ).map(libelleMateriel);
 }
 
 export async function carteDePoche(se) {
@@ -368,11 +367,11 @@ function composerCarte(se, lignes, materiel, total, { points, k }) {
 }
 
 /* ── La fiche atelier ───────────────────────────────────────────
-   Une page par exercice, pour l'aide-entraîneur qui tient l'atelier :
-   le schéma en grand, l'objectif, l'organisation, les points clés, les
-   corrections, le matériel — et les repères de la formation fédérale
-   (forme de travail, temps d'activité, feedback). C'est la fiche qu'on
-   lui donne quinze minutes avant, comme le demande la formation. */
+   Une page par exercice, pour celui qui tient l'atelier : le schéma en
+   grand, l'objectif, l'organisation, les points clés, les corrections,
+   le matériel — et les repères pour bien le mener (forme de travail,
+   temps d'activité, feedback). C'est la fiche qu'on lui donne quinze
+   minutes avant. */
 export async function ficheAtelier(ex, { duree = null, note = "" } = {}) {
   const doc = nouveauDocument(A4);
   const page = doc.nouvellePage();
@@ -465,11 +464,11 @@ export async function ficheAtelier(ex, { duree = null, note = "" } = {}) {
     yD = puces(colD, yD, corrections.slice(0, 8), ROUGE, "✗".normalize ? "x" : "x") + 6;
   }
   if (fiches.length) {
-    yD = titre(colD, yD, "Fiches techniques FFHG");
+    yD = titre(colD, yD, "Fiches techniques");
     yD = para(colD, yD, fiches.map((fi) => `${fi.code} ${fi.nom}`).join(" · "), { taille: 9, couleur: GRIS }) + 6;
   }
 
-  // pied : les repères de la formation aide-entraîneur
+  // pied : les repères pour tenir l'atelier
   const reperes = couperLignes(
     "Sur place 15 min avant, matériel prêt · une consigne d'une phrase pour lancer · temps d'attente 30 % au plus · feedback : 1 collectif, 3 individuels · se placer pour voir tout l'atelier",
     "normal",

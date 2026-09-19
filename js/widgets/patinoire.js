@@ -21,10 +21,9 @@ export const COULEURS = {
   orange: "#ef6c00",
 };
 
-/* Les symboles suivent la « Fiche générale n° 1 — Légende des symboles »
-   du Guide fédéral de l'école de hockey (FFHG) et le lexique de la
-   formation aide-entraîneur : X et O pour les joueurs, F pour les avants,
-   D pour les défenseurs, G le gardien, C l'entraîneur. */
+/* Les symboles suivent la légende usuelle des schémas de hockey : X et
+   O pour les joueurs, F pour les avants, D pour les défenseurs, G le
+   gardien, C l'entraîneur. */
 export const FORMES = {
   X: "Joueur (X)",
   O: "Joueur (O)",

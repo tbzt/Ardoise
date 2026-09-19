@@ -186,3 +186,10 @@ export function libelleUsage(u) {
   if (u.rang === 0) return `fait la dernière fois`;
   return `fait il y a ${u.rang + 1} séances · ${u.fois}×`;
 }
+
+/* Le cycle d'un groupe qui couvre une date (ou aujourd'hui). */
+export function cycleCourant(groupe, date) {
+  if (!groupe || !Array.isArray(groupe.cycles)) return null;
+  const d = date || aujourdhui();
+  return groupe.cycles.find((c) => c.debut && c.fin && c.debut <= d && d <= c.fin) || null;
+}

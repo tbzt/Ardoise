@@ -2,7 +2,7 @@
    et de l'historique du groupe. Ce n'est pas une IA : c'est une suite
    de règles qu'un coach reconnaît, et chaque choix vient avec sa raison.
 
-   La structure suit ce que font les fédérations pour des débutants :
+   La structure est celle d'une séance de débutants bien construite :
    échauffement court, un gros bloc de patinage, trois habiletés
    (palet, passes, tirs), du jeu, un retour au calme. Les parts de temps
    viennent de CIBLE, corrigées par ce que le groupe a peu travaillé
@@ -11,7 +11,7 @@
    niveau du groupe — et on évite ce qu'on a fait la dernière fois. */
 import { Store, blocDepuisExercice, blocLibre } from "./store.js";
 import { CATEGORIES } from "../data/catalogue.js";
-import { CIBLE, seancesFaites, repartition, usageExercices, formaterCourt } from "./analyse.js";
+import { CIBLE, seancesFaites, repartition, usageExercices, formaterCourt, cycleCourant } from "./analyse.js";
 
 const ORDRE = ["echauffement", "patinage", "maniement", "passe", "tir", "jeu", "retour"];
 const MAXIMUM = { echauffement: 1, patinage: 3, maniement: 2, passe: 2, tir: 2, jeu: 2, retour: 1 };
@@ -22,7 +22,7 @@ function melange(n) {
 
 /* Les minutes visées par catégorie : la cible, corrigée par les
    déficits des quatre dernières séances, puis ramenée au temps dispo. */
-function objectifsMinutes(dispo, faites) {
+function objectifsMinutes(dispo, faites, cycle) {
   const recentes = faites.slice(-4);
   const { minutes, total } = repartition(recentes);
   // une seule séance d'historique ne justifie pas de tout basculer :
@@ -41,6 +41,8 @@ function objectifsMinutes(dispo, faites) {
     }
     // le patinage est le socle des débutants : jamais sous 22 % du temps
     if (cat === "patinage") p = Math.max(p, 22);
+    // le cycle en cours pousse ses catégories
+    if (cycle && (cycle.categories || []).includes(cat)) p *= 1.5;
     poids[cat] = p;
   }
   const somme = Object.values(poids).reduce((a, b) => a + b, 0);
@@ -88,16 +90,17 @@ export function proposerDeroule(se) {
   const groupe = se.groupeId ? Store.groupes.get(se.groupeId) : null;
   const faites = se.groupeId ? seancesFaites(se.groupeId).filter((s) => s.id !== se.id) : [];
   const usage = usageExercices(faites);
-  // les fiches FFHG déjà travaillées par le groupe, via les exercices faits
+  // les fiches techniques déjà travaillées par le groupe, via les exercices faits
   const techniquesVues = new Set();
   for (const u of usage.values()) {
     const ex = Store.exercices.get(u.exerciceId);
     for (const code of (ex && ex.techniques) || []) techniquesVues.add(code);
   }
+  const cycle = cycleCourant(groupe, se.date);
   const D = Math.max(20, Number(se.duree_glace) || 60);
   const pause = D >= 50 ? 2 : 0;
   const dispo = D - pause;
-  const { objectifs, accents } = objectifsMinutes(dispo, faites);
+  const { objectifs, accents } = objectifsMinutes(dispo, faites, cycle);
 
   const bibli = Store.exercices.tous().filter((e) => e.categorie !== "gardien");
   const pris = new Set();
@@ -115,7 +118,16 @@ export function proposerDeroule(se) {
         const neuves = (e.techniques || []).filter((c) => !techniquesVues.has(c));
         if (neuves.length && faites.length) {
           sc.s += 1;
-          sc.raisons.push(`technique FFHG pas encore travaillée (${neuves[0]})`);
+          sc.raisons.push(`technique pas encore travaillée (${neuves[0]})`);
+        }
+        if (cycle) {
+          const visees = (e.techniques || []).filter((c) => (cycle.techniques || []).includes(c));
+          if (visees.length) {
+            sc.s += 2.5;
+            sc.raisons.push(`technique visée par le cycle « ${cycle.nom || "en cours"} » (${visees[0]})`);
+          } else if ((cycle.categories || []).includes(e.categorie)) {
+            sc.s += 0.5;
+          }
         }
         return { e, ...sc };
       })
@@ -186,6 +198,7 @@ export function proposerDeroule(se) {
   }
 
   const morceaux = [];
+  if (cycle) morceaux.push(`Cycle « ${cycle.nom || "en cours"} »${cycle.categories && cycle.categories.length ? ` : ${cycle.categories.map((c) => (CATEGORIES[c] || {}).libelle || c).join(", ").toLowerCase()}` : ""}`);
   const lister = (l) => (l.length > 1 ? `${l.slice(0, -1).join(", ")} et ${l[l.length - 1]}` : l[0]);
   if (accents.length) morceaux.push(`Accent sur ${lister(accents.map((c) => CATEGORIES[c].libelle.toLowerCase()))} (peu travaillé récemment)`);
   if (reprises.length) morceaux.push(`reprise de « ${reprises.slice(0, 2).join(" », « ")} » (à revoir)`);
@@ -196,5 +209,5 @@ export function proposerDeroule(se) {
   }
   const objectif = morceaux.join(" · ");
 
-  return { blocs, objectif, explications, accents, reprises, pause: !!pause };
+  return { blocs, objectif, explications, accents, reprises, pause: !!pause, cycle };
 }

@@ -12,6 +12,7 @@
 import { VUES, COULEURS, FORMES, STYLES_TRAIT, OBJETS, contenu, viewBox, legende } from "./patinoire.js";
 import { nouvelId } from "../core/ids.js";
 import { esc } from "../core/dom.js";
+import { Storage } from "../core/storage.js";
 
 const UID = "ed";
 const LARGEUR = 600;
@@ -114,12 +115,11 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         <button type="button" data-act="retablir" title="Rétablir (Ctrl+Y)">Rétablir</button>
         <button type="button" data-act="effacer" title="Repartir d'une glace vierge">Tout effacer</button>
       </div>
-      <button type="button" data-act="legende" title="Les symboles et leur nom, d'après la fiche générale n° 1 du guide fédéral">Légende</button>
+      <button type="button" data-act="legende" class="${Storage.lire("legende_editeur", false) ? "actif" : ""}" title="Afficher ou masquer les symboles et leur nom">Légende</button>
     </div>
-    <div class="legende" data-legende hidden>
+    <div class="legende" data-legende ${Storage.lire("legende_editeur", false) ? "" : "hidden"}>
       <div class="legende-col"><h4>Symboles</h4><ul>${LEGENDE.symboles.map((x) => `<li>${x.svg}<span>${x.nom}</span></li>`).join("")}</ul></div>
       <div class="legende-col"><h4>Déplacements et passes</h4><ul>${LEGENDE.traits.map((x) => `<li>${x.svg}<span>${x.nom}</span></li>`).join("")}</ul></div>
-      <p class="legende-source">D'après la « Fiche générale n° 1 — Légende des symboles » du Guide fédéral de l'école de hockey (FFHG) et le lexique de la formation aide-entraîneur.</p>
     </div>
     <div class="props" hidden></div>
     <div class="cadre"><svg class="patinoire interactive" data-uid="${UID}" xmlns="http://www.w3.org/2000/svg"></svg></div>
@@ -432,6 +432,7 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
       const l = conteneur.querySelector("[data-legende]");
       l.hidden = !l.hidden;
       b.classList.toggle("actif", !l.hidden);
+      Storage.ecrire("legende_editeur", !l.hidden);
       return;
     }
     if (b.dataset.act === "annuler") annuler();

@@ -14,22 +14,22 @@ Livrée avec **84 exercices** et deux séances types pour **adultes débutants**
 
 ### Dessiner — l'éditeur de schémas
 - Une patinoire aux proportions IIHF (60 × 30 m), **entière ou demi-glace**.
-- Les symboles suivent la **légende fédérale** (fiche générale n° 1 du Guide de l'école de hockey, FFHG) et le lexique de la formation aide-entraîneur. On **pose** d'un clic : joueurs `X` et `O`, avant `F`, défenseur `D`, gardien `G`, entraîneur `C`, palets, plots, cerceaux, passeur caoutchouc, faux joueur, textes, et des **cages mobiles** orientables.
+- Les symboles suivent la **légende usuelle des schémas de hockey**. On **pose** d'un clic : joueurs `X` et `O`, avant `F`, défenseur `D`, gardien `G`, entraîneur `C`, palets, plots, cerceaux, passeur caoutchouc, faux joueur, textes, et des **cages mobiles** orientables.
 - On **trace** d'un glissé, au doigt, au stylet ou à la souris : patiner en avant sans ou avec palet, en arrière sans ou avec palet, patiner et freiner, glisser sur deux patins, accélérer, pivoter, passer, échange de passes, tirer, abandonner le palet sur place, trait libre.
-- Un bouton **Légende** affiche chaque symbole avec son nom ; la même légende figure au bas de la feuille imprimée, pour que quelqu'un qui n'a jamais vu l'appli sache lire un schéma.
+- Un bouton **Légende** affiche ou masque chaque symbole avec son nom (le choix est mémorisé) ; la même légende peut figurer au bas de la feuille imprimée, pour que quelqu'un qui n'a jamais vu l'appli sache lire un schéma.
 - Cinq couleurs, sélection, déplacement, étiquettes sur les joueurs, annuler / rétablir, raccourcis (`Suppr`, `Ctrl+Z`, `Ctrl+Y`, `Échap`).
 
 ### Ranger — la bibliothèque
-- Chaque exercice a sa fiche : catégorie, niveau, durée, objectif, description, **points clés et corrections** (le format des fiches fédérales), matériel, variantes, **forme de travail** (les six formes d'atelier du Module A fédéral), et son schéma.
-- Un exercice se rattache aux **fiches techniques FFHG** du Programme de développement du joueur à long terme (TF.M, TF.A, TS.P 1 à 23, TS.M 1 à 4) : leurs points clés et corrections s'affichent dans l'aperçu, au bord de la glace et sur la fiche atelier, et le groupe sait quelles techniques il a travaillées.
-- **Fiche atelier (PDF)** : une page par exercice pour l'aide-entraîneur qui tient l'atelier — schéma en grand, organisation, points clés, corrections, matériel, forme de travail, et les repères de la formation fédérale (quinze minutes avant, une consigne d'une phrase, temps d'attente limité, feedback un collectif trois individuels). Depuis une séance, la fiche reprend la note du bloc.
+- Chaque exercice a sa fiche : catégorie, niveau, durée, objectif, description, **points clés et corrections**, matériel (une ligne par objet, chiffrée : « 10 plots », « 1 palet par joueur »), variantes, **forme de travail** (six formes d'atelier : tout le monde actif, vagues, groupes de 3, parcours long, collaboration à 2, relais), et son schéma.
+- Un exercice se rattache aux **fiches techniques** de patinage et de maniement (TF.M, TF.A, TS.P 1 à 23, TS.M 1 à 4), chacune avec ses points clés et ses corrections : leurs points clés et corrections s'affichent dans l'aperçu, au bord de la glace et sur la fiche atelier, et le groupe sait quelles techniques il a travaillées.
+- **Fiche atelier (PDF)** : une page par exercice pour celui qui tient l'atelier — schéma en grand, organisation, points clés, corrections, matériel, forme de travail, et les repères pour bien le mener (quinze minutes avant, une consigne d'une phrase, temps d'attente limité, feedback un collectif trois individuels). Depuis une séance, la fiche reprend la note du bloc.
 - Huit catégories : échauffement, patinage, maniement, passes, tirs, jeu, gardien, retour au calme.
 - Recherche plein texte et filtre par catégorie ; duplication pour décliner un exercice.
 - Tout s'enregistre tout seul, un instant après la frappe.
 
 ### Composer — les séances
 - Date, heure, groupe, lieu, temps de glace, objectif, notes.
-- **Proposer un déroulé** : un brouillon complet calé sur le temps de glace, dans la structure des fédérations (échauffement, patinage, palet, passes, tirs, pause, jeu, retour au calme), avec les parts de temps conseillées corrigées par ce que le groupe a peu travaillé, en préférant ce qui n'a jamais été fait et ce que le dernier bilan a marqué « à revoir ». Chaque choix est expliqué ; « Autre proposition » en fait une autre ; tout se retouche. Depuis un groupe, **Proposer une séance** crée directement la séance.
+- **Proposer un déroulé** : un brouillon complet calé sur le temps de glace, dans une structure éprouvée (échauffement, patinage, palet, passes, tirs, pause, jeu, retour au calme), avec les parts de temps conseillées corrigées par ce que le groupe a peu travaillé, en préférant ce qui n'a jamais été fait et ce que le dernier bilan a marqué « à revoir ». Chaque choix est expliqué ; « Autre proposition » en fait une autre ; tout se retouche. Depuis un groupe, **Proposer une séance** crée directement la séance.
 - Une séance se **pousse dans un groupe** : copie dans un groupe (sans bilan, datée du jour) ou déplacement ; depuis un groupe, on rattache une séance existante.
 - Un **déroulé** de blocs : des exercices piochés dans la bibliothèque, ou des blocs libres (pause eau, mot du coach).
 - Durée par bloc, note par bloc, **réordonnancement par glisser-déposer** (ou avec les flèches), **heure de début calculée** pour chaque bloc.
@@ -37,13 +37,14 @@ Livrée avec **84 exercices** et deux séances types pour **adultes débutants**
 - Une **frise** colorée montre où passe le temps, et prévient quand on dépasse la glace.
 
 ### Au bord de la glace
-- Une fois la séance prête, le mode **Bord de glace** la montre depuis le banc, sur téléphone : le **matériel à sortir** (une liste à cocher, agrégée depuis les exercices), les notes à avoir en tête, puis chaque bloc avec ses horaires, son objectif et ses **points clés** — le schéma et le déroulé complet restent à un clic.
+- Une fois la séance prête, le mode **Bord de glace** la montre depuis le banc, sur téléphone : le **matériel à sortir** (une liste à cocher, chiffrée : par objet, le maximum qu'un exercice demande, puisqu'on ne sort les plots qu'une fois), les notes à avoir en tête, puis chaque bloc avec ses horaires, son objectif et ses **points clés** — le schéma et le déroulé complet restent à un clic.
 - Si la séance a une heure et qu'on est le bon jour, le **bloc en cours** est mis en avant avec le temps restant, les blocs passés s'estompent, et l'écran reste allumé.
 
 ### Suivre — les groupes et leur historique
 - Chaque séance se rattache à un **groupe** (une équipe, une section). Le groupe garde la mémoire : séances faites, temps de glace, exercices déjà faits (combien de fois, la dernière date, comment ça s'est passé), et ceux jamais essayés.
 - Un **bilan** se remplit en deux minutes au bas du bord de glace : par bloc, fait ou non, à revoir / correct / bien, un mot ; pour la séance, présents, une note sur cinq, et ce qu'il faut retenir.
-- La fiche du groupe montre les **techniques FFHG travaillées** (et celles jamais abordées, avec les priorités de la programmation U9 comme socle) et **analyse** l'historique : équilibre du temps par catégorie face à une part conseillée pour des adultes débutants, catégories absentes depuis plusieurs séances, séance qui en répète une autre, blocs à retravailler d'après les bilans.
+- La fiche du groupe montre les **techniques travaillées** (et celles jamais abordées, le socle des débutants étant marqué) et **analyse** l'historique : équilibre du temps par catégorie face à une part conseillée pour des adultes débutants, catégories absentes depuis plusieurs séances, séance qui en répète une autre, blocs à retravailler d'après les bilans.
+- Un groupe se planifie par **cycles** : quatre à six semaines avec un thème, des catégories à pousser et des techniques à viser. Le brouillon de séance s'y cale, et la séance affiche le cycle en cours.
 - En préparant une séance, la bibliothèque indique **« jamais fait »** ou **« fait il y a N séances »** pour ce groupe, un panneau rappelle la **dernière fois** (ce qui a été fait, à retenir, à revoir), et une alerte signale une séance qui **répète** une précédente.
 
 ### Imprimer — la feuille de séance

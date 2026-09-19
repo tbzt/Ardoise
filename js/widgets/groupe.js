@@ -1,15 +1,15 @@
 /* Groupe — la fiche d'une équipe : ce qu'on a fait ensemble, comment
    c'est équilibré, ce qui revient trop, ce qu'il reste à essayer, et ce
    que disent les bilans. C'est la mémoire du coach. */
-import { Store } from "../core/store.js";
+import { Store, cycleVierge } from "../core/store.js";
 import { proposerDeroule } from "../core/brouillon.js";
 import { esc, debounce, statut, formaterDate, formaterDuree } from "../core/dom.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { chip } from "./communs.js";
 import { choisir } from "./dialogue.js";
-import { FICHES, FAMILLES } from "../data/referentiel.js";
+import { FICHES, FAMILLES, fichesParFamille } from "../data/referentiel.js";
 import { blocsFaits } from "../core/analyse.js";
-import { CIBLE, seancesDuGroupe, seancesFaites, estFaite, repartition, usageExercices, conseils, aRevoir, noteMoyenne, formaterCourt } from "../core/analyse.js";
+import { CIBLE, seancesDuGroupe, seancesFaites, estFaite, repartition, usageExercices, conseils, aRevoir, noteMoyenne, formaterCourt, cycleCourant } from "../core/analyse.js";
 
 const etoiles = (n) => (n ? "★".repeat(n) + "☆".repeat(5 - n) : "");
 
@@ -87,7 +87,14 @@ export const Groupe = {
         </section>
 
         <section class="groupe-section">
-          <h2>Techniques FFHG travaillées <small>${couvertureTechniques(faites).faites} sur ${FICHES.length}</small></h2>
+          <h2>Cycles <small>un thème pour quelques semaines</small>
+            <span class="tri"><button type="button" data-act="nouveau-cycle">+ Nouveau cycle</button></span>
+          </h2>
+          ${cyclesHtml(g)}
+        </section>
+
+        <section class="groupe-section">
+          <h2>Techniques travaillées <small>${couvertureTechniques(faites).faites} sur ${FICHES.length}</small></h2>
           ${couverture(faites)}
         </section>
 
@@ -152,7 +159,23 @@ export const Groupe = {
     sec.addEventListener("input", (e) => {
       const c = e.target;
       if (!c.name) return;
-      g[c.name] = c.value;
+      const art = c.closest("[data-cycle]");
+      if (art) {
+        const cy = (g.cycles || []).find((x) => x.id === art.dataset.cycle);
+        if (!cy) return;
+        if (c.name === "categories") {
+          cy.categories = [...art.querySelectorAll('input[name="categories"]:checked')].map((x) => x.value);
+          if (c.closest("label")) c.closest("label").classList.toggle("actif", c.checked);
+        }
+        else if (c.name === "techniques") {
+          cy.techniques = [...art.querySelectorAll('input[name="techniques"]:checked')].map((x) => x.value);
+          const sm = art.querySelector(".techniques summary small");
+          if (sm) sm.textContent = cy.techniques.length || "aucune";
+        }
+        else cy[c.name] = c.value;
+        const titre = art.querySelector("summary strong");
+        if (titre && c.name === "nom") titre.textContent = cy.nom || "Cycle sans nom";
+      } else g[c.name] = c.value;
       etatEl().textContent = "Modification…";
       sauver();
     });
@@ -162,6 +185,27 @@ export const Groupe = {
       if (!b) return;
       if (b.dataset.tri) {
         tri = b.dataset.tri;
+        rendre();
+      } else if (b.dataset.act === "nouveau-cycle") {
+        if (!Array.isArray(g.cycles)) g.cycles = [];
+        const dernier = g.cycles[g.cycles.length - 1];
+        const cy = cycleVierge();
+        const d = new Date(dernier && dernier.fin ? dernier.fin : Date.now());
+        if (dernier && dernier.fin) d.setDate(d.getDate() + 1);
+        const p = (n) => String(n).padStart(2, "0");
+        cy.debut = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+        const f = new Date(d);
+        f.setDate(f.getDate() + 34);
+        cy.fin = `${f.getFullYear()}-${p(f.getMonth() + 1)}-${p(f.getDate())}`;
+        g.cycles.push(cy);
+        Store.groupes.sauver(g);
+        rendre();
+        const inp = sec.querySelector(`[data-cycle="${cy.id}"] input[name="nom"]`);
+        if (inp) inp.focus();
+      } else if (b.dataset.act === "supprimer-cycle") {
+        const art = b.closest("[data-cycle]");
+        g.cycles = (g.cycles || []).filter((x) => x.id !== art.dataset.cycle);
+        Store.groupes.sauver(g);
         rendre();
       } else if (b.dataset.act === "proposer-seance") {
         Store.groupes.sauver(g);
@@ -252,7 +296,7 @@ function equilibre(seances) {
     .join("")}<p class="legende">La barre pleine, c'est le temps réellement passé ; le trait, la part conseillée pour des adultes débutants. Un écart n'est pas une faute : c'est une information.</p></div>`;
 }
 
-/* Combien de séances ont travaillé chaque fiche FFHG, via les exercices
+/* Combien de séances ont travaillé chaque fiche technique, via les exercices
    qui s'y rattachent. */
 function couvertureTechniques(faites) {
   const compte = {};
@@ -276,9 +320,44 @@ function couverture(faites) {
       ([fam, liste]) => `<div class="couverture-famille"><h4>${esc(FAMILLES[fam])}</h4><ul>${liste
         .map((fi) => {
           const n = compte[fi.code] || 0;
-          return `<li class="${n ? "vu" : "jamais"} ${fi.u9 ? "u9" : ""}" title="${fi.u9 ? "priorité U9 dans la programmation fédérale" : ""}"><b>${fi.code}</b> ${esc(fi.nom)} <span class="mono">${n ? `${n}×` : "—"}</span></li>`;
+          return `<li class="${n ? "vu" : "jamais"} ${fi.socle ? "socle" : ""}" title="${fi.socle ? "technique de base pour des débutants" : ""}"><b>${fi.code}</b> ${esc(fi.nom)} <span class="mono">${n ? `${n}×` : "—"}</span></li>`;
         })
         .join("")}</ul></div>`,
     )
-    .join("")}<p class="legende">D'après le Programme de développement du joueur à long terme (DTN FFHG). Les fiches marquées ● sont celles que la programmation U9 travaille en priorité — un bon socle pour des adultes qui débutent. Une fiche compte quand un exercice qui s'y rattache a été fait.</p></div>`;
+    .join("")}<p class="legende">Les fiches marquées ● sont le socle par lequel on commence avec des débutants. Une fiche compte quand un exercice qui s'y rattache a été fait.</p></div>`;
+}
+
+function cyclesHtml(g) {
+  const cycles = (g.cycles || []).slice().sort((a, b) => (a.debut || "").localeCompare(b.debut || ""));
+  const courant = cycleCourant(g);
+  if (!cycles.length) {
+    return `<p class="vide">Aucun cycle. Un cycle, c'est quatre à six semaines avec un thème — « freiner des deux côtés », « passes en mouvement » — des catégories à pousser et des techniques à viser : le brouillon de séance s'y cale.</p>`;
+  }
+  return `<div class="cycles">${cycles
+    .map(
+      (cy) => `
+    <details class="cycle ${courant && courant.id === cy.id ? "en-cours" : ""}" data-cycle="${cy.id}" ${courant && courant.id === cy.id ? "open" : ""}>
+      <summary><strong>${esc(cy.nom) || "Cycle sans nom"}</strong> <span class="meta">${esc(formaterCourt(cy.debut))} → ${esc(formaterCourt(cy.fin))}${courant && courant.id === cy.id ? " · en cours" : ""}${cy.categories && cy.categories.length ? ` · ${cy.categories.map((c) => (CATEGORIES[c] || {}).libelle || c).join(", ")}` : ""}</span></summary>
+      <div class="cycle-corps">
+        <div class="rangee">
+          <label>Thème <input name="nom" value="${esc(cy.nom)}" placeholder="Freiner des deux côtés"></label>
+          <label>Du <input type="date" name="debut" value="${esc(cy.debut)}"></label>
+          <label>Au <input type="date" name="fin" value="${esc(cy.fin)}"></label>
+        </div>
+        <p class="mini-titre">Catégories à pousser</p>
+        <div class="chips">${Object.entries(CATEGORIES)
+          .filter(([k]) => k !== "gardien")
+          .map(([k, c]) => `<label class="chip chip-case ${(cy.categories || []).includes(k) ? "actif" : ""}" style="--c:${c.couleur}"><input type="checkbox" name="categories" value="${k}" ${(cy.categories || []).includes(k) ? "checked" : ""}> ${esc(c.libelle)}</label>`)
+          .join("")}</div>
+        <details class="techniques"><summary>Techniques à viser <small>${(cy.techniques || []).length || "aucune"}</small></summary>
+          ${Object.entries(fichesParFamille())
+            .map(([fam, liste]) => `<div class="techniques-famille"><h4>${esc(FAMILLES[fam])}</h4>${liste.map((fi) => `<label class="technique"><input type="checkbox" name="techniques" value="${fi.code}" ${(cy.techniques || []).includes(fi.code) ? "checked" : ""}> <b>${fi.code}</b> ${esc(fi.nom)}</label>`).join("")}</div>`)
+            .join("")}
+        </details>
+        <label>Note <input name="note" value="${esc(cy.note || "")}" placeholder="Ce qu'on veut voir à la fin du cycle"></label>
+        <div class="cycle-pied"><button type="button" class="danger" data-act="supprimer-cycle">Supprimer ce cycle</button></div>
+      </div>
+    </details>`,
+    )
+    .join("")}</div>`;
 }

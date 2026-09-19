@@ -82,9 +82,16 @@ export function groupeVierge() {
     nom: "",
     niveau: "debutant",
     description: "",
+    cycles: [],
     cree: Date.now(),
     modifie: Date.now(),
   };
+}
+
+/* Un cycle : quelques semaines avec un thème, des catégories à
+   pousser et des techniques à viser. Le brouillon s'y cale. */
+export function cycleVierge() {
+  return { id: nouvelId("cy"), nom: "", debut: "", fin: "", categories: [], techniques: [], note: "" };
 }
 
 /* Le bilan d'une séance, rempli après coup. Par bloc : fait ou non,

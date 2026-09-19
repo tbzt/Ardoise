@@ -1,13 +1,12 @@
-/* Référentiel — les fiches techniques du « Programme de développement
-   du joueur à long terme » (Marc Peythieu et Lionel Charrier, DTN,
-   FFHG, 2016) et les formes de travail du Module A fédéral.
+/* Référentiel — les fiches techniques du patinage et du maniement, et
+   les formes de travail d'un atelier.
 
    Chaque fiche porte son code (TF.M, TF.A, TS.P, TS.M), ses points clés
-   et ses corrections, condensés depuis le document. Un exercice peut
-   se rattacher à une ou plusieurs fiches : c'est ce qui permet de dire,
-   pour un groupe, quelles techniques ont été travaillées et lesquelles
-   ne l'ont jamais été. Les textes sont des résumés : la fiche complète,
-   avec ses vidéos de référence et de correction, reste le document. */
+   et ses corrections, en résumé. Un exercice peut se rattacher à une ou
+   plusieurs fiches : c'est ce qui permet de dire, pour un groupe,
+   quelles techniques ont été travaillées et lesquelles ne l'ont jamais
+   été. Le drapeau `socle` marque les techniques par lesquelles on
+   commence avec des débutants. */
 
 export const FORMES_TRAVAIL = {
   actif: "Tout le monde actif, sur place ou en déplacement",
@@ -24,7 +23,7 @@ export const FAMILLES = {
   TSM: "Techniques spécifiques — maniement et conduite",
 };
 
-const f = (code, famille, nom, points = [], corrections = [], u9 = false) => ({ code, famille, nom, points, corrections, u9 });
+const f = (code, famille, nom, points = [], corrections = [], socle = false) => ({ code, famille, nom, points, corrections, socle });
 
 export const FICHES = [
   f("TF.M 1", "TF", "Poussée", [], [], true),

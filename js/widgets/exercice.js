@@ -26,7 +26,7 @@ export const Exercice = {
         <span class="etat" data-etat>Enregistré</span>
         <span class="spacer"></span>
         <button type="button" data-act="seance">Ajouter à une séance…</button>
-        <button type="button" data-act="atelier" title="Une page pour l'aide-entraîneur qui tient cet atelier : schéma, organisation, points clés, corrections">Fiche atelier (PDF)</button>
+        <button type="button" data-act="atelier" title="Une page pour celui qui tient cet atelier : schéma, organisation, points clés, corrections">Fiche atelier (PDF)</button>
         <button type="button" data-act="exporter" title="Télécharger cet exercice seul, en JSON, pour le partager ou le garder">Exporter</button>
         <button type="button" data-act="dupliquer">Dupliquer</button>
         <button type="button" class="danger" data-act="supprimer">Supprimer</button>
@@ -54,13 +54,13 @@ export const Exercice = {
           <label>Description <textarea name="description" rows="8" placeholder="Mise en place, déroulé, consignes…">${esc(ex.description)}</textarea></label>
           <label>Points clés <small>un par ligne</small> <textarea name="points_cles" rows="4" placeholder="Genoux fléchis&#10;Regard devant">${esc((ex.points_cles || []).join("\n"))}</textarea></label>
           <label>Corrections <small>erreur → correction, une par ligne</small> <textarea name="corrections" rows="3" placeholder="Dos rond → genoux fléchis, regard loin devant">${esc((ex.corrections || []).join("\n"))}</textarea></label>
-          <label>Forme de travail <small>Module A fédéral</small>
+          <label>Forme de travail
             <select name="forme"><option value="">—</option>${Object.entries(FORMES_TRAVAIL)
               .map(([k, v]) => `<option value="${k}"${ex.forme === k ? " selected" : ""}>${esc(v)}</option>`)
               .join("")}</select>
           </label>
           <details class="techniques" ${(ex.techniques || []).length ? "open" : ""}>
-            <summary>Fiches techniques FFHG <small>${(ex.techniques || []).length ? `${ex.techniques.length} rattachée${ex.techniques.length > 1 ? "s" : ""}` : "aucune"}</small></summary>
+            <summary>Fiches techniques <small>${(ex.techniques || []).length ? `${ex.techniques.length} rattachée${ex.techniques.length > 1 ? "s" : ""}` : "aucune"}</small></summary>
             ${Object.entries(fichesParFamille())
               .map(
                 ([fam, liste]) => `<div class="techniques-famille"><h4>${esc(FAMILLES[fam])}</h4>${liste

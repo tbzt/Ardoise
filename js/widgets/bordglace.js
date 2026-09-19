@@ -9,6 +9,7 @@ import { Store, bilanVierge } from "../core/store.js";
 import { Storage } from "../core/storage.js";
 import { esc, debounce, statut, formaterDate, formaterDuree, heureA } from "../core/dom.js";
 import { chip, vignette, blocTechnique } from "./communs.js";
+import { cumulMateriel, libelleMateriel } from "../core/materiel.js";
 import { exporterPdf, exporterCarte } from "./communs.js";
 
 function minutesDe(heure) {
@@ -22,19 +23,17 @@ function aujourdhuiIso() {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
-/* Le matériel de tous les exercices, dédoublonné, avec qui en a besoin. */
+/* Le matériel de tous les exercices, chiffré : par objet, le maximum
+   demandé par un exercice (on ne sort les plots qu'une fois). */
 function materielDe(se) {
-  const carte = new Map();
-  for (const b of se.blocs) {
-    const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
-    if (!ex || !ex.materiel) continue;
-    const brut = ex.materiel.trim().replace(/[.\s]+$/, "");
-    if (!brut || /^aucun/i.test(brut)) continue;
-    const cle = brut.toLowerCase();
-    if (!carte.has(cle)) carte.set(cle, { texte: brut, exercices: [] });
-    carte.get(cle).exercices.push(b.titre || ex.nom);
-  }
-  return [...carte.values()];
+  return cumulMateriel(
+    se.blocs
+      .map((b) => {
+        const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
+        return ex && ex.materiel ? { titre: b.titre || ex.nom, materiel: ex.materiel } : null;
+      })
+      .filter(Boolean),
+  );
 }
 
 function bilanBloc(se, blocId) {
@@ -90,7 +89,7 @@ export const BordGlace = {
             ? `<ul class="glace-materiel" data-materiel>${materiel
                 .map(
                   (m, i) => `
-              <li><label><input type="checkbox" data-coche="${i}" ${coches.has(String(i)) ? "checked" : ""}> <span><strong>${esc(m.texte)}</strong><small>${esc(m.exercices.join(" · "))}</small></span></label></li>`,
+              <li><label><input type="checkbox" data-coche="${i}" ${coches.has(String(i)) ? "checked" : ""}> <span><strong>${esc(libelleMateriel(m))}</strong><small>${esc(m.details.map((d) => (d.n !== null && m.n !== null && m.details.length > 1 ? `${d.titre} (${d.n})` : d.titre)).join(" · "))}</small></span></label></li>`,
                 )
                 .join("")}</ul>`
             : `<p class="glace-rien">Rien à sortir : les exercices choisis n'ont pas de matériel.</p>`

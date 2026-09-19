@@ -102,7 +102,7 @@ export async function exporterCarte(se, bouton) {
   }
 }
 
-/* Ce qu'un exercice doit à ses fiches FFHG : les codes, et, repliés,
+/* Ce qu'un exercice doit à ses fiches techniques : les codes, et, repliés,
    les points clés et corrections de chaque fiche. */
 export function blocTechnique(ex, { ouvert = false } = {}) {
   const codes = (ex.techniques || []).map(fiche).filter(Boolean);
@@ -114,7 +114,7 @@ export function blocTechnique(ex, { ouvert = false } = {}) {
       ${ex.corrections && ex.corrections.length ? `<p class="corrections-titre"><strong>Corrections</strong></p><ul class="corrections">${ex.corrections.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
       ${codes
         .map(
-          (fi) => `<details class="fiche-ffhg" ${ouvert ? "open" : ""}><summary><b>${fi.code}</b> ${esc(fi.nom)} <small>fiche FFHG</small></summary>
+          (fi) => `<details class="fiche-technique" ${ouvert ? "open" : ""}><summary><b>${fi.code}</b> ${esc(fi.nom)} <small>fiche technique</small></summary>
             ${fi.points.length ? `<p class="mini-titre">Points clés</p><ul>${fi.points.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
             ${fi.corrections.length ? `<p class="mini-titre">Corrections</p><ul class="corrections">${fi.corrections.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
           </details>`,
@@ -127,7 +127,7 @@ export function codesTechniques(ex) {
   return (ex.techniques || []).map(fiche).filter(Boolean);
 }
 
-/* La fiche atelier d'un exercice, pour l'aide-entraîneur. */
+/* La fiche atelier d'un exercice, pour celui qui tient l'atelier. */
 export async function exporterFicheAtelier(ex, bouton, opts = {}) {
   const libelle = bouton ? bouton.textContent : "";
   if (bouton) {

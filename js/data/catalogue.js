@@ -199,7 +199,7 @@ export function exercicesDeBase() {
       description:
         "Chacun avec un palet, bien espacés. Trente secondes par consigne :\n1. Balayages larges gauche-droite, la palette reste au contact du palet.\n2. Balayages courts et rapides devant soi.\n3. Le huit : le palet passe autour du patin droit, puis du patin gauche.\n4. Palet côté revers seulement, puis coup droit seulement.\n\nTête haute sur la dernière minute : le coach lève des doigts, les joueurs annoncent le nombre sans regarder le palet.",
       points_cles: ["Main du haut qui tourne, main du bas qui accompagne", "La palette reste au sol, on ne tape pas le palet", "Tête haute dès que c'est possible"],
-      materiel: "Un palet par joueur.",
+      materiel: "1 palet par joueur",
       variantes: "À genoux (les mains seulement). Avec deux palets. En avançant lentement.",
       schema: {
         vue: "moitie",
@@ -224,7 +224,7 @@ export function exercicesDeBase() {
       description:
         "Deux files, une de chaque côté. Cinq cônes en ligne devant chaque file. On slalome avec le palet jusqu'au bout, on fait demi-tour et on revient en ligne droite par le côté. Départ suivant dès que le précédent a passé le deuxième cône.\n\nPremière série lentement, au contrôle. Deuxième série on accélère. Palet perdu : on le récupère et on continue, on ne saute pas de cône.",
       points_cles: ["Le palet passe devant le cône, le joueur derrière", "Coup droit d'un côté, revers de l'autre", "Le regard sur le cône suivant, pas sur le palet"],
-      materiel: "10 cônes, un palet par joueur.",
+      materiel: "10 plots\n1 palet par joueur",
       variantes: "Cônes plus rapprochés. Sans crosse (le palet aux pieds, pour rire). Retour en marche arrière sans palet.",
       schema: {
         vue: "moitie",
@@ -251,7 +251,7 @@ export function exercicesDeBase() {
       description:
         "Par deux, face à face, à dix mètres. Passes coup droit pendant deux minutes, puis revers deux minutes, puis on s'éloigne à quinze mètres. Compter les passes réussies d'affilée : le duo qui tient le plus long annonce son score.\n\nLe coach passe derrière chaque duo et corrige la position des mains.",
       points_cles: ["Le palet part du talon de la palette vers la pointe, en balayant", "On vise la palette du partenaire, pas le joueur", "Recevoir : la palette accompagne, elle amortit"],
-      materiel: "Un palet par duo.",
+      materiel: "1 palet par duo",
       variantes: "Passes levées (soulevées) par-dessus une crosse posée au sol. Un pas de côté entre chaque passe.",
       schema: {
         vue: "moitie",
@@ -277,7 +277,7 @@ export function exercicesDeBase() {
       description:
         "Deux files face à face, à quinze mètres. Le premier de la file A passe au premier de la file B, puis patine pour se ranger derrière la file B. Celui qui a reçu passe au suivant de la file A et suit son palet de la même façon.\n\nUn seul palet en jeu par couple de files. Quand ça tourne bien, on ajoute un deuxième palet.",
       points_cles: ["Passe d'abord, on part ensuite", "On reçoit en mouvement, palette au sol, prêt avant l'arrivée du palet", "On patine large pour ne pas couper la ligne de passe"],
-      materiel: "Un ou deux palets par couple de files.",
+      materiel: "2 palets par couple de files",
       variantes: "Passe puis marche arrière jusqu'à l'autre file. Deux touches maximum avant de passer.",
       schema: {
         vue: "moitie",
@@ -303,7 +303,7 @@ export function exercicesDeBase() {
       description:
         "Par deux, départ de la ligne de but, un de chaque côté. On monte toute la patinoire en se faisant des passes (au moins quatre). Arrivés dans la zone d'en face, celui qui a le palet tire, l'autre va au rebond. Retour par les bandes, les deux suivants partent quand les premiers passent la ligne rouge.\n\nLe gardien est en cage si vous en avez un ; sinon, une cage vide fait très bien l'affaire.",
       points_cles: ["Passer devant le partenaire, dans sa course", "Rester à la même hauteur que son partenaire", "Le receveur montre sa palette au sol : c'est la cible"],
-      materiel: "Des palets à la ligne de but.",
+      materiel: "20 palets",
       variantes: "Passes obligatoirement en revers. Trois joueurs de front.",
       schema: {
         vue: "entiere",
@@ -329,7 +329,7 @@ export function exercicesDeBase() {
       description:
         "Deux files au haut des cercles, un tas de palets à chaque file. Chacun tire à son tour, sans se déplacer, puis va récupérer un palet derrière la cage et rejoint l'autre file.\n\nOn vise d'abord la cage, puis les coins : le coach annonce « en haut à gauche », etc. Les gardiens débutants : uniquement des tirs au sol les cinq premières minutes.",
       points_cles: ["Le palet part de derrière le pied arrière", "Poids qui passe de la jambe arrière à la jambe avant", "La palette finit pointée vers la cible, on « la ferme » sur le palet"],
-      materiel: "Vingt palets, deux tas.",
+      materiel: "20 palets",
       variantes: "Tir après une passe du coach. Tir en revers. Tir après un tour sur soi-même.",
       schema: {
         vue: "moitie",
@@ -356,7 +356,7 @@ export function exercicesDeBase() {
       description:
         "Deux files dans les coins de la zone, un cône devant chacune. Le premier part avec un palet, contourne le cône par l'extérieur, revient vers la cage et tire en mouvement. Il récupère son palet et se range dans l'autre file.\n\nOn alterne les deux files, un joueur à la fois. Le tir part avant la zone de but : pas de collision avec le gardien.",
       points_cles: ["Palet devant soi dans le virage, pas sur le côté", "Deux appuis après le cône, puis on tire", "Tirer en mouvement, sans s'arrêter"],
-      materiel: "Deux cônes, des palets dans chaque coin.",
+      materiel: "2 plots\n20 palets",
       variantes: "Deux cônes à contourner. Passe du coach au sortir du cône puis tir.",
       schema: {
         vue: "moitie",
@@ -382,7 +382,7 @@ export function exercicesDeBase() {
       description:
         "Deux ou trois équipes, une file par équipe à la ligne de but. Au signal, le premier patine jusqu'au cône au bout, le contourne, revient et tape dans la main du suivant qui part. La première équipe dont tous les joueurs sont passés a gagné.\n\nManches successives : sans palet, avec palet, avec freinage obligatoire à la ligne rouge, en marche arrière sur la bleue-bleue.",
       points_cles: ["On contourne le cône, on ne le pousse pas", "Le suivant ne part qu'après la tape dans la main", "Freiner avant la file, pas dedans"],
-      materiel: "Un cône par équipe, des palets.",
+      materiel: "1 plot par équipe\n20 palets",
       variantes: "Relais avec obstacle (crosse au sol à enjamber). Relais où l'on transporte un palet sur la palette sans le lâcher.",
       schema: {
         vue: "entiere",
@@ -406,7 +406,7 @@ export function exercicesDeBase() {
       description:
         "Une seule zone, une seule cage, un gardien (ou une cage vide). Trois contre trois, deux minutes par manche, puis on change les équipes. L'équipe qui récupère le palet doit sortir au-dessus du haut des cercles avant d'attaquer.\n\nPas de hors-jeu, pas de mise en échec. Le coach siffle vite et souvent : il vaut mieux relancer que laisser tomber le jeu.",
       points_cles: ["Sans le palet : bouger, offrir une passe", "Avec le palet : tête haute, passe ou tir, on ne s'enferme pas dans un coin", "Le gardien parle : « à gauche ! », « tire ! »"],
-      materiel: "Chasubles de deux couleurs, un gardien si possible.",
+      materiel: "Chasubles de deux couleurs",
       variantes: "Deux contre deux. Trois passes obligatoires avant de tirer. Deux cages sur la largeur de la zone.",
       schema: {
         vue: "moitie",
@@ -457,7 +457,7 @@ export function exercicesDeBase() {
       description:
         "Dans le couloir ou le vestiaire, avant de chausser, en tenue :\n1. Deux minutes de trottinement sur place, montées de genoux, talons-fesses.\n2. Balancements de jambes avant-arrière puis latéraux, dix par côté, une main au mur.\n3. Dix fentes avant en marchant, dix squats lents, dix rotations de hanches.\n4. Rotations de chevilles, de poignets, d'épaules.\n5. Trente secondes de sautillements, puis on chausse.\n\nAucun étirement long avant la séance : les étirements, c'est à la fin.",
       points_cles: ["Tout en mouvement, rien de statique", "On transpire un peu avant la glace", "Chevilles et hanches d'abord : c'est ce qui travaille"],
-      materiel: "Un couloir.",
+      materiel: "1 couloir",
       variantes: "Avec une balle et la crosse : maniement sur place pendant les sautillements.",
       schema: {
         vue: "entiere",
@@ -622,7 +622,7 @@ export function exercicesDeBase() {
       description:
         "Quatre cônes en quinconce sur toute la longueur. On contourne chaque cône au plus près, en alternant le sens : gauche, droite, gauche, droite. Retour par la bande.\n\nPremier passage lentement, en glissant les deux patins parallèles dans le virage. Deuxième passage avec palet. Troisième : on se chronomètre.",
       points_cles: ["Les deux patins restent au sol dans le virage, celui de l'intérieur devant", "Se pencher vers le cône, la main basse presque à toucher la glace", "Sortir du virage en poussant, pour relancer"],
-      materiel: "4 cônes.",
+      materiel: "4 plots",
       variantes: "Virage puis arrêt. Contourner en marche arrière.",
       schema: {
         vue: "entiere",
@@ -670,7 +670,7 @@ export function exercicesDeBase() {
       description:
         "Tout le monde avec un palet, en boucle libre dans la zone, sans se rentrer dedans — c'est déjà un exercice. Le coach au centre lève des doigts, change de main, change de nombre : les joueurs annoncent à voix haute ce qu'ils voient.\n\nPuis le coach donne des consignes : « palet côté revers », « tout le monde s'arrête », « on change de sens ». Celui qui perd son palet le récupère et repart.",
       points_cles: ["Le palet devant soi, un peu sur le côté, pas sous les pieds", "Sentir le palet par la palette, pas par les yeux", "Regarder les autres : c'est le début du jeu"],
-      materiel: "Un palet par joueur.",
+      materiel: "1 palet par joueur",
       variantes: "En marche arrière. Deux palets par joueur. Le coach lance une balle de tennis à attraper d'une main.",
       schema: {
         vue: "moitie",
@@ -693,7 +693,7 @@ export function exercicesDeBase() {
       description:
         "Les sardines, chacune avec un palet, alignées sur la ligne de but. Deux requins sans palet au centre. Au signal, les sardines traversent jusqu'à l'autre ligne de but ; les requins essaient de leur prendre le palet. Une sardine sans palet devient requin.\n\nOn recommence dans l'autre sens jusqu'à ce qu'il ne reste que deux ou trois sardines : ce sont les gagnants, et les premiers requins de la manche suivante.",
       points_cles: ["Le corps entre le requin et le palet", "Changer de vitesse plutôt que de direction", "Les requins : la palette au sol, on soulève la crosse de l'autre"],
-      materiel: "Un palet par joueur.",
+      materiel: "1 palet par joueur",
       variantes: "Les requins en marche arrière. Zone réduite (entre les bleues).",
       schema: {
         vue: "entiere",
@@ -715,7 +715,7 @@ export function exercicesDeBase() {
       description:
         "Dans chaque cercle de mise au jeu : trois joueurs sur le bord, un défenseur au milieu. Les trois se font des passes sans sortir du cercle ; le défenseur essaie d'intercepter. Trois passes d'affilée = un point. Interception = le passeur devient défenseur.\n\nDeux minutes par cercle, puis les groupes tournent. Les joueurs du bord ont le droit de se déplacer le long du cercle : c'est même le but.",
       points_cles: ["Passer dès que la ligne est ouverte, pas de dribble", "Sans le palet : bouger pour ne pas être caché derrière le défenseur", "Le défenseur : la crosse au sol, dans la ligne de passe"],
-      materiel: "Un palet par cercle.",
+      materiel: "1 palet par cercle",
       variantes: "Quatre contre deux dans la zone entière. Passes en revers uniquement.",
       schema: {
         vue: "moitie",
@@ -740,7 +740,7 @@ export function exercicesDeBase() {
       description:
         "Par trois, en triangle, à huit mètres. Le palet tourne dans un sens : chaque passe se fait en revers, chaque réception se fait en coup droit puis on pivote. Une minute, puis on inverse le sens : les passes sont en coup droit, les réceptions en revers.\n\nQuand ça tourne, les trois avancent lentement vers l'autre bout de la glace en gardant le triangle.",
       points_cles: ["Revers : la main du bas tire, la main du haut pousse, le palet part de la pointe", "La réception : palette au sol, inclinée sur le palet, et on amortit", "Se replacer après chaque passe, la palette montre la cible"],
-      materiel: "Un palet par trio.",
+      materiel: "1 palet par trio",
       variantes: "Passes levées. Triangle en marche arrière.",
       schema: {
         vue: "moitie",
@@ -765,7 +765,7 @@ export function exercicesDeBase() {
       description:
         "Le long de la bande, en patinant à vitesse moyenne : on passe le palet en diagonale vers la bande, devant soi, et on le récupère au rebond sans s'arrêter. Trois ou quatre rebonds sur la longueur, puis retour par le milieu.\n\nLe secret est dans l'angle : plus on passe loin devant, plus le palet revient loin. Les bandes rendent ce qu'on leur donne.",
       points_cles: ["Passer devant soi, jamais à hauteur", "Dosage : le palet doit revenir sur la palette, pas dans les patins", "Regarder la bande, pas le palet"],
-      materiel: "Un palet par joueur.",
+      materiel: "1 palet par joueur",
       variantes: "Par deux : l'un passe à la bande, l'autre récupère. En marche arrière.",
       schema: {
         vue: "entiere",
@@ -791,7 +791,7 @@ export function exercicesDeBase() {
       description:
         "Deux files dans l'enclave, un tas de palets chacune. On tire du revers, à l'arrêt d'abord : le palet au milieu de la palette côté revers, le poids qui passe sur la jambe avant, et la palette qui se referme vers le haut pour soulever.\n\nPuis en mouvement : deux poussées, tir. Alterner les files. Le gardien reste au sol les cinq premières minutes.",
       points_cles: ["Palet sur le revers, un peu en arrière du pied", "Poids sur la jambe avant au moment du tir", "La palette suit le palet et se ferme vers la cible"],
-      materiel: "Vingt palets.",
+      materiel: "20 palets",
       variantes: "Tir du revers après une passe. Coup droit puis revers en enchaînement.",
       schema: {
         vue: "moitie",
@@ -817,7 +817,7 @@ export function exercicesDeBase() {
       description:
         "Un passeur dans le coin avec les palets. Une file de tireurs à la ligne bleue. Le tireur part, patine vers l'enclave ; le passeur lui donne le palet dans sa course ; le tireur reçoit et tire en mouvement, sans reprise de contrôle.\n\nLe tireur va récupérer son palet et devient passeur ; le passeur rejoint la file. Changer de coin à mi-temps pour travailler l'autre côté.",
       points_cles: ["Le tireur part quand le passeur a le palet sur la palette", "Palette au sol, cible montrée : la passe arrive dans la course", "Recevoir et tirer dans le même mouvement, pas d'arrêt"],
-      materiel: "Des palets dans le coin.",
+      materiel: "20 palets",
       variantes: "Tir en une touche pour les plus avancés. Deuxième passeur dans l'autre coin, tir sur la deuxième passe.",
       schema: {
         vue: "moitie",
@@ -842,7 +842,7 @@ export function exercicesDeBase() {
       description:
         "Le gardien dans sa zone, le coach devant avec des palets. Sans tir d'abord :\n1. Poussée en T d'un poteau à l'autre, cinq fois : le patin extérieur pousse, l'autre glisse, on s'arrête épaule contre le poteau.\n2. Papillon (les deux genoux au sol, jambières à plat) puis relevé, cinq fois.\n3. Glissade latérale en papillon, d'un poteau à l'autre.\n\nPuis le coach tire doucement au sol, en annonçant le côté, et le gardien fait le mouvement correspondant.",
       points_cles: ["Toujours face au palet, le buste droit", "Les mains devant, jamais collées au corps", "On se relève par la jambe du côté où on doit aller"],
-      materiel: "Une dizaine de palets, un coach ou deux tireurs tranquilles.",
+      materiel: "10 palets",
       variantes: "Tirs sans annonce. Tirs à mi-hauteur. Deux tireurs qui se passent le palet avant de tirer.",
       schema: {
         vue: "moitie",
@@ -868,7 +868,7 @@ export function exercicesDeBase() {
       description:
         "Un ou deux chats avec une chasuble. Les autres s'échappent dans la zone. Touché = on se fige, jambes écartées, crosse en l'air. On est délivré quand un joueur libre passe entre nos patins… en glissant sur les genoux, ou plus simplement en tapant dans la main.\n\nManche de deux minutes, on change les chats. Le dernier libre est le chat suivant.",
       points_cles: ["Pour s'échapper : changer de direction, pas seulement de vitesse", "Freiner pour éviter, c'est permis et c'est le but", "Le chat : couper la trajectoire, ne pas courir derrière"],
-      materiel: "Deux chasubles.",
+      materiel: "2 chasubles",
       variantes: "Avec palet pour tout le monde. Chats en marche arrière.",
       schema: {
         vue: "entiere",
@@ -890,7 +890,7 @@ export function exercicesDeBase() {
       description:
         "Un couloir de dix mètres de large entre la bande et une ligne de cônes, sur toute la longueur, avec une petite cage à chaque bout. Deux contre deux, une minute par manche, les suivants attendent à l'extérieur.\n\nDeux couloirs (haut et bas) tournent en même temps : huit joueurs en jeu, les autres en attente courte. Palet sorti du couloir : remise à l'équipe adverse.",
       points_cles: ["Passer court et vite : le couloir ne laisse pas la place de dribbler", "Sans le palet : se démarquer le long de la bande, pas au milieu", "Protéger le palet avec le corps, dos au défenseur"],
-      materiel: "10 cônes, 4 petites cages (ou des cônes en guise de cages).",
+      materiel: "10 plots\n4 petites cages",
       variantes: "Trois contre trois. Le but ne compte que sur passe.",
       schema: {
         vue: "entiere",
@@ -915,7 +915,7 @@ export function exercicesDeBase() {
       description:
         "La zone en travers : deux cages dos aux bandes, face à face sur la largeur. Quatre contre quatre, sans gardien (ou avec, si vous en avez deux), manches de deux minutes, on change les équipes à chaque sifflet.\n\nPas de hors-jeu, pas de dégagement interdit, pas de mise en échec. Le palet qui sort revient par le coach, vite. C'est le moment où tout ce qu'on a travaillé se mélange — on n'arrête pas pour corriger, on note pour la prochaine séance.",
       points_cles: ["Tête haute : sur une petite surface, tout va vite", "Passer dès qu'on est pris", "Revenir défendre en même temps qu'on a perdu le palet"],
-      materiel: "Deux cages mobiles (ou quatre cônes), chasubles, une réserve de palets.",
+      materiel: "2 cages mobiles (ou 4 plots)\nChasubles\n20 palets",
       variantes: "Trois contre trois. Deux touches maximum. Buts comptés double sur passe.",
       schema: {
         vue: "moitie",
@@ -966,7 +966,7 @@ export function exercicesDeBase() {
       description:
         "Tout le groupe patine autour du cercle central, dans le même sens, à distance les uns des autres. Le coach au milieu avec les palets : il passe à chacun à son passage, le joueur reçoit sans s'arrêter et lui redonne aussitôt.\n\nUn tour dans chaque sens, puis on refait en marche arrière pour ceux qui savent — la passe arrive alors de face.",
       points_cles: ["Recevoir en mouvement, palette au sol avant l'arrivée du palet", "Redonner en balayant, pas en tapant", "Garder la distance avec celui de devant"],
-      materiel: "Quelques palets pour le coach.",
+      materiel: "10 palets",
       variantes: "Deux coachs dos à dos. Passes en revers.",
       schema: {
         vue: "entiere",
@@ -991,7 +991,7 @@ export function exercicesDeBase() {
       description:
         "Tout le monde sur la largeur, face au coach. Sifflet : on démarre à fond. Sifflet : on s'arrête net. Sifflet : on repart. Les arrêts alternent côté gauche et côté droit — le coach l'annonce d'abord, puis ne l'annonce plus.\n\nDeux minutes de travail, une minute de récupération en patinage lent, trois fois.",
       points_cles: ["Départ : premiers pas courts et rapides, sur les pointes, buste penché", "Arrêt : hanches qui tournent, genoux qui plient, les deux patins rabotent", "Le côté faible autant que le fort"],
-      materiel: "Un sifflet.",
+      materiel: "1 sifflet",
       variantes: "Arrêt puis départ dans l'autre sens. Avec palet.",
       schema: {
         vue: "entiere",
@@ -1017,7 +1017,7 @@ export function exercicesDeBase() {
       description:
         "Cinq cônes en ligne, espacés de quatre mètres. On part dos aux cônes et on slalome en marche arrière : autour du premier par poussées en C du pied droit, autour du deuxième par le pied gauche, et ainsi de suite. Retour en avant par le côté.\n\nOn regarde par-dessus l'épaule du côté où on va. Lentement d'abord : le but est de ne pas toucher les cônes.",
       points_cles: ["Hanches basses, dos droit, la tête tourne vers le côté du virage", "Le patin extérieur au virage pousse en C, l'intérieur guide", "Ne pas s'arrêter entre deux cônes — la glisse continue"],
-      materiel: "5 cônes par file.",
+      materiel: "5 plots par file",
       variantes: "Avec palet (le vrai défi). Slalom avant à l'aller, arrière au retour.",
       schema: {
         vue: "entiere",
@@ -1041,7 +1041,7 @@ export function exercicesDeBase() {
       description:
         "Un circuit sur toute la glace, un départ toutes les dix secondes :\n1. Slalom entre trois cônes.\n2. Virage serré autour du cône de la ligne rouge.\n3. Arrêt complet sur la deuxième ligne bleue.\n4. Marche arrière jusqu'à la ligne rouge.\n5. Demi-tour et sprint jusqu'à la ligne de but.\n\nDeux passages au contrôle, puis on chronomètre. Chacun note son temps et essaie de le battre à la séance suivante.",
       points_cles: ["Propre avant rapide : un cône touché, on recommence", "Bas sur les patins dans chaque changement de direction", "Le sprint final : petits pas rapides puis grandes poussées"],
-      materiel: "4 cônes, un chronomètre.",
+      materiel: "4 plots\n1 chronomètre",
       variantes: "Avec palet. En relais par équipes.",
       schema: {
         vue: "entiere",
@@ -1068,7 +1068,7 @@ export function exercicesDeBase() {
       description:
         "Par deux, le long de la bande, dans un carré de dix mètres. Le porteur garde le palet trente secondes ; le défenseur essaie de le prendre, sans charge, crosse sur crosse autorisée. Puis on inverse.\n\nLe porteur n'a pas le droit de sortir du carré. Il tourne, il se met dos au défenseur, il change de main sur la crosse si besoin. Le coach compte les secondes de possession.",
       points_cles: ["Dos au défenseur, le palet loin de lui, bras tendu", "Genoux fléchis, large sur les patins : on ne se fait pas bouger", "Tourner autour du palet plutôt que fuir avec"],
-      materiel: "Des cônes pour marquer les carrés, un palet par duo.",
+      materiel: "8 plots\n1 palet par duo",
       variantes: "Deux contre deux dans le même carré. Le porteur doit aussi faire un tour complet du carré.",
       schema: {
         vue: "moitie",
@@ -1094,7 +1094,7 @@ export function exercicesDeBase() {
       description:
         "Trois cônes en ligne, espacés de six mètres. À chaque cône, une feinte différente :\n1. Coup droit-revers : le palet passe d'un côté du cône, le joueur de l'autre.\n2. Tirer-pousser : on tire le palet vers soi puis on le pousse loin devant.\n3. La feinte de corps : les épaules d'un côté, le palet de l'autre.\n\nLentement, à l'arrêt presque, puis en patinant. Le cône ne bouge pas : c'est le moment d'oser.",
       points_cles: ["Les mains loin du corps pour avoir de l'amplitude", "Le palet passe loin du cône, le corps près", "Tête haute dès que le geste est acquis"],
-      materiel: "3 cônes par file, un palet par joueur.",
+      materiel: "3 plots par file\n1 palet par joueur",
       variantes: "Le coach remplace le cône et tend la crosse. Les feintes en marche arrière.",
       schema: {
         vue: "moitie",
@@ -1121,7 +1121,7 @@ export function exercicesDeBase() {
       description:
         "Un grand carré de cônes, tous dedans avec un palet, en patinage libre. Le coach donne des ordres : « à gauche ! », « demi-tour ! », « stop ! », « marche arrière ! », « changez de palet ! ». Tout le monde exécute sans se rentrer dedans.\n\nCelui qui perd son palet le récupère. Celui qui sort du carré fait trois pompes… ou pas, selon l'humeur du groupe.",
       points_cles: ["Regarder les autres, pas le palet — le carré est petit", "Le palet reste devant soi dans les changements de direction", "Sur « stop », le palet s'arrête avec le joueur"],
-      materiel: "8 cônes, un palet par joueur.",
+      materiel: "8 plots\n1 palet par joueur",
       variantes: "Le carré rétrécit toutes les minutes. Le coach montre des couleurs au lieu de parler.",
       schema: {
         vue: "moitie",
@@ -1143,7 +1143,7 @@ export function exercicesDeBase() {
       description:
         "Quatre joueurs immobiles sur le bord d'un cercle, un palet chacun. Un cinquième patine autour du cercle, par l'extérieur : chaque joueur du bord lui passe son palet, il le reçoit et le redonne aussitôt, sans s'arrêter, puis continue vers le suivant.\n\nUn tour dans chaque sens, puis on change le patineur. Coup droit dans un sens, revers dans l'autre, forcément.",
       points_cles: ["Le patineur montre sa palette au sol avant chaque passe", "Les passeurs anticipent : passer devant le patineur, dans sa course", "Redonner en une touche, sans reprise"],
-      materiel: "Un palet par joueur du bord.",
+      materiel: "1 palet par joueur",
       variantes: "Le patineur en marche arrière. Deux patineurs sur le même cercle, dans le même sens.",
       schema: {
         vue: "moitie",
@@ -1168,7 +1168,7 @@ export function exercicesDeBase() {
       description:
         "Par deux, face à face de chaque côté de la ligne rouge, à vingt mètres. Une passe longue et forte, le partenaire la reçoit en glissant vers elle, l'amortit, et renvoie. Toutes les trente secondes, on recule d'un pas.\n\nLa passe longue se fait avec tout le corps : poids qui bascule, crosse qui suit le palet jusqu'à la cible.",
       points_cles: ["Le palet part du talon de la palette, la crosse suit vers la cible", "Recevoir en glissant vers le palet, la palette légèrement inclinée", "Fort mais au sol : un palet qui saute ne se reçoit pas"],
-      materiel: "Un palet par duo.",
+      materiel: "1 palet par duo",
       variantes: "Passes levées par-dessus une crosse au sol. Passe longue en revers.",
       schema: {
         vue: "entiere",
@@ -1191,7 +1191,7 @@ export function exercicesDeBase() {
       description:
         "Deux attaquants partent de la ligne bleue, un défenseur les attend au haut des cercles, le gardien en cage. Les attaquants montent, se font une passe ou deux, et concluent : tir, ou passe pour le tir du partenaire. Le défenseur essaie de couper la passe, sans charge.\n\nOn tourne : le défenseur devient attaquant, un attaquant devient défenseur.",
       points_cles: ["Le porteur attaque le défenseur, il ne l'attend pas", "Le partenaire reste à hauteur, palette au sol, sur l'autre côté", "Si le défenseur vient sur moi, je passe ; s'il reste, je tire"],
-      materiel: "Des palets à la ligne bleue.",
+      materiel: "20 palets",
       variantes: "Trois contre deux. Le défenseur part deux mètres en retard.",
       schema: {
         vue: "moitie",
@@ -1216,7 +1216,7 @@ export function exercicesDeBase() {
       description:
         "Une file dans chaque coin, un tas de palets. Le premier part avec un palet, passe derrière la cage en la serrant au plus près, ressort de l'autre côté et tire aussitôt, en revers ou en coup droit selon le côté. Il récupère son palet et va dans l'autre file.\n\nLes deux files alternent. Le gardien travaille ses déplacements poteau à poteau en même temps : c'est un exercice pour lui aussi.",
       points_cles: ["Le palet du côté de la cage, protégé par le corps", "Ressortir vite et tirer avant de s'arrêter", "Viser le côté que le gardien vient de quitter"],
-      materiel: "Vingt palets.",
+      materiel: "20 palets",
       variantes: "Passe depuis derrière la cage à un tireur dans l'enclave (le jeu « derrière la cage »).",
       schema: {
         vue: "moitie",
@@ -1242,7 +1242,7 @@ export function exercicesDeBase() {
       description:
         "Une file au haut du cercle, une file dans l'enclave. Le premier de la file du cercle tire ; au moment du tir, le premier de l'enclave attaque la cage et pousse tout ce qui traîne : rebond du gardien, palet dévié, palet arrêté devant la ligne.\n\nLe tireur va ensuite dans la file de l'enclave, le rebondeur dans celle du cercle. Le gardien laisse volontairement des rebonds les premières minutes.",
       points_cles: ["Le rebondeur part au moment du tir, pas avant", "Crosse au sol devant la cage, prêt à pousser", "Ne pas gêner le gardien : on va au rebond, pas dans le gardien"],
-      materiel: "Vingt palets.",
+      materiel: "20 palets",
       variantes: "Le tireur choisit : tir ou passe au rebondeur. Deux rebondeurs.",
       schema: {
         vue: "moitie",
@@ -1267,7 +1267,7 @@ export function exercicesDeBase() {
       description:
         "Depuis la ligne bleue, palets en tas, sans gardien (ou gardien en position, casque baissé). Élan de la crosse à hauteur de taille, pas plus ; la palette touche la glace deux ou trois centimètres avant le palet et le pousse ; poids qui passe sur la jambe avant.\n\nCinq tirs chacun, on regarde où va le palet, on corrige. Pas de concours de puissance le premier jour.",
       points_cles: ["Élan court : la crosse ne dépasse pas la taille", "La main du bas glisse vers le bas de la crosse pendant l'élan", "La palette frappe la glace avant le palet, pas le palet directement"],
-      materiel: "Des palets à la ligne bleue.",
+      materiel: "20 palets",
       variantes: "Tir frappé après une passe. Tir frappé en mouvement, deux pas d'élan.",
       schema: {
         vue: "moitie",
@@ -1290,7 +1290,7 @@ export function exercicesDeBase() {
       description:
         "Un tireur au haut de l'enclave, palets en tas, le gardien en cage. Série de huit tirs annoncés : « en bas à gauche », « en haut à droite »… Le gardien fait le geste adapté (jambière, mitaine, bouclier, papillon).\n\nPuis huit tirs non annoncés, à vitesse modérée. Puis on change de tireur. Le coach à côté du gardien corrige la position entre chaque tir : bâton au sol, mitaine ouverte, genoux fléchis.",
       points_cles: ["Se replacer au centre après chaque tir", "Les mains devant, la mitaine ouverte vers le tireur", "Le bâton reste au sol, il ferme le trou entre les jambières"],
-      materiel: "Vingt palets, un tireur calme.",
+      materiel: "20 palets",
       variantes: "Tireur qui se déplace avant de tirer. Deux tireurs qui se passent le palet.",
       schema: {
         vue: "moitie",
@@ -1313,7 +1313,7 @@ export function exercicesDeBase() {
       description:
         "Un cercle de mise au jeu, deux joueurs, un palet. Trente secondes : le porteur garde le palet dans le cercle, l'autre essaie de le sortir ou de le prendre. Palet sorti du cercle : un point pour le défenseur ; palet gardé trente secondes : un point pour le porteur. On inverse.\n\nCinq cercles, dix joueurs en jeu, les autres tournent toutes les trente secondes.",
       points_cles: ["Le porteur : dos au défenseur, tourner autour du palet", "Le défenseur : crosse au sol, on pousse la crosse de l'autre, jamais le corps", "Pas de charge, jamais"],
-      materiel: "Un palet par cercle.",
+      materiel: "1 palet par cercle",
       variantes: "Deux contre deux. Le porteur doit marquer dans une mini-cage placée sur le bord du cercle.",
       schema: {
         vue: "entiere",
@@ -1337,7 +1337,7 @@ export function exercicesDeBase() {
       description:
         "Deux équipes sur la largeur d'une zone. Chaque équipe a un capitaine, seul dans un couloir tout au bout (entre la bande et une ligne de cônes), qu'on ne peut pas attaquer. On marque en passant le palet à son capitaine, qui doit le contrôler proprement. Pas de tir, pas de cage : que des passes.\n\nAprès chaque point, le capitaine change. Quatre minutes par manche.",
       points_cles: ["Sans le palet : bouger pour offrir une ligne de passe", "Le capitaine bouge dans son couloir pour être visible", "Palet perdu : on revient défendre tout de suite"],
-      materiel: "Des cônes pour les couloirs, chasubles.",
+      materiel: "10 plots\nChasubles",
       variantes: "Passe obligatoire en revers pour marquer. Trois passes minimum avant le capitaine.",
       schema: {
         vue: "moitie",
@@ -1363,7 +1363,7 @@ export function exercicesDeBase() {
       description:
         "Toute la glace, deux cages, deux gardiens si possible. Cinq contre cinq (ou quatre contre quatre si le groupe est petit). Règles : pas de hors-jeu, pas de dégagement interdit, pas de mise en échec, changements à la volée toutes les quatre-vingt-dix secondes au sifflet du coach.\n\nLe coach arbitre et commente en jouant : « bonne passe ! », « regarde ton partenaire ! ». On ne siffle une faute que si elle est dangereuse.",
       points_cles: ["Changer de ligne au sifflet, sans discuter", "Chacun à son poste : deux défenseurs qui restent derrière", "Le jeu avant la règle : on laisse jouer"],
-      materiel: "Chasubles, deux gardiens ou deux cages vides.",
+      materiel: "Chasubles",
       variantes: "Ajouter le hors-jeu à la deuxième moitié. Buts comptés double sur passe.",
       schema: {
         vue: "entiere",
@@ -1386,7 +1386,7 @@ export function exercicesDeBase() {
       description:
         "Tout le monde en cercle au centre, un ou deux palets qui tournent en passes lentes, sans consigne technique. Pendant que le palet tourne, chacun dit à son tour une chose qu'il a réussie aujourd'hui et une chose qu'il veut travailler.\n\nLe coach termine par le programme de la prochaine séance. On sort ensemble, on range les cônes ensemble.",
       points_cles: ["Passes lentes, on écoute celui qui parle", "Chacun une réussite, une envie", "On range ensemble"],
-      materiel: "Un ou deux palets.",
+      materiel: "2 palets",
       variantes: "",
       schema: {
         vue: "entiere",
@@ -1436,7 +1436,7 @@ export function exercicesDeBase() {
       description:
         "Pendant que le groupe patine, le gardien dans sa zone avec un coach ou un joueur calme :\n1. Une minute de déplacements seuls : poussées en T poteau à poteau, papillon et relevé, glissade.\n2. Vingt tirs doux au sol, alternés gauche et droite, depuis l'enclave.\n3. Vingt tirs à mi-hauteur, mitaine et bouclier.\n4. Dix tirs surprise, le tireur choisit.\n\nOn monte en puissance, jamais l'inverse. Le gardien annonce quand il est prêt pour la suite.",
       points_cles: ["Jambes d'abord, mains ensuite", "Doux, puis moyen, puis normal — jamais fort au début", "Le gardien dit quand il est prêt"],
-      materiel: "Vingt palets, un tireur patient.",
+      materiel: "20 palets",
       variantes: "Le tireur se déplace en tirant. Deux tireurs qui alternent.",
       schema: {
         vue: "moitie",
@@ -1461,7 +1461,7 @@ export function exercicesDeBase() {
       description:
         "Sur la ligne bleue, face au coach. On se déplace vers la droite en croisant le pied gauche devant le droit, puis le droit revient sur le côté, et on recommence. Arrivé à la bande, retour vers la gauche avec l'autre pied.\n\nPremière longueur au pas. Deuxième en glissant sur le pied qui ne croise pas. Troisième au sifflet : changement de sens à chaque coup.",
       points_cles: ["Les épaules restent face au coach : on va de côté, pas en avant", "Le pied qui croise passe DEVANT l'autre", "Bas sur les jambes, on ne saute pas"],
-      materiel: "Un sifflet.",
+      materiel: "1 sifflet",
       variantes: "Avec crosse au sol, à deux mains. Croisés latéraux puis pivot en marche arrière.",
       schema: {
         vue: "entiere",
@@ -1557,7 +1557,7 @@ export function exercicesDeBase() {
       description:
         "Deux joueurs sur un cercle, diamétralement opposés. Au sifflet, chacun poursuit l'autre en suivant la ligne du cercle. Celui qui touche l'autre a gagné ; au bout de deux tours sans rattrapage, match nul et on change.\n\nUn sens, puis l'autre. Cinq cercles, dix joueurs en jeu, ça tourne vite.",
       points_cles: ["Pencher vers l'intérieur, croiser si on sait", "Ne pas couper le cercle : la ligne, c'est la règle", "Ceux qui attendent encouragent"],
-      materiel: "Un sifflet.",
+      materiel: "1 sifflet",
       variantes: "Avec palet. En marche arrière (les plus avancés).",
       schema: {
         vue: "entiere",
@@ -1583,7 +1583,7 @@ export function exercicesDeBase() {
       description:
         "Six crosses posées au sol en quinconce, à trois mètres les unes des autres. Le joueur slalome avec le palet entre les crosses ; puis, deuxième passage, il doit faire passer le palet PAR-DESSUS chaque crosse (petit soulevé) tout en la contournant lui-même.\n\nLe soulevé : la palette se glisse sous le palet et le lève d'une petite rotation des poignets. Pas plus haut que le manche.",
       points_cles: ["Le palet loin devant dans le slalom, pas dans les patins", "Pour soulever : palette sous le palet, poignets qui tournent, pas les bras", "On enjambe la crosse, on ne saute pas dessus"],
-      materiel: "Six crosses de rechange (ou celles de la moitié du groupe), un palet par joueur.",
+      materiel: "6 crosses de rechange (ou celles de la moitié du groupe)\n1 palet par joueur",
       variantes: "Les crosses plus rapprochées. En marche arrière, sans soulever.",
       schema: {
         vue: "moitie",
@@ -1607,7 +1607,7 @@ export function exercicesDeBase() {
       description:
         "Chacun avec un palet, face à une crosse posée au sol à deux mètres. On soulève le palet par-dessus la crosse : la palette légèrement ouverte, le palet part de l'arrière de la palette vers la pointe, et les poignets tournent au dernier moment. On va le chercher, on recommence de l'autre côté.\n\nVingt fois. Puis la crosse s'éloigne à trois mètres, puis quatre.",
       points_cles: ["Palette ouverte, le palet roule du talon vers la pointe", "Le mouvement finit avec la palette vers le haut", "Petit et précis avant haut et fort"],
-      materiel: "Une crosse au sol pour deux joueurs, un palet par joueur.",
+      materiel: "1 crosse par duo\n1 palet par joueur",
       variantes: "Par deux : passes levées par-dessus la crosse. Soulever en revers.",
       schema: {
         vue: "moitie",
@@ -1629,7 +1629,7 @@ export function exercicesDeBase() {
       description:
         "Par trois, de front, à sept mètres les uns des autres. On monte toute la glace en se faisant des passes : celui du milieu donne à gauche, qui redonne au milieu, qui donne à droite, qui redonne au milieu. Arrivés dans la zone, celui qui a le palet tire.\n\nRetour par la bande, le trio suivant part quand le précédent passe la rouge. On change les positions à chaque passage.",
       points_cles: ["Les trois avancent à la même vitesse : on ne s'attend pas, on ne se dépasse pas", "Passe devant le partenaire, dans sa course", "Celui du milieu regarde à gauche ET à droite"],
-      materiel: "Des palets à la ligne de but.",
+      materiel: "20 palets",
       variantes: "Passes en revers pour les ailiers. Le milieu en marche arrière (les plus avancés).",
       schema: {
         vue: "entiere",
@@ -1651,7 +1651,7 @@ export function exercicesDeBase() {
       description:
         "Une file à la ligne bleue avec les palets, un joueur relais immobile au haut du cercle (le coach au début). Le premier part avec le palet, passe au relais, accélère vers la cage, reçoit la passe en retour dans sa course et tire.\n\nIl récupère son palet, devient relais, et le relais rejoint la file. Changer de côté à mi-temps.",
       points_cles: ["Passer PUIS accélérer : la passe libère, la course fait le reste", "Le relais redonne en une touche, devant le joueur", "Recevoir en mouvement et tirer sans s'arrêter"],
-      materiel: "Des palets à la ligne bleue.",
+      materiel: "20 palets",
       variantes: "Deux relais, deux une-deux. Le relais en mouvement lui aussi.",
       schema: {
         vue: "moitie",
@@ -1678,7 +1678,7 @@ export function exercicesDeBase() {
       description:
         "Deux équipes, chacune alignée sur la longueur à cinq mètres d'intervalle. Le palet part du premier et remonte la ligne de passe en passe jusqu'au dernier, qui le ramène en conduisant, se place en tête, et le palet repart.\n\nQuand tout le monde a été dernier, l'équipe a fini. Palet manqué : on va le chercher, pas de raccourci.",
       points_cles: ["Palette au sol avant que la passe parte", "Passes au sol, à la palette", "Le dernier ramène le palet en conduite, tête haute"],
-      materiel: "Un palet par équipe.",
+      materiel: "1 palet par équipe",
       variantes: "Passes en revers. Deux palets par équipe en même temps.",
       schema: {
         vue: "entiere",
@@ -1703,7 +1703,7 @@ export function exercicesDeBase() {
       description:
         "Deux files à la ligne bleue, dans les coins, palets en tas. Le premier part avec le palet, prend deux ou trois poussées, et tire du haut du cercle sans s'arrêter. Il récupère son palet et change de file.\n\nOn alterne les files. Consigne de la deuxième série : le tir part pendant que le pied côté palet est en l'air.",
       points_cles: ["Le palet reste devant soi pendant les poussées", "Le poids passe sur la jambe avant au moment du tir", "On tire, puis on continue de patiner vers la cage"],
-      materiel: "Vingt palets.",
+      materiel: "20 palets",
       variantes: "Tir en revers. Tir après un virage serré autour d'un cône.",
       schema: {
         vue: "moitie",
@@ -1727,7 +1727,7 @@ export function exercicesDeBase() {
       description:
         "Cage vide, quatre cibles dans les coins : cônes accrochés à la barre, bouteilles d'eau, ou simplement des palets posés sur la barre du haut. Chacun tire dix palets depuis l'enclave, à l'arrêt : un point par cible touchée, deux si elle tombe.\n\nOn annonce sa cible avant de tirer. Le total est noté, on refait la semaine suivante.",
       points_cles: ["Annoncer la cible, regarder la cible, tirer vers la cible", "En haut : la palette se ferme tard. En bas : elle se ferme tôt", "La précision d'abord, la force ensuite"],
-      materiel: "Quatre cibles (cônes, bouteilles, palets sur la barre), vingt palets.",
+      materiel: "4 cibles (plots, bouteilles ou palets sur la barre)\n20 palets",
       variantes: "Tirs en mouvement. Tirs en revers. Par équipes, le total le plus haut gagne.",
       schema: {
         vue: "moitie",
@@ -1749,7 +1749,7 @@ export function exercicesDeBase() {
       description:
         "Par deux sur un point de mise au jeu, le coach laisse tomber le palet. On travaille trois façons : tirer le palet vers l'arrière en revers, le pousser vers l'avant entre les jambes de l'adversaire, ou bloquer la crosse adverse et laisser un partenaire venir chercher le palet.\n\nDix engagements par duo, on tourne. Puis on ajoute un partenaire derrière chaque joueur qui doit récupérer le palet.",
       points_cles: ["Bas sur les jambes, la crosse au sol avant le palet", "Regarder la main du coach, pas le palet", "Décider avant : arrière, avant, ou bloquer"],
-      materiel: "Des palets pour le coach.",
+      materiel: "20 palets",
       variantes: "Mise au jeu puis tir immédiat pour celui qui gagne. Le perdant doit défendre.",
       schema: {
         vue: "moitie",
@@ -1773,7 +1773,7 @@ export function exercicesDeBase() {
       description:
         "Trois attaquants partent de la ligne rouge, deux défenseurs les attendent à la ligne bleue, le gardien en cage. Les attaquants montent en triangle et cherchent le joueur libre ; les défenseurs reculent en marche arrière et essaient de couper les passes, sans charge.\n\nL'action finit sur un tir ou une récupération. Puis deux attaquants deviennent défenseurs.",
       points_cles: ["Le porteur monte au milieu, les deux autres écartent", "Passer avant la bleue, tirer dans l'enclave", "Défenseurs : reculer ensemble, crosse au sol, ne pas se jeter"],
-      materiel: "Des palets à la ligne rouge.",
+      materiel: "20 palets",
       variantes: "Trois contre deux puis un troisième défenseur qui revient en retard. Deux contre un enchaîné après la récupération.",
       schema: {
         vue: "moitie",
@@ -1798,7 +1798,7 @@ export function exercicesDeBase() {
       description:
         "Tout le monde dans le cercle central, chacun avec un palet. Au sifflet, on garde le sien et on essaie de sortir ceux des autres du cercle, avec la crosse seulement. Palet sorti : on sort aussi, et on va patiner autour du cercle en attendant. Le dernier avec un palet est roi.\n\nTrois manches. Le roi de chaque manche commence la suivante avec un handicap : en marche arrière.",
       points_cles: ["Tête haute : le danger vient de partout", "Le palet près de soi, protégé par les patins", "Crosse sur le palet des autres, jamais sur leurs patins"],
-      materiel: "Un palet par joueur.",
+      materiel: "1 palet par joueur",
       variantes: "Deux cercles pour un grand groupe. Sans crosse : palet aux pieds.",
       schema: {
         vue: "entiere",
@@ -1846,7 +1846,7 @@ export function exercicesDeBase() {
       description:
         "La glace coupée en quatre. Dans chaque coin, un atelier tenu par un coach ou un joueur avancé :\n1. Freinages des deux côtés (coin 1).\n2. Slalom avec palet (coin 2).\n3. Passes en paires (coin 3).\n4. Tirs sur cage vide (coin 4).\n\nQuatre minutes par atelier, sifflet, rotation dans le sens des aiguilles d'une montre. Le format marche pour n'importe quels ateliers : c'est la rotation qui compte, pas le contenu.",
       points_cles: ["Les groupes sont faits avant d'entrer sur la glace", "Chaque atelier a une consigne d'une phrase, affichée ou répétée", "La rotation se fait au sifflet, en trente secondes"],
-      materiel: "Selon les ateliers : cônes, palets, une cage par coin si possible.",
+      materiel: "8 plots\n20 palets\n1 cage par coin si possible",
       variantes: "Trois ateliers pour un petit groupe. Un atelier « jeu » (un contre un) pour finir en énergie.",
       schema: {
         vue: "entiere",
@@ -1871,7 +1871,7 @@ export function exercicesDeBase() {
       description:
         "Une file dans le coin, un passeur au point de mise au jeu opposé avec les palets. Le premier part sans palet, contourne le cône du haut du cercle, reçoit la passe en sortant du virage, tire en mouvement, puis va au rebond de son propre tir.\n\nIl récupère un palet et devient passeur ; le passeur rejoint la file. Changer de côté au bout de cinq minutes.",
       points_cles: ["Sortir du virage la palette au sol : la passe arrive là", "Tirer en mouvement, dans la foulée", "Son propre rebond : on ne s'arrête pas après le tir"],
-      materiel: "Un cône, une réserve de palets.",
+      materiel: "1 plot\n20 palets",
       variantes: "Passe en retrait après le tir vers un second joueur. Le cône remplacé par un défenseur passif.",
       schema: {
         vue: "moitie",
@@ -1899,7 +1899,7 @@ export function exercicesDeBase() {
       description:
         "Sur la largeur, chacun avec un palet. Départ en marche arrière, le palet devant soi qu'on tire à petits coups vers soi, palette au sol. Aller en arrière, retour en avant.\n\nPuis avec un slalom léger entre deux cônes. Puis le coach lève des doigts pendant la marche arrière : annoncer sans regarder le palet.",
       points_cles: ["Le palet devant soi, jamais entre les patins", "On tire le palet par petites touches, on ne le pousse pas", "La tête tourne par-dessus l'épaule, pas les épaules"],
-      materiel: "Un palet par joueur, quelques cônes.",
+      materiel: "1 palet par joueur\n4 plots",
       variantes: "Passe en marche arrière à un partenaire. Marche arrière avec palet puis pivot et tir.",
       schema: {
         vue: "moitie",
@@ -1924,7 +1924,7 @@ export function exercicesDeBase() {
       description:
         "Une file à la ligne rouge avec les palets. Chacun part seul, à sa vitesse, et va marquer : tir du poignet à l'entrée de l'enclave, ou feinte et revers. On annonce d'abord ce qu'on va faire, puis on ne l'annonce plus.\n\nLe gardien travaille sa sortie et son recul. Compter les buts : c'est une des rares fois où le score amuse tout le monde.",
       points_cles: ["Garder de la vitesse : un gardien débutant est battu par le rythme", "Décider avant le haut du cercle : tir ou feinte", "Après la feinte, le palet loin de la mitaine"],
-      materiel: "Des palets à la ligne rouge.",
+      materiel: "20 palets",
       variantes: "Un défenseur qui part deux mètres derrière. Échappée à deux avec une passe obligatoire.",
       schema: {
         vue: "moitie",
@@ -1947,7 +1947,7 @@ export function exercicesDeBase() {
       description:
         "Par trois dans une zone : un porteur, deux receveurs qui bougent. Le porteur ne regarde pas les receveurs ; il passe à celui qui APPELLE — par son nom, en tapant la glace avec la crosse, palette au sol vers lui.\n\nUne passe toutes les cinq secondes, on tourne les rôles toutes les minutes. Sans appel, pas de passe : c'est la règle.",
       points_cles: ["Appeler par le nom du porteur, pas « ici ! »", "La palette au sol montre exactement où on veut le palet", "Se démarquer dans une ligne libre, pas derrière quelqu'un"],
-      materiel: "Un palet par trio.",
+      materiel: "1 palet par trio",
       variantes: "Un défenseur passif dans le trio. Le porteur en marche arrière.",
       schema: {
         vue: "moitie",
@@ -1970,7 +1970,7 @@ export function exercicesDeBase() {
       description:
         "Par deux dans un couloir de la ligne bleue à la cage : un attaquant avec palet, un défenseur qui recule en marche arrière. Le défenseur garde la crosse au sol, dans la ligne entre le palet et la cage, et accompagne sans se jeter. L'attaquant essaie de passer d'un côté ou de l'autre.\n\nSi l'attaquant tire, le défenseur a « gagné » s'il l'a poussé sur le côté, loin du milieu. On inverse à chaque passage.",
       points_cles: ["Reculer en marche arrière, à la vitesse de l'attaquant", "Crosse au sol, bras tendu : elle enlève la moitié des passes possibles", "Attendre que l'attaquant se décide : le premier qui bouge perd"],
-      materiel: "Des cônes pour marquer les couloirs, des palets.",
+      materiel: "10 plots\n20 palets",
       variantes: "Deux contre deux. Le défenseur commence dos à l'attaquant et doit pivoter au signal.",
       schema: {
         vue: "moitie",
@@ -1996,7 +1996,7 @@ export function exercicesDeBase() {
       description:
         "Une trentaine de palets éparpillés dans une zone. Deux équipes, chacune avec une « maison » (un cercle) à l'autre bout. Au signal, on va chercher les palets UN PAR UN, en conduite, et on les ramène dans sa maison. Quand il n'y en a plus sur la glace, on peut aller voler dans la maison adverse.\n\nDeux minutes. L'équipe qui a le plus de palets dans sa maison gagne. Trois manches.",
       points_cles: ["Un palet à la fois, en conduite, pas en le poussant n'importe comment", "Freiner près du palet, pas dedans", "Voler, c'est permis ; pousser, non"],
-      materiel: "Trente palets, deux cercles ou quatre cônes.",
+      materiel: "30 palets\n4 plots",
       variantes: "Ramener en marche arrière. Passe obligatoire à un partenaire avant la maison.",
       schema: {
         vue: "entiere",
@@ -2019,7 +2019,7 @@ export function exercicesDeBase() {
       description:
         "Cinq contre cinq dans une zone, mise au jeu sur un point. Consignes pour l'équipe qui défend :\n1. Mise au jeu gagnée : le défenseur derrière récupère et sort par la bande, jamais par le milieu.\n2. Mise au jeu perdue : l'ailier côté bande va sur le défenseur adverse à la bleue, l'autre ailier reste dans l'enclave.\n3. Le centre suit le palet, sans le courser.\n\nOn rejoue la même mise au jeu dix fois, puis on change les équipes.",
       points_cles: ["Sortir par la bande, jamais par le milieu", "L'ailier de la bande sort sur la bleue tout de suite", "Chacun un joueur à regarder, pas le palet"],
-      materiel: "Chasubles, des palets.",
+      materiel: "Chasubles\n20 palets",
       variantes: "Même chose en zone offensive : où se placer pour tirer si on gagne.",
       schema: {
         vue: "moitie",
@@ -2046,7 +2046,7 @@ export function exercicesDeBase() {
       description:
         "Deux tests, un passage chacun, temps noté par le coach :\n1. Aller-retour sur la longueur avec arrêt complet sur la ligne de but d'en face (départ arrêté).\n2. Un tour complet du cercle central en avant, puis un tour en arrière.\n\nOn refait exactement les mêmes tests toutes les quatre ou cinq semaines. Le progrès se voit sur les chiffres, et il motive plus que n'importe quel discours. Les temps se notent dans le bilan de la séance.",
       points_cles: ["Les mêmes tests, les mêmes lignes, chaque fois", "Un seul passage : c'est un test, pas un entraînement", "Chacun contre lui-même, pas contre les autres"],
-      materiel: "Un chronomètre, une feuille ou le bilan de séance.",
+      materiel: "1 chronomètre",
       variantes: "Un troisième test avec palet quand le groupe est prêt.",
       schema: {
         vue: "entiere",
@@ -2071,7 +2071,7 @@ export function exercicesDeBase() {
       description:
         "Sur la largeur : conduite du palet à une main (la main du haut seulement), bras tendu, palet loin sur le côté. Aller à droite, retour à gauche. Puis autour d'un cône, en gardant le cône entre le corps et le palet.\n\nC'est le geste qui sauve un palet le long de la bande : le corps fait écran, le bras fait la distance.",
       points_cles: ["Palette à plat sur le palet, on l'accompagne, on ne le tape pas", "Le bras tendu, le corps entre le palet et l'adversaire imaginaire", "Reprendre à deux mains dès qu'on est libre"],
-      materiel: "Un palet par joueur, des cônes.",
+      materiel: "1 palet par joueur\ndes plots",
       variantes: "Un partenaire qui gêne passivement. À une main en marche arrière.",
       schema: {
         vue: "moitie",
@@ -2119,7 +2119,7 @@ export function exercicesDeBase() {
       description:
         "Cinq ou six portes (deux cônes à deux mètres) éparpillées dans la zone. Par deux, un palet : on marque un point chaque fois qu'une passe traverse une porte et est reçue de l'autre côté. Interdit de repasser deux fois de suite par la même porte.\n\nDeux minutes, on compte. Puis trois contre trois : mêmes portes, mais l'autre équipe défend.",
       points_cles: ["Regarder la porte, pas le partenaire : il ira là où on regarde", "Le receveur se place derrière la porte, pas dedans", "Bouger dès que la passe est partie"],
-      materiel: "Douze cônes, un palet par duo, chasubles pour le trois contre trois.",
+      materiel: "12 plots\n1 palet par duo\nChasubles",
       variantes: "Portes plus étroites. Passes en revers uniquement.",
       schema: {
         vue: "moitie",

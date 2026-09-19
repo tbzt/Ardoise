@@ -5,7 +5,7 @@ import { Store, blocLibre, blocDepuisExercice } from "../core/store.js";
 import { esc, debounce, statut, formaterDuree, heureA, formaterDate } from "../core/dom.js";
 import { CATEGORIES } from "../data/catalogue.js";
 import { chip, barreFiltres, filtrer, trier, exporterPdf, exporterCarte, exporterFicheAtelier } from "./communs.js";
-import { seancesDuGroupe, seancesFaites, usageExercices, recouvrement, aRevoir, libelleUsage, formaterCourt, estFaite } from "../core/analyse.js";
+import { seancesDuGroupe, seancesFaites, usageExercices, recouvrement, aRevoir, libelleUsage, formaterCourt, estFaite, cycleCourant } from "../core/analyse.js";
 import { apercu, choisir } from "./dialogue.js";
 import { proposerDeroule } from "../core/brouillon.js";
 
@@ -141,7 +141,7 @@ export const Seance = {
                   <label class="duree"><input type="number" name="duree" min="1" max="120" value="${esc(b.duree)}" aria-label="Durée en minutes"> min</label>
                   <input class="note" name="note" value="${esc(b.note)}" placeholder="Consigne, variante, remarque…" aria-label="Note">
                   <div class="bloc-actions">
-                    ${ex ? `<button type="button" data-act="atelier" title="Fiche atelier (PDF) pour l'aide-entraîneur, avec la note de ce bloc">Fiche</button>` : ""}
+                    ${ex ? `<button type="button" data-act="atelier" title="Fiche atelier (PDF) pour celui qui tient l'atelier, avec la note de ce bloc">Fiche</button>` : ""}
                     <button type="button" data-act="monter" title="Monter" ${i === 0 ? "disabled" : ""}>▲</button>
                     <button type="button" data-act="descendre" title="Descendre" ${i === se.blocs.length - 1 ? "disabled" : ""}>▼</button>
                     <button type="button" data-act="retirer" class="danger" title="Retirer de la séance">×</button>
@@ -291,15 +291,20 @@ export const Seance = {
         el.innerHTML = "";
         return;
       }
+      const groupe = Store.groupes.get(se.groupeId);
+      const cycle = cycleCourant(groupe, se.date);
+      const cycleHtml = cycle
+        ? `<p class="cycle-en-cours"><strong>Cycle « ${esc(cycle.nom || "en cours")} »</strong> ${esc(formaterCourt(cycle.debut))} → ${esc(formaterCourt(cycle.fin))}${cycle.categories && cycle.categories.length ? ` · ${cycle.categories.map((c) => chip(c)).join(" ")}` : ""}${cycle.note ? ` · ${esc(cycle.note)}` : ""} <a href="#/groupe/${se.groupeId}">modifier</a></p>`
+        : "";
       const faites = seancesFaites(se.groupeId).filter((s) => s.id !== se.id && (!se.date || (s.date || "") <= se.date));
       const derniere = faites[faites.length - 1];
       if (!derniere) {
-        el.innerHTML = "";
+        el.innerHTML = cycleHtml;
         return;
       }
       const revoir = aRevoir(faites, 2);
       const bilan = derniere.bilan && derniere.bilan.fait ? derniere.bilan : null;
-      el.innerHTML = `
+      el.innerHTML = cycleHtml + `
         <details class="derniere">
           <summary><strong>Dernière fois avec ce groupe</strong> — ${esc(formaterCourt(derniere.date))}${derniere.titre ? ` · ${esc(derniere.titre)}` : ""}${bilan && bilan.note ? ` · ${"★".repeat(bilan.note)}` : ""}${bilan ? "" : " · sans bilan"}</summary>
           <div class="derniere-corps">
