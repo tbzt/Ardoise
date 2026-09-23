@@ -30,13 +30,27 @@
         <a href="#/groupes" data-ecran="groupes">Groupes</a>
       </nav>
       <span class="spacer"></span>
-      <span id="compteurs" class="compteurs"></span>
-      <button id="act-exporter" type="button" title="Télécharger toutes vos données en un fichier JSON">Exporter</button>
-      <button id="act-importer" type="button" title="Recharger un fichier exporté">Importer</button>
+
+      <!-- Exporter, Importer, Catalogue, Vider et le thème occupaient la
+           barre sur tous les écrans, y compris au bord de la glace, où
+           « Vider » se trouvait sous le pouce d'un coach ganté. Ils
+           tiennent dans un menu : on les cherche une fois par saison. -->
+      <button id="etat-synchro" class="synchro" type="button" hidden></button>
+      <details class="menu menu-systeme" id="menu-systeme">
+        <summary class="bouton" aria-label="Réglages" title="Réglages"><span id="act-compte" hidden></span>⋯</summary>
+        <div class="menu-liste">
+          <button id="entree-compte" type="button">Se connecter…</button>
+          <hr />
+          <button id="act-exporter" type="button" title="Télécharger toutes vos données en un fichier JSON">Exporter mes données</button>
+          <button id="act-importer" type="button" title="Recharger un fichier exporté">Importer un fichier…</button>
+          <button id="act-catalogue" type="button" title="Réinstaller les exercices fournis avec l'appli (sans toucher aux vôtres)">Réinstaller le catalogue</button>
+          <hr />
+          <button id="act-theme" class="theme" type="button" title="Thème d'affichage"></button>
+          <hr />
+          <button id="act-vider" class="danger" type="button" title="Tout effacer de ce navigateur">Tout effacer…</button>
+        </div>
+      </details>
       <input id="fichier-archive" type="file" accept="application/json,.json" hidden />
-      <button id="act-catalogue" type="button" title="Réinstaller les exercices fournis avec l'appli (sans toucher aux vôtres)">Catalogue</button>
-      <button id="act-vider" type="button" title="Tout effacer">Vider</button>
-      <button id="act-theme" class="theme" type="button" title="Thème d'affichage"></button>
     </header>
 
     <p id="statut" role="status" hidden></p>

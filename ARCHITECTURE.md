@@ -33,15 +33,19 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/patinoire.js  le rendu SVG : la glace et les objets
                    js/widgets/communs.js    pastilles, filtres, vignettes partagés
                    js/widgets/dialogue.js   une boîte de choix modale
+                   js/widgets/compte.js     la porte, l'indicateur de synchro, l'arbitrage des conflits
+                   js/widgets/partage.js    confier un groupe : coachs, invitations, réception
 1. Noyau           js/core/brouillon.js     propose un déroulé : structure, parts de temps, cycle, score des exercices, raisons
                    js/core/materiel.js      lit « 10 plots », « 1 palet par joueur » et cumule le matériel d'une séance
                    js/core/analyse.js       ce qu'un groupe a fait : répartition, usage, répétition, conseils
                    js/core/pdf.js           un générateur PDF minimal : Helvetica, traits, rectangles, JPEG
                    js/core/store.js         la vérité : exercices + séances, signal de changement
+                   js/core/synchro.js       le local d'abord : miroir, file d'attente, conflits, groupes confiés
+                   js/core/distant.js       le SEUL module qui parle au réseau : comptes, jetons, base, invitations
                    js/core/storage.js       la seule porte vers localStorage
                    js/core/archive.js       export / import JSON
                    js/core/theme.js         clair / sombre / système
-                   js/core/dom.js           esc, debounce, formats de date et de durée, statut
+                   js/core/dom.js           esc, debounce, formats de date et de durée, statut (avec « Annuler »), transition de vue, recherche sans accents
                    js/core/ids.js           identifiants courts
 0. Données         js/data/catalogue.js     catégories, niveaux, exercices et séances fournis
                    js/data/referentiel.js   fiches techniques (codes, points clés, corrections), formes de travail
@@ -119,6 +123,53 @@ Le champ `materiel` d'un exercice reste du texte, une ligne par objet. `js/core/
 ### Analyse
 `js/core/analyse.js` ne stocke rien : tout se recalcule depuis les séances et leurs bilans. Une séance est **faite** si son bilan le dit, ou si sa date est passée avec un déroulé. Les blocs décochés dans le bilan sont exclus des comptes. `CIBLE` donne la part de temps conseillée par catégorie pour des adultes débutants ; chaque conseil de `conseils()` vient d'une règle nommée (équilibre, absence, répétition, à revoir).
 
+### Le distant — facultatif, et jamais dans le chemin d'affichage
+
+Sans compte, rien de cette couche ne s'exécute et l'appli est celle
+d'avant : cent pour cent locale. Avec un compte, `localStorage` **reste
+la vérité de l'appli qui tourne** ; le distant n'est qu'une couche de
+synchronisation. On ne lit jamais le réseau pour peindre un écran — le
+mode bord de glace fonctionne intégralement hors ligne, bilan compris.
+
+`distant.js` parle à Firebase en REST pur (Realtime Database, pas
+Firestore : son API se consomme au simple `fetch`, donc pas de SDK et
+pas d'étape de build). La clé API et l'URL sont en clair : dans une
+application web, c'est un identifiant, pas un secret. Ce qui protège est
+dans `firebase.rules.json`, appliqué côté serveur.
+
+```
+/espaces/$uid/                     un espace par coach ; sa clé EST son compte
+    identite                       { nom }
+    exercices/$id                  ma bibliothèque — moi seul
+    groupes/$g                     la fiche du groupe
+    coachs/$g/$uid                 qui co-coache — écriture réservée au propriétaire
+    bibliotheques/$g/$exId         les exercices employés par les séances du groupe
+    seances/$g/$s                  les séances, rangées PAR GROUPE
+    invitations/$g/<courriel>      mon souvenir de ce que j'ai envoyé
+    corbeille/$type/$id            purge à 30 jours
+
+/invitations/<courriel>/$espace/$g le jeton, trouvable par l'invité seul
+/confies/$uid/$espace/$g           les groupes qu'on m'a confiés
+```
+
+Deux rangements qui ne sont pas des détails de stockage :
+
+- **Les séances sont sous leur groupe.** Une base Realtime accorde une
+  permission sur un *chemin*, pas sur le résultat d'une requête :
+  demander « les séances dont le groupe est X » suppose de lire la
+  collection entière, ce qu'il faut justement interdire. Ranger les
+  séances sous leur groupe met la frontière là où la règle sait la
+  poser, et le co-coach lit tout son groupe en une requête.
+- **Les invitations sont à la racine, indexées par adresse.** Sous
+  l'espace, l'invité ne pourrait pas les trouver : il faudrait qu'il
+  connaisse d'avance l'identifiant de compte de celui qui l'invite.
+
+Chaque objet porte `rev` et `updatedBy`, que la règle contrôle
+(`rev === ancien + 1`) et que `synchro.js` retire avant de faire entrer
+l'objet dans le Store — ils appartiennent au transport, pas à
+l'exercice, et ressortiraient sinon dans l'export JSON. **Aucune fusion
+automatique** : un conflit ouvre une boîte où le coach tranche.
+
 ### Persistance
 Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoise_v1_theme`, `ardoise_v1_initialise`, et `ardoise_v1_coches_<id de séance>` pour la liste de matériel cochée au bord de la glace. L'export JSON porte `format: "ardoise/1"`.
 
@@ -127,10 +178,17 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 ## 4. Les conventions
 
 - **Pas d'accès direct à `localStorage` hors de `js/core/storage.js`.**
+- **Ni `confirm()`, ni `alert()`, ni `prompt()` du navigateur.** Un geste destructeur s'exécute, et `statut(message, { annuler })` laisse cinq secondes pour le défaire ; un choix se pose avec `choisir()` de `dialogue.js`, dont les boutons portent le nom de ce qu'ils font. Seul « Tout effacer » garde une confirmation : il est global et n'a rien à ramener. (Reste deux `prompt()` pour nommer un groupe depuis une séance ; ils disparaissent avec le `<select>` Groupe.)
+- **Le mouvement passe par les jetons de `:root`** (`--dur-*`, `--sortie`, `--spring`) et jamais par une durée écrite en dur : `prefers-reduced-motion` est traité une seule fois, sur les jetons. Même règle pour `z-index`, qui prend une bande nommée (`--plan-*`).
+- **Un rendu d'écran passe par `transition(rendre)`** : le fondu est gratuit là où le navigateur le sait, et identique à avant ailleurs.
+- **Un champ de saisie ne se reconstruit pas sous les doigts.** Une liste filtrable se peint en deux temps : le cadre (champ, filtres) une fois, la liste à chaque frappe.
 - **Pas de `onclick` dans les gabarits** : délégation d'événements sur `data-act`, `data-outil`, `data-prop`.
 - **Les écrans rendent des chaînes** (`innerHTML`) et échappent tout texte utilisateur avec `esc()`. Les identifiants internes ne sont jamais saisis par l'utilisateur.
 - **Un écran renvoie `{ detruire() }`** ; le routeur l'appelle avant d'en monter un autre (désabonnement du Store, sauvegarde en attente, écouteurs clavier).
 - **Le catalogue a des identifiants fixes** (`cat_…`) : le réinstaller ajoute ce qui manque et n'écrase rien. L'import d'un fichier, lui, ajoute ce qui manque **et** remplace ce dont la version importée est plus récente (`modifie`) — c'est ce qui permet d'exporter un exercice seul, de le retoucher ailleurs et de le rapporter.
+- **Pas d'accès réseau hors de `js/core/distant.js`.** Même loi que pour `localStorage`, même raison.
+- **Rien du distant dans le chemin d'affichage.** Un écran se peint depuis le Store, toujours.
+- **`verifier.html` est le filet.** Toute règle de sécurité ou de synchronisation ajoutée s'y accompagne d'une épreuve — une régression y est silencieuse et coûte des données. On y vérifie surtout ce qui doit être REFUSÉ : une épreuve qui passe alors qu'elle devrait échouer est le pire des cas.
 - **Un seul auteur dans l'historique git.** Pas de `Co-Authored-By`, pas de pied de message généré.
 
 ---

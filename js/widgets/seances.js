@@ -37,14 +37,20 @@ export const Seances = {
   },
 };
 
+/* La carte n'est pas un <a> : elle en contient deux (préparer, bord de
+   glace), et un lien dans un lien est du HTML invalide — le parseur
+   ferme le premier au second et la carte se disloque en trois morceaux
+   répartis dans la grille. C'est donc un <article> avec un lien de
+   couverture étendu par CSS, et les autres liens posés au-dessus. */
 function carte(s) {
   const total = Store.dureeSeance(s);
   const depasse = total > (Number(s.duree_glace) || 0);
   return `
-    <a class="carte carte-seance" href="#/seance/${s.id}">
+    <article class="carte carte-seance">
       <p class="date">${esc(formaterDate(s.date))}${s.heure ? ` · ${esc(s.heure)}` : ""}</p>
-      <h3>${esc(s.titre) || "<em>Séance sans titre</em>"}</h3>
-      <p class="meta">${s.groupe ? `<span>${esc(s.groupe)}</span>` : ""}<span>${s.blocs.length} bloc${s.blocs.length > 1 ? "s" : ""}</span><span class="${depasse ? "alerte" : ""}">${formaterDuree(total)} / ${formaterDuree(s.duree_glace)}</span><a class="carte-lien" href="#/seance/${s.id}/glace" title="Bord de glace">Bord de glace →</a></p>
+      <h3><a class="couverture" href="#/seance/${s.id}">${esc(s.titre) || "<em>Séance sans titre</em>"}</a></h3>
+      <p class="meta">${s.groupe ? `<span>${esc(s.groupe)}</span>` : ""}<span>${s.blocs.length} bloc${s.blocs.length > 1 ? "s" : ""}</span><span class="${depasse ? "alerte" : ""}">${formaterDuree(total)} / ${formaterDuree(s.duree_glace)}</span></p>
       ${s.objectif ? `<p class="objectif">${esc(s.objectif)}</p>` : ""}
-    </a>`;
+      <p class="carte-pied"><a class="carte-lien" href="#/seance/${s.id}/glace" title="La séance vue du banc">Bord de glace →</a></p>
+    </article>`;
 }

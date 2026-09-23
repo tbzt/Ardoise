@@ -1,6 +1,6 @@
 /* Ce que plusieurs écrans partagent : la pastille de catégorie, le
    filtre de bibliothèque (recherche + catégories), les vignettes. */
-import { esc, statut, telechargerBlob, slug } from "../core/dom.js";
+import { esc, statut, telechargerBlob, slug, sansAccents } from "../core/dom.js";
 import { seanceEnPdf, carteDePoche, ficheAtelier } from "./feuillepdf.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { FORMES_TRAVAIL, fiche } from "../data/referentiel.js";
@@ -32,14 +32,22 @@ export function barreFiltres(filtre) {
     </div>`;
 }
 
+/* La recherche pardonne deux choses, parce qu'un coach fait les deux :
+   il tape sans accent (« echauffement »), et il tape des mots dans
+   l'ordre qui lui vient (« tir revers » pour « Réception en revers et
+   tir »). Tous les mots doivent être présents, chacun où il veut. */
 export function filtrer(exercices, filtre) {
-  const q = (filtre.q || "").trim().toLowerCase();
+  const mots = sansAccents(filtre.q || "")
+    .split(/\s+/)
+    .filter(Boolean);
   return exercices
     .filter((e) => !filtre.categorie || e.categorie === filtre.categorie)
     .filter((e) => {
-      if (!q) return true;
-      const meule = [e.nom, e.objectif, e.description, e.materiel, (e.points_cles || []).join(" ")].join(" ").toLowerCase();
-      return meule.includes(q);
+      if (!mots.length) return true;
+      const meule = sansAccents(
+        [e.nom, e.objectif, e.description, e.materiel, e.variantes, (e.points_cles || []).join(" "), (e.corrections || []).join(" ")].join(" "),
+      );
+      return mots.every((m) => meule.includes(m));
     });
 }
 
@@ -71,7 +79,7 @@ export async function exporterPdf(se, bouton) {
     statut("PDF téléchargé.");
   } catch (e) {
     console.error(e);
-    alert(`Le PDF n'a pas pu être fabriqué : ${e.message}`);
+    statut(`Le PDF n'a pas pu être fabriqué : ${e.message}`, { duree: 6000 });
   } finally {
     if (bouton) {
       bouton.disabled = false;
@@ -93,7 +101,7 @@ export async function exporterCarte(se, bouton) {
     statut("Carte de poche téléchargée.");
   } catch (e) {
     console.error(e);
-    alert(`La carte n'a pas pu être fabriquée : ${e.message}`);
+    statut(`La carte n'a pas pu être fabriquée : ${e.message}`, { duree: 6000 });
   } finally {
     if (bouton) {
       bouton.disabled = false;
@@ -140,7 +148,7 @@ export async function exporterFicheAtelier(ex, bouton, opts = {}) {
     statut("Fiche atelier téléchargée.");
   } catch (e) {
     console.error(e);
-    alert(`La fiche n'a pas pu être fabriquée : ${e.message}`);
+    statut(`La fiche n'a pas pu être fabriquée : ${e.message}`, { duree: 6000 });
   } finally {
     if (bouton) {
       bouton.disabled = false;

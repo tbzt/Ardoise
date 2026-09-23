@@ -7,6 +7,7 @@ import { esc, debounce, statut, formaterDate, formaterDuree } from "../core/dom.
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { chip } from "./communs.js";
 import { choisir } from "./dialogue.js";
+import { panneauCoachs, badgePartage, nomDuProprietaire } from "./partage.js";
 import { FICHES, FAMILLES, fichesParFamille } from "../data/referentiel.js";
 import { blocsFaits } from "../core/analyse.js";
 import { CIBLE, seancesDuGroupe, seancesFaites, estFaite, repartition, usageExercices, conseils, aRevoir, noteMoyenne, formaterCourt, cycleCourant } from "../core/analyse.js";
@@ -52,9 +53,11 @@ export const Groupe = {
           <button type="button" class="primaire" data-act="proposer-seance" title="Une séance de 60 minutes proposée d'après l'historique, à retoucher">✦ Proposer une séance</button>
           <button type="button" data-act="nouvelle-seance">+ Séance vide</button>
           <button type="button" data-act="rattacher" title="Pousser une séance existante dans ce groupe">Rattacher une séance…</button>
+          ${badgePartage(g)}
           <button type="button" class="danger" data-act="supprimer">Supprimer</button>
         </div>
         <input class="nom" name="nom" placeholder="Nom du groupe (Adultes débutants, U11, Loisir mardi…)" value="${esc(g.nom)}" aria-label="Nom du groupe">
+        ${nomDuProprietaire(g.id) ? `<p class="avis">Ce groupe vous a été confié. Vous le préparez et le menez comme les vôtres ; son propriétaire garde la main sur qui y participe.</p>` : ""}
         <form class="groupe-champs" autocomplete="off">
           <label>Niveau <select name="niveau">${Object.entries(NIVEAUX)
             .map(([k, v]) => `<option value="${k}"${g.niveau === k ? " selected" : ""}>${esc(v)}</option>`)
@@ -144,6 +147,12 @@ export const Groupe = {
     };
 
     const etatEl = () => sec.querySelector("[data-etat]");
+    const marquerEtat = (t) => {
+      const el = etatEl();
+      if (!el) return;
+      el.textContent = t;
+      el.classList.toggle("touche", t !== "Enregistré");
+    };
     const sauver = debounce(() => {
       Store.groupes.sauver(g);
       // garder le nom en texte sur les séances : impression et PDF le lisent
@@ -153,7 +162,7 @@ export const Groupe = {
           Store.seances.sauver(s);
         }
       }
-      etatEl().textContent = "Enregistré";
+      marquerEtat("Enregistré");
     }, 500);
 
     sec.addEventListener("input", (e) => {
@@ -176,14 +185,18 @@ export const Groupe = {
         const titre = art.querySelector("summary strong");
         if (titre && c.name === "nom") titre.textContent = cy.nom || "Cycle sans nom";
       } else g[c.name] = c.value;
-      etatEl().textContent = "Modification…";
+      marquerEtat("Modification…");
       sauver();
     });
 
     sec.addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.tri) {
+      if (b.dataset.act === "coachs") {
+        Store.groupes.sauver(g);
+        await panneauCoachs(g);
+        rendre();
+      } else if (b.dataset.tri) {
         tri = b.dataset.tri;
         rendre();
       } else if (b.dataset.act === "nouveau-cycle") {
@@ -204,9 +217,19 @@ export const Groupe = {
         if (inp) inp.focus();
       } else if (b.dataset.act === "supprimer-cycle") {
         const art = b.closest("[data-cycle]");
-        g.cycles = (g.cycles || []).filter((x) => x.id !== art.dataset.cycle);
+        const i = (g.cycles || []).findIndex((x) => x.id === art.dataset.cycle);
+        if (i < 0) return;
+        const [cy] = g.cycles.splice(i, 1);
         Store.groupes.sauver(g);
         rendre();
+        statut(`Cycle « ${cy.nom || "sans nom"} » supprimé.`, {
+          annuler: () => {
+            g.cycles.splice(i, 0, cy);
+            Store.groupes.sauver(g);
+            rendre();
+            statut("Cycle rétabli.");
+          },
+        });
       } else if (b.dataset.act === "proposer-seance") {
         Store.groupes.sauver(g);
         const se = Store.seances.creer({ groupeId: g.id, groupe: g.nom });
@@ -242,9 +265,27 @@ export const Groupe = {
         const se = Store.seances.creer({ groupeId: g.id, groupe: g.nom });
         location.hash = `#/seance/${se.id}`;
       } else if (b.dataset.act === "supprimer") {
-        if (!confirm(`Supprimer le groupe « ${g.nom || "sans nom"} » ? Ses séances sont conservées, simplement détachées.`)) return;
+        // Supprimer un groupe détache ses séances sans les effacer : pour
+        // pouvoir tout rétablir, on retient lesquelles étaient attachées.
+        Store.groupes.sauver(g);
+        const copie = JSON.parse(JSON.stringify(g));
+        const detachees = seancesDuGroupe(g.id).map((s) => s.id);
         Store.groupes.supprimer(g.id);
-        statut("Groupe supprimé, séances conservées.");
+        statut(`Groupe « ${g.nom || "sans nom"} » supprimé. Ses ${detachees.length} séance${detachees.length > 1 ? "s sont conservées" : " est conservée"}.`, {
+          annuler: () => {
+            Store.groupes.installer([copie]);
+            for (const id of detachees) {
+              const se = Store.seances.get(id);
+              if (se && !se.groupeId) {
+                se.groupeId = copie.id;
+                se.groupe = copie.nom;
+                Store.seances.sauver(se);
+              }
+            }
+            statut("Groupe rétabli, séances rattachées.");
+            location.hash = `#/groupe/${copie.id}`;
+          },
+        });
         location.hash = "#/groupes";
       }
     });

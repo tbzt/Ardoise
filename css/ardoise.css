@@ -35,7 +35,57 @@
   --e5: 24px;
   --e6: 32px;
 
+  /* ── Cibles tactiles ──────────────────────────────────────────
+     Loi : tout contrôle qu'on actionne au doigt fait au moins
+     --tap. La dérogation --tap-menu est réservée aux contrôles
+     secondaires groupés d'une barre, jamais au bord de la glace. */
+  --tap: 44px;
+  --tap-menu: 32px;
+
+  /* ── Mouvement ────────────────────────────────────────────────
+     prefers-reduced-motion est traité ICI, au niveau des jetons,
+     une seule fois. Aucune règle plus bas ne redéclare la requête
+     média : elle tomberait en oubli au premier composant ajouté.
+
+     --spring est un vrai ressort, échantillonné sur un
+     amortissement réel : il dépasse d'environ dix pour cent,
+     revient un peu en dessous, et se pose. C'est ce qui distingue
+     un objet qui a un poids d'un objet qui glisse. La courbe de
+     Bézier qui précède sert de repli aux navigateurs sans
+     linear(). */
+  --dur-court: 130ms;
+  --dur-base: 240ms;
+  --dur-long: 460ms;
+  --dur-appui: 200ms;
+  --sortie: cubic-bezier(0.22, 1, 0.36, 1);
+  --entree-sortie: cubic-bezier(0.65, 0, 0.35, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring: linear(0, 0.084, 0.276, 0.503, 0.714, 0.884, 1.003, 1.073, 1.103,
+                   1.105, 1.09, 1.067, 1.043, 1.022, 1.006, 0.996, 0.99, 0.989,
+                   0.989, 0.991, 0.994, 0.996, 0.998, 1);
+
+  /* ── Plans, nommés et ordonnés ────────────────────────────────
+     Plus aucun z-index en dur ailleurs : on prend une bande. */
+  --plan-souleve: 10;
+  --plan-collant: 100;
+  --plan-voile: 200;
+  --plan-modale: 300;
+  --plan-toast: 400;
+
   color-scheme: light;
+}
+
+/* Le seul endroit où le mouvement se règle. Les durées tombent à
+   1 ms plutôt qu'à 0 : une transition de durée nulle n'émet pas
+   d'événement `transitionend`, et le code qui l'attend resterait
+   en suspens. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-court: 1ms;
+    --dur-base: 1ms;
+    --dur-long: 1ms;
+    --dur-appui: 1ms;
+  }
 }
 
 /* Trois états, pas deux : le défaut « système » ne pose aucun
@@ -164,10 +214,26 @@ button,
   gap: var(--e1);
   line-height: 1.2;
 }
+button,
+.bouton {
+  transition:
+    background var(--dur-court) var(--sortie),
+    border-color var(--dur-court) var(--sortie),
+    color var(--dur-court) var(--sortie),
+    transform var(--dur-appui) var(--spring);
+}
 button:hover,
 .bouton:hover {
   border-color: var(--accent);
   color: var(--accent-ink);
+}
+/* L'enfoncement sous le doigt : court à l'aller, le ressort fait le
+   retour. Un bouton qui ne bouge pas sous la pression n'a pas l'air
+   d'un objet. */
+button:active:not(:disabled),
+.bouton:active {
+  transform: scale(0.96);
+  transition-duration: var(--dur-court);
 }
 .bouton.primaire {
   background: var(--accent);
@@ -180,9 +246,13 @@ button:hover,
   color: #fff;
 }
 .carte-lien {
-  margin-left: auto;
+  position: relative;
   font-weight: 600;
+  font-size: 0.85rem;
   text-decoration: none;
+}
+.carte-lien:hover {
+  text-decoration: underline;
 }
 button:disabled {
   opacity: 0.45;
@@ -262,7 +332,7 @@ label small {
 .barre {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--plan-collant);
   display: flex;
   align-items: center;
   gap: var(--e2);
@@ -308,30 +378,121 @@ label small {
   color: var(--accent-ink);
   background: var(--accent-soft);
 }
-.compteurs {
-  color: var(--ink-faint);
-  font-size: 0.85rem;
-  margin-right: var(--e2);
-}
 .barre button {
   font-size: 0.85rem;
-  min-height: 30px;
+  min-height: var(--tap-menu);
   padding: 4px 10px;
 }
+/* Le bouton du menu système : un seul caractère, donc une cible carrée
+   plutôt qu'un bouton étiré. */
+.menu-systeme > summary {
+  min-width: var(--tap-menu);
+  min-height: var(--tap-menu);
+  justify-content: center;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 10px;
+}
+.menu-systeme[open] > summary {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.menu-liste hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: var(--e1) 0;
+}
+.menu-liste button.danger {
+  color: var(--danger);
+}
+.menu-liste button.danger:hover {
+  background: var(--danger);
+  color: #fff;
+}
+@media (max-width: 640px) {
+  /* Au bord de la glace, tout ce qui se tape avec un gant fait --tap. */
+  .menu-liste button,
+  .menu-systeme > summary {
+    min-height: var(--tap);
+  }
+}
 
+/* ── Le mot de l'appli ────────────────────────────────────────
+   En bas à gauche et non au centre : au centre, il recouvrait le
+   premier bloc du déroulé juste après « Proposer un déroulé » —
+   il masquait précisément ce qu'il annonçait. Il porte au besoin
+   un bouton « Annuler », qui remplace les confirmations
+   bloquantes : on agit, puis on se ravise. */
 #statut {
   position: fixed;
-  left: 50%;
-  bottom: var(--e5);
-  transform: translateX(-50%);
+  left: var(--e4);
+  bottom: var(--e4);
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
   background: var(--ink);
   color: var(--ground);
-  padding: var(--e2) var(--e4);
+  padding: var(--e2) var(--e3) var(--e2) var(--e4);
   border-radius: var(--rayon);
   box-shadow: var(--ombre);
-  z-index: 50;
+  z-index: var(--plan-toast);
   margin: 0;
-  max-width: min(90vw, 480px);
+  max-width: min(92vw, 520px);
+  animation: toast-entre var(--dur-base) var(--spring);
+}
+#statut[hidden] {
+  display: none;
+}
+#statut .annuler {
+  flex: none;
+  background: transparent;
+  color: var(--ground);
+  border-color: currentColor;
+  font-weight: 600;
+  min-height: var(--tap-menu);
+}
+#statut .annuler:hover {
+  background: var(--ground);
+  color: var(--ink);
+  border-color: var(--ground);
+}
+@keyframes toast-entre {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@media (max-width: 640px) {
+  #statut {
+    left: var(--e2);
+    right: var(--e2);
+    bottom: var(--e2);
+    max-width: none;
+  }
+  #statut .annuler {
+    min-height: var(--tap);
+  }
+}
+
+/* ── La transition de vue ─────────────────────────────────────
+   Les écrans se rendent par innerHTML : sans cela, chaque rendu
+   est une coupure sèche. startViewTransition() enveloppe le rendu
+   existant et fait le fondu ; les navigateurs qui ne la
+   connaissent pas ignorent ces règles et retrouvent exactement le
+   comportement d'avant. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-base);
+  animation-timing-function: var(--sortie);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
 }
 
 /* ── Les écrans ─────────────────────────────────────────────── */
@@ -361,9 +522,35 @@ main {
   text-decoration: none;
   font-weight: 600;
 }
+/* Le seul retour que donne l'auto-enregistrement. Il était en gris
+   clair, collé au lien de retour : le seul signe que le travail est à
+   l'abri était le moins visible de l'écran. Il porte maintenant une
+   pastille, verte au repos, ambre pendant la frappe. */
 .entete .etat {
-  color: var(--ink-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
   font-size: 0.85rem;
+  margin-right: var(--e2);
+  transition: color var(--dur-court) var(--sortie);
+}
+.entete .etat::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  transition:
+    background var(--dur-court) var(--sortie),
+    transform var(--dur-base) var(--spring);
+}
+.entete .etat.touche {
+  color: var(--warning);
+}
+.entete .etat.touche::before {
+  background: var(--warning);
+  transform: scale(1.35);
 }
 
 .nom {
@@ -433,6 +620,7 @@ button.chip.actif {
   gap: var(--e4);
 }
 .carte {
+  position: relative;
   display: block;
   background: var(--surface);
   border: 1px solid var(--rule);
@@ -441,11 +629,41 @@ button.chip.actif {
   text-decoration: none;
   color: inherit;
   box-shadow: var(--ombre);
-  transition: transform 120ms ease, border-color 120ms ease;
+  transition:
+    transform var(--dur-court) var(--sortie),
+    border-color var(--dur-court) var(--sortie),
+    box-shadow var(--dur-base) var(--sortie);
 }
 .carte:hover {
   border-color: var(--accent);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+/* Le lien de couverture : il porte le titre, il couvre la carte, et
+   il laisse passer ce qui est posé au-dessus (le lien bord de glace).
+   C'est ce qui remplace le <a> dans un <a>, invalide. */
+.carte .couverture {
+  color: inherit;
+  text-decoration: none;
+}
+.carte .couverture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.carte .carte-pied {
+  position: relative;
+  margin: var(--e2) 0 0;
+}
+.carte-seance:focus-within {
+  border-color: var(--accent);
+}
+/* Cent soixante-sept patinoires en SVG dans une grille : le navigateur
+   n'a aucune raison de calculer et de peindre celles qui sont hors de
+   l'écran. La hauteur annoncée évite que la barre de défilement saute
+   pendant qu'on descend. */
+.cartes > .carte {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
 }
 .carte-corps {
   padding: var(--e3) var(--e4) var(--e4);
@@ -1807,7 +2025,7 @@ details.menu summary::-webkit-details-marker {
   position: absolute;
   right: 0;
   top: calc(100% + 4px);
-  z-index: 20;
+  z-index: var(--plan-souleve);
   display: flex;
   flex-direction: column;
   min-width: 180px;
@@ -1817,15 +2035,29 @@ details.menu summary::-webkit-details-marker {
   box-shadow: var(--ombre);
   padding: var(--e1);
 }
-.menu-liste button {
+.menu-liste button,
+.menu-liste a {
   border: none;
   background: transparent;
   justify-content: flex-start;
   text-align: left;
   border-radius: var(--rayon-petit);
+  white-space: nowrap;
 }
-.menu-liste button:hover {
+.menu-liste a {
+  display: flex;
+  align-items: center;
+  gap: var(--e1);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+  min-height: var(--tap-menu);
+  padding: 6px 12px;
+}
+.menu-liste button:hover,
+.menu-liste a:hover {
   background: var(--accent-soft);
+  color: var(--accent-ink);
 }
 
 /* ── Fiches techniques, formes de travail, corrections ────────── */
@@ -2092,4 +2324,234 @@ label.case input {
   .cycle-corps .rangee {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── Compte et synchronisation ────────────────────────────────
+   L'indicateur ne parle que quand il a quelque chose à dire, et il
+   reste discret quand tout va bien : une pastille qui crie « à jour »
+   n'apprend rien. Hors ligne, il rassure (les modifications partiront)
+   au lieu d'alerter — au bord de la glace, un avertissement qu'on ne
+   peut pas traiter est une nuisance. */
+
+/* `display` posé en CSS l'emporte sur l'attribut `hidden` : sans ces
+   deux règles, l'indicateur et la pastille du compte resteraient
+   visibles alors que le code les a masqués. */
+.synchro[hidden],
+#act-compte[hidden] {
+  display: none;
+}
+.synchro {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  border-color: transparent;
+  background: transparent;
+  min-height: var(--tap-menu);
+  padding: 4px 8px;
+}
+.synchro:hover {
+  border-color: var(--rule-controle);
+  color: var(--ink);
+}
+.synchro-envoi,
+.synchro-enAttente {
+  color: var(--ink-soft);
+}
+.synchro-horsLigne {
+  color: var(--warning);
+}
+.synchro-conflit,
+.synchro-erreur {
+  color: var(--danger);
+  border-color: currentColor;
+  font-weight: 600;
+}
+.synchro-envoi {
+  animation: tourne 1.2s linear infinite;
+}
+@keyframes tourne {
+  to {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .synchro-envoi {
+    animation: none;
+  }
+}
+
+#act-compte {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.dialogue-compte {
+  width: min(94vw, 420px);
+}
+.compte-forme label {
+  display: block;
+  margin-bottom: var(--e3);
+}
+.compte-forme input {
+  width: 100%;
+}
+.compte-aide {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin-bottom: var(--e4);
+}
+.compte-actions {
+  margin: var(--e4) 0 var(--e2);
+}
+.compte-actions .primaire {
+  width: 100%;
+  justify-content: center;
+  min-height: var(--tap);
+}
+.compte-bascule {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3);
+  justify-content: space-between;
+  margin: 0;
+}
+button.lien {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  padding: 4px 0;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  min-height: auto;
+}
+button.lien:hover {
+  color: var(--accent-ink);
+}
+.dialogue-compte hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: var(--e4) 0 var(--e3);
+}
+
+.dialogue-conflits {
+  width: min(94vw, 560px);
+}
+.conflits {
+  list-style: none;
+  margin: 0 0 var(--e3);
+  padding: 0;
+}
+.conflits li {
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon-petit);
+  padding: var(--e3);
+  margin-bottom: var(--e3);
+}
+.conflit-titre {
+  font-weight: 600;
+  margin-bottom: var(--e2);
+}
+.conflit-cotes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--e3);
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin-bottom: var(--e3);
+}
+.conflit-ou {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+.conflit-actions {
+  display: flex;
+  gap: var(--e2);
+  flex-wrap: wrap;
+}
+
+/* ── Confier un groupe ────────────────────────────────────────
+   Deux gestes que le vocabulaire sépare, et que la mise en page doit
+   séparer aussi : confier un groupe (l'autre le prépare et le mène) et
+   partager sa bibliothèque (ce qui n'arrive jamais). D'où le mot du
+   partage, répété tel quel dans le panneau : il vaut mieux le lire une
+   fois de trop que de se tromper une fois. */
+
+.dialogue-coachs {
+  width: min(94vw, 560px);
+}
+.coachs {
+  list-style: none;
+  margin: 0 0 var(--e4);
+  padding: 0;
+}
+.coachs li {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+  padding: var(--e2) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.coachs li > span:first-child {
+  flex: 1;
+  min-width: 160px;
+}
+.coachs small {
+  display: block;
+}
+.coachs .role {
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.inviter {
+  display: flex;
+  gap: var(--e2);
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin: var(--e4) 0 var(--e3);
+}
+.inviter label {
+  flex: 1;
+  min-width: 200px;
+}
+.inviter input {
+  width: 100%;
+}
+.mot-du-partage {
+  white-space: pre-line;
+  border-left: 3px solid var(--accent);
+  padding-left: var(--e3);
+  margin-top: var(--e4);
+}
+
+.dialogue-invitation {
+  width: min(94vw, 440px);
+}
+.invitation-groupe {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: var(--e2) 0 var(--e3);
+}
+
+/* Le badge d'un groupe partagé : discret quand il ne l'est pas,
+   affirmé quand il l'est. */
+.ecran-groupe .entete button.actif {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  font-weight: 600;
 }

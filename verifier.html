@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ardoise — vérifier</title>
+    <link rel="stylesheet" href="css/ardoise.css" />
+    <script>
+      try {
+        var t = JSON.parse(localStorage.getItem("ardoise_v1_theme"));
+        if (t === "sombre" || t === "clair")
+          document.documentElement.setAttribute("data-theme", t === "sombre" ? "dark" : "light");
+      } catch (e) {}
+    </script>
+    <style>
+      .verif {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: var(--e5) var(--e4);
+      }
+      .verif h1 {
+        margin-bottom: var(--e2);
+      }
+      .verif .intro {
+        color: var(--ink-soft);
+        margin-bottom: var(--e4);
+      }
+      .verif h2 {
+        margin: var(--e5) 0 var(--e2);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--ink-faint);
+      }
+      .verif ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .verif li {
+        display: flex;
+        gap: var(--e3);
+        align-items: baseline;
+        padding: var(--e2) var(--e3);
+        border-bottom: 1px solid var(--rule);
+      }
+      .verif li small {
+        display: block;
+        color: var(--ink-soft);
+        font-size: 0.85rem;
+      }
+      .verif .marque {
+        font-weight: 700;
+        width: 1em;
+        flex: none;
+      }
+      .verif .vert .marque {
+        color: var(--ok);
+      }
+      .verif .rouge .marque {
+        color: var(--danger);
+      }
+      .verif .passe .marque {
+        color: var(--ink-faint);
+      }
+      .verif .rouge strong {
+        color: var(--danger);
+      }
+      .resume {
+        font-weight: 600;
+        margin: var(--e4) 0;
+        padding: var(--e3);
+        border-radius: var(--rayon-petit);
+        background: var(--surface);
+        border: 1px solid var(--rule);
+      }
+      .resume.vert {
+        border-color: var(--ok);
+        color: var(--ok);
+      }
+      .resume.rouge {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="barre">
+      <a class="titre" href="index.html">Ardoise</a>
+      <nav class="modes" aria-label="Écrans"><a href="index.html">← Retour à l'appli</a></nav>
+    </header>
+
+    <main class="verif">
+      <h1>Vérifier</h1>
+      <p class="intro">
+        Le catalogue et la recherche se contrôlent sans réseau. Les épreuves des règles de la base
+        demandent un compte : connectez-vous d'abord dans Ardoise, puis revenez ici. Les objets
+        d'épreuve portent un nom en <code>_verif_</code> et sont effacés à la fin ;
+        s'il en reste un, la page le dit.
+      </p>
+      <p><button id="lancer" type="button" class="primaire">Lancer les épreuves</button></p>
+      <p id="resume" class="resume" hidden></p>
+      <div id="sortie"></div>
+    </main>
+
+    <script type="module">
+      import { lancer } from "./js/verifier.js";
+      const bouton = document.getElementById("lancer");
+      const resume = document.getElementById("resume");
+      const sortie = document.getElementById("sortie");
+      bouton.addEventListener("click", async () => {
+        bouton.disabled = true;
+        resume.hidden = false;
+        try {
+          await lancer(sortie, resume);
+        } finally {
+          bouton.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

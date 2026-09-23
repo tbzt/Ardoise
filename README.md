@@ -6,7 +6,7 @@ Application web à page unique, **100 % locale** : aucun serveur, aucune dépend
 
 → [tbzt.github.io/Ardoise](https://tbzt.github.io/Ardoise)
 
-Livrée avec **135 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute, passer (coup droit, revers, bande), tirer (poignet, revers, en mouvement), les bases du gardien, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
+Livrée avec **167 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute et le protéger, passer (coup droit, revers, bande, une touche), tirer (poignet, revers, frappé, en mouvement, en déviation), quinze ateliers de gardien — dont un pour celui qui dépanne sans équipement —, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
 
 ---
 
@@ -55,6 +55,7 @@ Livrée avec **135 exercices** et deux séances types pour **adultes débutants*
 ### Système
 - **Exporter / Importer** toutes les données en un fichier JSON (fusion ou remplacement), ou **un exercice seul** depuis sa fiche — le fichier se réimporte chez soi ou chez un autre coach, et met à jour l'exercice s'il est plus récent.
 - **Catalogue** : réinstalle les exercices fournis sans toucher aux vôtres.
+- Toutes ces commandes tiennent dans le menu **⋯**, en haut à droite : la barre ne garde que la navigation.
 - Thème clair / sombre / automatique.
 
 ---

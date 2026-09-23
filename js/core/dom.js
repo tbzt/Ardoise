@@ -53,13 +53,73 @@ export function heureA(depart, decalageMin) {
   return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
 
-export function statut(message, duree = 2500) {
+/* Le mot de l'appli, en bas à gauche. Avec `annuler`, il porte un
+   bouton qui défait ce qui vient d'être fait : c'est ce qui permet
+   d'agir tout de suite plutôt que de demander « êtes-vous sûr ? »
+   avant chaque geste. Cinq secondes, le temps de se raviser.
+
+   Un seul message à la fois : un nouveau remplace le précédent, et
+   l'annulation du précédent est alors perdue — c'est voulu, une pile
+   de regrets serait pire que pas de regret du tout. */
+export function statut(message, options = {}) {
+  const duree = typeof options === "number" ? options : options.duree || (options.annuler ? 5000 : 2500);
+  const annuler = typeof options === "number" ? null : options.annuler;
   const p = document.getElementById("statut");
   if (!p) return;
-  p.textContent = message;
-  p.hidden = false;
   clearTimeout(statut._h);
+  p.replaceChildren(document.createTextNode(message));
+  if (annuler) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "annuler";
+    b.textContent = "Annuler";
+    b.addEventListener("click", () => {
+      clearTimeout(statut._h);
+      p.hidden = true;
+      annuler();
+    });
+    p.appendChild(b);
+  }
+  p.hidden = false;
   statut._h = setTimeout(() => (p.hidden = true), duree);
+}
+
+/* Enveloppe un rendu dans une transition de vue quand le navigateur
+   sait le faire. Sans elle, le rendu a lieu exactement comme avant :
+   l'appel est toujours sûr, et le résultat toujours le même à
+   l'écran une fois la transition finie.
+
+   Trois cas où l'on rend sans transition, parce qu'il n'y a rien à
+   fondre et que le navigateur rejetterait : le tout premier rendu,
+   un onglet en arrière-plan, et un rendu qui en interrompt un autre.
+   Les promesses de la transition sont toujours consommées : une
+   transition interrompue rejette `ready`, et un rejet non traité
+   remonte en erreur dans la console sans que rien n'ait mal
+   tourné. */
+let enTransition = false;
+let premierRendu = true;
+
+export function transition(rendre) {
+  const possible =
+    typeof document.startViewTransition === "function" && !premierRendu && !enTransition && document.visibilityState === "visible";
+  premierRendu = false;
+  if (!possible) {
+    rendre();
+    return;
+  }
+  enTransition = true;
+  const vt = document.startViewTransition(rendre);
+  vt.ready.catch(() => {});
+  vt.finished.catch(() => {}).finally(() => (enTransition = false));
+}
+
+/* « Échauffement » et « echauffement » doivent se trouver l'un
+   l'autre : un coach tape sans accent, surtout au téléphone. */
+export function sansAccents(texte) {
+  return String(texte ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 export function telechargerBlob(nom, blob) {

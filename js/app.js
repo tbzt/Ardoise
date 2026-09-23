@@ -6,7 +6,7 @@ import { Storage } from "./core/storage.js";
 import { Store } from "./core/store.js";
 import { Theme } from "./core/theme.js";
 import { Archive } from "./core/archive.js";
-import { statut } from "./core/dom.js";
+import { statut, transition } from "./core/dom.js";
 import { exercicesDeBase, seancesDeBase } from "./data/catalogue.js";
 import { Exercices } from "./widgets/exercices.js";
 import { Exercice } from "./widgets/exercice.js";
@@ -16,6 +16,8 @@ import { Impression } from "./widgets/impression.js";
 import { BordGlace } from "./widgets/bordglace.js";
 import { Groupes } from "./widgets/groupes.js";
 import { Groupe } from "./widgets/groupe.js";
+import { choisir } from "./widgets/dialogue.js";
+import { brancherCompte } from "./widgets/compte.js";
 
 const main = document.getElementById("main");
 let ecran = null;
@@ -24,11 +26,18 @@ function installerCatalogue(silencieux = false) {
   const n = Store.exercices.installer(exercicesDeBase()).ajoutes;
   const s = Store.seances.installer(seancesDeBase()).ajoutes;
   if (silencieux) return;
-  if (n || s) statut(`Catalogue installé : ${n} exercice${n > 1 ? "s" : ""}${s ? ` et ${s} séance${s > 1 ? "s" : ""} type` : ""}.`, 4000);
+  if (n || s) statut(`Catalogue installé : ${n} exercice${n > 1 ? "s" : ""}${s ? ` et ${s} séance${s > 1 ? "s" : ""} type` : ""}.`, { duree: 4000 });
   else statut("Le catalogue est déjà entièrement présent.");
 }
 
 function router() {
+  // Le montage d'un écran est un remplacement brutal du contenu de
+  // <main>. Enveloppé dans une transition de vue, il devient un fondu ;
+  // sans elle, c'est exactement le comportement d'avant.
+  transition(monter);
+}
+
+function monter() {
   // un second « # » désigne une ancre dans l'écran (#/seance/x/glace#bilan)
   const h = location.hash.replace(/^#\/?/, "").split("#")[0];
   const [nom, id, action] = h.split("/");
@@ -62,16 +71,18 @@ function router() {
   document.body.dataset.ecran = nom || "exercices";
 }
 
-function compteurs() {
-  const e = Store.exercices.tous().length;
-  const s = Store.seances.toutes().length;
-  const g = Store.groupes.tous().length;
-  document.getElementById("compteurs").textContent = `${e} exercice${e > 1 ? "s" : ""} · ${s} séance${s > 1 ? "s" : ""}${g ? ` · ${g} groupe${g > 1 ? "s" : ""}` : ""}`;
-}
 
 /* ── Démarrage ─────────────────────────────────────────────────── */
 
 Theme.brancher(document.getElementById("act-theme"));
+
+/* Le compte est facultatif : sans lui, rien de ce qui suit ne
+   s'exécute et l'appli est exactement celle d'avant. */
+brancherCompte({
+  bouton: document.getElementById("act-compte"),
+  indicateur: document.getElementById("etat-synchro"),
+  entree: document.getElementById("entree-compte"),
+});
 
 if (!Storage.lire("initialise", false)) {
   installerCatalogue(true);
@@ -80,6 +91,21 @@ if (!Storage.lire("initialise", false)) {
 // les séances d'avant les groupes portaient un nom en texte libre
 Store.rattacherGroupes();
 
+/* Le menu se referme dès qu'on y a choisi quelque chose, et au clic
+   dehors ou sur Échap : un <details> ouvert qui reste ouvert donne
+   l'impression que le clic n'a pas été pris. */
+const menuSysteme = document.getElementById("menu-systeme");
+const fermerMenu = () => (menuSysteme.open = false);
+menuSysteme.addEventListener("click", (e) => {
+  if (e.target.closest(".menu-liste button")) fermerMenu();
+});
+document.addEventListener("click", (e) => {
+  if (menuSysteme.open && !menuSysteme.contains(e.target)) fermerMenu();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && menuSysteme.open) fermerMenu();
+});
+
 document.getElementById("act-exporter").addEventListener("click", () => Archive.exporter());
 const fichier = document.getElementById("fichier-archive");
 document.getElementById("act-importer").addEventListener("click", () => fichier.click());
@@ -87,25 +113,50 @@ fichier.addEventListener("change", async () => {
   const f = fichier.files[0];
   fichier.value = "";
   if (!f) return;
-  const remplacer = confirm("Remplacer toutes vos données par celles du fichier ?\n\n« OK » : remplacer. « Annuler » : fusionner (n'ajouter que ce qui manque).");
+  // « OK pour remplacer, Annuler pour fusionner » : une confirmation qui
+  // demande de choisir entre deux actions par oui et non se lit à
+  // l'envers une fois sur deux. Deux boutons nommés, donc.
+  const mode = await choisir({
+    titre: "Importer ce fichier",
+    options: [
+      { id: "fusion", libelle: "Fusionner", detail: "ajoute ce qui manque et met à jour ce qui est plus récent — vos données restent" },
+      { id: "remplacer", libelle: "Remplacer tout", detail: "efface vos exercices, séances et groupes, et met ceux du fichier à la place" },
+    ],
+  });
+  if (!mode) return;
   try {
-    const r = await Archive.importer(f, remplacer ? "remplacer" : "fusion");
-    const bilan = (c, mot) => `${c.ajoutes} ${mot}(s) ajouté(s)${c.misAJour ? `, ${c.misAJour} mis à jour` : ""}`;
-    statut(`Import terminé : ${bilan(r.exercices, "exercice")} ; ${bilan(r.seances, "séance")}.`, 5000);
+    const r = await Archive.importer(f, mode);
+    const bilan = (c, mot) => `${c.ajoutes} ${mot}${c.ajoutes > 1 ? "s" : ""} ajouté${c.ajoutes > 1 ? "s" : ""}${c.misAJour ? `, ${c.misAJour} mis à jour` : ""}`;
+    statut(`Import terminé : ${bilan(r.exercices, "exercice")} ; ${bilan(r.seances, "séance")}.`, { duree: 5000 });
     router();
   } catch (e) {
-    alert(e.message);
+    statut(e.message, { duree: 6000 });
   }
 });
 document.getElementById("act-catalogue").addEventListener("click", () => installerCatalogue());
-document.getElementById("act-vider").addEventListener("click", () => {
-  if (!confirm("Tout effacer ? Exercices et séances seront supprimés de ce navigateur. Pensez à exporter avant.")) return;
+/* Le seul geste qui garde une confirmation explicite : il est global,
+   il n'a pas d'objet à ramener, et un « Annuler » de cinq secondes ne
+   protège pas d'une saison entière perdue. On propose d'exporter
+   d'abord, dans le même dialogue. */
+document.getElementById("act-vider").addEventListener("click", async () => {
+  const quoi = Store.tout();
+  const choix = await choisir({
+    titre: "Tout effacer de ce navigateur ?",
+    options: [
+      { id: "exporter", libelle: "Exporter d'abord", detail: `télécharge vos ${quoi.exercices.length} exercices, ${quoi.seances.length} séances et ${quoi.groupes.length} groupes, puis revient ici` },
+      { id: "effacer", libelle: "Effacer maintenant", detail: "sans retour possible" },
+    ],
+  });
+  if (choix === "exporter") {
+    Archive.exporter();
+    statut("Données exportées. Relancez « Tout effacer » si vous voulez toujours effacer.", { duree: 6000 });
+    return;
+  }
+  if (choix !== "effacer") return;
   Store.vider();
-  statut("Tout est vide. Le bouton Catalogue réinstalle les exercices fournis.", 4000);
+  statut("Tout est vide. « Réinstaller le catalogue » remet les exercices fournis.", { duree: 5000 });
   location.hash = "#/exercices";
 });
 
-Store.abonner(compteurs);
-compteurs();
 window.addEventListener("hashchange", router);
 router();

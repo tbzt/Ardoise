@@ -11,9 +11,14 @@ export const Exercices = {
     sec.className = "ecran ecran-liste";
     main.replaceChildren(sec);
 
+    /* L'écran se peint en deux temps. Avant, chaque frappe dans la
+       recherche reconstruisait tout — y compris le champ de saisie, qu'il
+       fallait ensuite retrouver et recaler le curseur dedans : cent
+       millisecondes par caractère sur un ordinateur, et un champ qui
+       colle. Seule la liste change désormais ; le champ, lui, ne bouge
+       plus, et la gymnastique du focus disparaît avec. */
     const rendre = () => {
       const tous = Store.exercices.tous();
-      const liste = trier(filtrer(tous, filtre));
       sec.innerHTML = `
         <div class="entete">
           <h1>Exercices <span class="compte">${tous.length}</span></h1>
@@ -21,18 +26,19 @@ export const Exercices = {
           <button type="button" class="primaire" data-act="nouveau">+ Nouvel exercice</button>
         </div>
         ${barreFiltres(filtre)}
-        ${
-          tous.length === 0
-            ? `<p class="vide">Aucun exercice pour l'instant. Créez-en un, ou installez le <strong>Catalogue</strong> (bouton en haut) pour partir d'une quinzaine d'exercices pour adultes débutants.</p>`
-            : liste.length === 0
-              ? `<p class="vide">Rien ne correspond à ce filtre.</p>`
-              : `<div class="cartes">${liste.map(carte).join("")}</div>`
-        }`;
-      const q = sec.querySelector('input[name="q"]');
-      if (filtre._focus && q) {
-        q.focus();
-        q.setSelectionRange(q.value.length, q.value.length);
-      }
+        <div data-liste></div>`;
+      rendreListe();
+    };
+
+    const rendreListe = () => {
+      const tous = Store.exercices.tous();
+      const liste = trier(filtrer(tous, filtre));
+      sec.querySelector("[data-liste]").innerHTML =
+        tous.length === 0
+          ? `<p class="vide">Aucun exercice pour l'instant. Créez-en un, ou réinstallez le <strong>catalogue</strong> (menu ⋯, en haut à droite) pour partir de cent soixante-sept exercices pour adultes débutants.</p>`
+          : liste.length === 0
+            ? `<p class="vide">Rien ne correspond à ce filtre.</p>`
+            : `<div class="cartes">${liste.map(carte).join("")}</div>`;
     };
 
     sec.addEventListener("click", (e) => {
@@ -43,15 +49,14 @@ export const Exercices = {
         location.hash = `#/exercice/${ex.id}`;
       } else if (b.dataset.cat !== undefined) {
         filtre.categorie = b.dataset.cat;
-        filtre._focus = false;
-        rendre();
+        sec.querySelectorAll(".filtres .chip[data-cat]").forEach((c) => c.classList.toggle("actif", c.dataset.cat === filtre.categorie));
+        rendreListe();
       }
     });
     sec.addEventListener("input", (e) => {
       if (e.target.name === "q") {
         filtre.q = e.target.value;
-        filtre._focus = true;
-        rendre();
+        rendreListe();
       }
     });
 

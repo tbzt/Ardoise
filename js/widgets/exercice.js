@@ -75,7 +75,10 @@ export const Exercice = {
       </div>`;
 
     const etat = sec.querySelector("[data-etat]");
-    const marquer = (txt) => (etat.textContent = txt);
+    const marquer = (txt) => {
+      etat.textContent = txt;
+      etat.classList.toggle("touche", txt !== "Enregistré");
+    };
     const sauver = debounce(() => {
       Store.exercices.sauver(ex);
       marquer("Enregistré");
@@ -126,9 +129,19 @@ export const Exercice = {
         statut("Exercice dupliqué.");
         location.hash = `#/exercice/${copie.id}`;
       } else if (b.dataset.act === "supprimer") {
-        if (!confirm(`Supprimer « ${ex.nom || "cet exercice"} » ? Les séances qui l'utilisent garderont son titre.`)) return;
+        // On supprime, et on laisse cinq secondes pour se raviser. Une
+        // confirmation avant chaque geste coûte un clic à chaque fois ;
+        // l'annulation ne coûte rien à qui ne se trompe pas.
+        Store.exercices.sauver(ex);
+        const copie = JSON.parse(JSON.stringify(ex));
         Store.exercices.supprimer(ex.id);
-        statut("Exercice supprimé.");
+        statut(`« ${ex.nom || "Exercice"} » supprimé. Les séances qui l'utilisent gardent son titre.`, {
+          annuler: () => {
+            Store.exercices.installer([copie]);
+            statut("Exercice rétabli.");
+            location.hash = `#/exercice/${copie.id}`;
+          },
+        });
         location.hash = "#/exercices";
       } else if (b.dataset.act === "seance") {
         Store.exercices.sauver(ex);

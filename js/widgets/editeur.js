@@ -442,7 +442,8 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
     else if (b.dataset.act === "retablir") retablir();
     else if (b.dataset.act === "effacer") {
       if (!schema.objets.length) return;
-      if (!confirm("Effacer tout le schéma ?")) return;
+      // pas de confirmation : l'éditeur a sa propre pile d'annulation,
+      // et « Annuler » (Ctrl+Z) ramène le schéma intact.
       const avant = clone(schema);
       schema.objets = [];
       selection = null;

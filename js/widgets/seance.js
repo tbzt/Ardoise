@@ -25,21 +25,27 @@ export const Seance = {
     sec.innerHTML = `
       <div class="entete">
         <a class="retour" href="#/seances">← Séances</a>
-        <span class="etat" data-etat>Enregistré</span>
         <span class="spacer"></span>
-        <a class="bouton primaire" href="#/seance/${se.id}/glace" title="La séance vue du banc : matériel, points clés, bloc en cours">Bord de glace</a>
-        <a class="bouton" href="#/seance/${se.id}/glace#bilan" title="Noter comment ça s'est passé">${se.bilan && se.bilan.fait ? "Bilan ✓" : "Bilan"}</a>
-        <a class="bouton" href="#/seance/${se.id}/imprimer">Imprimer</a>
+        <span class="etat" data-etat>Enregistré</span>
+        ${actionPrincipale(se)}
         <details class="menu">
-          <summary class="bouton" title="Télécharger en PDF">PDF ▾</summary>
+          <summary class="bouton" title="Imprimer, télécharger">Exporter ▾</summary>
           <div class="menu-liste">
-            <button type="button" data-act="carte" title="Une page, gros caractères, sans schéma : à plier dans la poche">Carte de poche</button>
-            <button type="button" data-act="pdf" title="Le plan et chaque exercice avec son schéma">Feuille complète</button>
+            <a href="#/seance/${se.id}/imprimer">Imprimer la feuille…</a>
+            <button type="button" data-act="pdf" title="Le plan et chaque exercice avec son schéma">Feuille de séance (PDF)</button>
+            <button type="button" data-act="carte" title="Une page, gros caractères, sans schéma : à plier dans la poche">Carte de poche (PDF)</button>
           </div>
         </details>
-        <button type="button" data-act="dupliquer">Dupliquer</button>
-        <button type="button" data-act="vers-groupe" title="Copier cette séance dans un groupe, ou la déplacer">Vers un groupe…</button>
-        <button type="button" class="danger" data-act="supprimer">Supprimer</button>
+        <details class="menu">
+          <summary class="bouton" aria-label="Autres actions" title="Autres actions">⋯</summary>
+          <div class="menu-liste">
+            <a href="#/seance/${se.id}/glace#bilan">${se.bilan && se.bilan.fait ? "Modifier le bilan" : "Faire le bilan"}</a>
+            <button type="button" data-act="dupliquer">Dupliquer</button>
+            <button type="button" data-act="vers-groupe" title="Copier cette séance dans un groupe, ou la déplacer">Vers un groupe…</button>
+            <hr />
+            <button type="button" class="danger" data-act="supprimer">Supprimer la séance</button>
+          </div>
+        </details>
       </div>
       <input class="nom" name="titre" placeholder="Titre de la séance" value="${esc(se.titre)}" aria-label="Titre de la séance">
       <form class="seance-champs" autocomplete="off">
@@ -76,7 +82,10 @@ export const Seance = {
       </div>`;
 
     const etat = sec.querySelector("[data-etat]");
-    const marquer = (t) => (etat.textContent = t);
+    const marquer = (t) => {
+      etat.textContent = t;
+      etat.classList.toggle("touche", t !== "Enregistré");
+    };
     const sauver = debounce(() => {
       Store.seances.sauver(se);
       marquer("Enregistré");
@@ -152,6 +161,16 @@ export const Seance = {
         : `<li class="vide">Le déroulé est vide : ajoutez des exercices depuis la bibliothèque, ou un bloc libre.</li>`;
       peindreTemps();
       peindreRepetition();
+      peindreActionPrincipale();
+    }
+
+    /* Le bouton primaire dépend de l'état de la séance : il change quand
+       le déroulé se remplit ou quand le bilan se fait. */
+    function peindreActionPrincipale() {
+      const actuel = sec.querySelector(".entete .primaire");
+      const html = actionPrincipale(se);
+      if (!actuel || actuel.outerHTML === html) return;
+      actuel.outerHTML = html;
     }
 
     /* Glisser-déposer : on attrape la poignée, la rangée suit le
@@ -225,14 +244,27 @@ export const Seance = {
       } else if (btn.dataset.act === "descendre" && i < se.blocs.length - 1) {
         [se.blocs[i + 1], se.blocs[i]] = [se.blocs[i], se.blocs[i + 1]];
       } else if (btn.dataset.act === "retirer") {
-        se.blocs.splice(i, 1);
+        const [parti] = se.blocs.splice(i, 1);
+        peindreBlocs();
+        toucher();
+        statut(`« ${parti.titre || "Bloc"} » retiré du déroulé.`, {
+          annuler: () => {
+            se.blocs.splice(i, 0, parti);
+            peindreBlocs();
+            toucher();
+          },
+        });
+        return;
       }
       peindreBlocs();
       toucher();
     });
 
     function proposer() {
-      if (se.blocs.length && !confirm("Remplacer le déroulé actuel par une proposition ? (Ctrl+Z ne marche pas ici : dupliquez la séance avant si vous voulez garder l'actuel.)")) return;
+      // Le déroulé remplacé se retient, donc plus de confirmation — et
+      // surtout plus le conseil de « dupliquer la séance avant », qui
+      // demandait à l'utilisateur de faire lui-même une sauvegarde.
+      const avant = { blocs: JSON.parse(JSON.stringify(se.blocs)), objectif: se.objectif };
       const r = proposerDeroule(se);
       se.blocs = r.blocs;
       if (!se.objectif && r.objectif) {
@@ -247,7 +279,22 @@ export const Seance = {
         <ul>${r.explications.map((x) => `<li>${chip(x.categorie)} <strong>${esc(x.titre)}</strong> <small>— ${esc(x.raisons.join(", "))}</small></li>`).join("")}</ul>
         <p class="legende">${se.groupeId ? "Parts de temps : la cible pour des adultes débutants, corrigée par ce que ce groupe a peu travaillé sur ses quatre dernières séances. " : "Sans groupe rattaché, la proposition ne connaît pas votre historique : rattachez la séance à un groupe pour qu'elle en tienne compte. "}Retouchez librement : c'est un point de départ, pas une consigne.</p>`;
       el.hidden = false;
-      statut("Déroulé proposé — à retoucher.");
+      statut(
+        avant.blocs.length ? "Déroulé remplacé par une proposition — à retoucher." : "Déroulé proposé — à retoucher.",
+        avant.blocs.length
+          ? {
+              annuler: () => {
+                se.blocs = avant.blocs;
+                se.objectif = avant.objectif;
+                sec.querySelector('input[name="objectif"]').value = avant.objectif;
+                el.hidden = true;
+                peindreBlocs();
+                toucher();
+                statut("Déroulé précédent rétabli.");
+              },
+            }
+          : {},
+      );
     }
 
     sec.querySelector(".deroule").addEventListener("click", (e) => {
@@ -318,29 +365,30 @@ export const Seance = {
 
     /* ── La bibliothèque ────────────────────────────────────── */
 
+    /* Comme sur l'écran Exercices : le filtre est posé une fois, seule
+       la liste se repeint à la frappe. Le champ de saisie n'est jamais
+       remplacé sous les doigts de celui qui tape. */
     function peindreBibli() {
+      bibliEl.innerHTML = barreFiltres(filtre) + `<div data-bibli-liste></div>`;
+      peindreBibliListe();
+    }
+
+    function peindreBibliListe() {
       const liste = trier(filtrer(Store.exercices.tous(), filtre));
       const usage = se.groupeId ? usageExercices(autresSeances()) : null;
-      bibliEl.innerHTML =
-        barreFiltres(filtre) +
-        (liste.length
-          ? `<ul class="bibli-liste">${liste
-              .map((ex) => {
-                const u = usage ? usage.get(ex.id) : undefined;
-                const indice = usage ? `<span class="indice ${u ? (u.rang === 0 ? "recent" : "") : "jamais"}">${esc(libelleUsage(u))}</span>` : "";
-                return `
+      bibliEl.querySelector("[data-bibli-liste]").innerHTML = liste.length
+        ? `<ul class="bibli-liste">${liste
+            .map((ex) => {
+              const u = usage ? usage.get(ex.id) : undefined;
+              const indice = usage ? `<span class="indice ${u ? (u.rang === 0 ? "recent" : "") : "jamais"}">${esc(libelleUsage(u))}</span>` : "";
+              return `
               <li>
                 <button type="button" class="bibli-titre" data-apercu="${ex.id}" title="Voir l'exercice"><strong>${esc(ex.nom) || "<em>Sans nom</em>"}</strong><span class="meta">${chip(ex.categorie)} ${formaterDuree(ex.duree)} ${indice}</span></button>
                 <button type="button" data-ajouter="${ex.id}" title="Ajouter au déroulé">+</button>
               </li>`;
-              })
-              .join("")}</ul>`
-          : `<p class="vide">Rien ne correspond.</p>`);
-      const q = bibliEl.querySelector('input[name="q"]');
-      if (filtre._focus && q) {
-        q.focus();
-        q.setSelectionRange(q.value.length, q.value.length);
-      }
+            })
+            .join("")}</ul>`
+        : `<p class="vide">Rien ne correspond.</p>`;
     }
 
     function ajouterAuDeroule(ex) {
@@ -367,15 +415,14 @@ export const Seance = {
         if (ex) ajouterAuDeroule(ex);
       } else if (b.dataset.cat !== undefined) {
         filtre.categorie = b.dataset.cat;
-        filtre._focus = false;
-        peindreBibli();
+        bibliEl.querySelectorAll(".filtres .chip[data-cat]").forEach((c) => c.classList.toggle("actif", c.dataset.cat === filtre.categorie));
+        peindreBibliListe();
       }
     });
     bibliEl.addEventListener("input", (e) => {
       if (e.target.name === "q") {
         filtre.q = e.target.value;
-        filtre._focus = true;
-        peindreBibli();
+        peindreBibliListe();
       }
     });
 
@@ -420,7 +467,11 @@ export const Seance = {
     sec.querySelector(".entete").addEventListener("click", async (e) => {
       const b = e.target.closest("button");
       if (!b) return;
-      if (b.dataset.act === "vers-groupe") {
+      const menu = b.closest("details.menu");
+      if (menu) menu.open = false;
+      if (b.dataset.act === "proposer") {
+        proposer();
+      } else if (b.dataset.act === "vers-groupe") {
         Store.seances.sauver(se);
         const groupes = Store.groupes.tous();
         const choix = await choisir({
@@ -463,7 +514,6 @@ export const Seance = {
         }
       } else if (b.dataset.act === "pdf" || b.dataset.act === "carte") {
         Store.seances.sauver(se);
-        if (b.closest("details")) b.closest("details").open = false;
         if (b.dataset.act === "carte") await exporterCarte(se, b);
         else await exporterPdf(se, b);
       } else if (b.dataset.act === "dupliquer") {
@@ -472,9 +522,16 @@ export const Seance = {
         statut("Séance dupliquée.");
         location.hash = `#/seance/${copie.id}`;
       } else if (b.dataset.act === "supprimer") {
-        if (!confirm(`Supprimer « ${se.titre || "cette séance"} » ?`)) return;
+        Store.seances.sauver(se);
+        const copie = JSON.parse(JSON.stringify(se));
         Store.seances.supprimer(se.id);
-        statut("Séance supprimée.");
+        statut(`« ${se.titre || "Séance"} » supprimée.`, {
+          annuler: () => {
+            Store.seances.installer([copie]);
+            statut("Séance rétablie.");
+            location.hash = `#/seance/${copie.id}`;
+          },
+        });
         location.hash = "#/seances";
       }
     });
@@ -498,6 +555,22 @@ export const Seance = {
     };
   },
 };
+
+/* Un seul bouton primaire, et il dépend du moment de la séance.
+   « Bord de glace » en bleu sur une séance vide mettait en avant
+   l'action finale au moment de commencer. */
+function actionPrincipale(se) {
+  const passee = (se.date || "") < aujourdhuiIso();
+  if (!se.blocs.length) return `<button type="button" class="primaire" data-act="proposer">✦ Proposer un déroulé</button>`;
+  if (passee && !(se.bilan && se.bilan.fait)) return `<a class="bouton primaire" href="#/seance/${se.id}/glace#bilan" title="Noter comment ça s'est passé">Faire le bilan</a>`;
+  return `<a class="bouton primaire" href="#/seance/${se.id}/glace" title="La séance vue du banc : matériel, points clés, bloc en cours">Bord de glace</a>`;
+}
+
+function aujourdhuiIso() {
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
 
 function optionsGroupes(se) {
   const groupes = Store.groupes.tous();
