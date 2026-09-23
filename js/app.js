@@ -13,7 +13,8 @@ import { Exercice } from "./widgets/exercice.js";
 import { Seances } from "./widgets/seances.js";
 import { Seance } from "./widgets/seance.js";
 import { Impression } from "./widgets/impression.js";
-import { BordGlace } from "./widgets/bordglace.js";
+import { Glace } from "./widgets/glace.js";
+import { Bilan } from "./widgets/bilan.js";
 import { Groupes } from "./widgets/groupes.js";
 import { Groupe } from "./widgets/groupe.js";
 import { choisir } from "./widgets/dialogue.js";
@@ -38,7 +39,7 @@ function router() {
 }
 
 function monter() {
-  // un second « # » désigne une ancre dans l'écran (#/seance/x/glace#bilan)
+  // un second « # » désigne une ancre dans l'écran (#/seance/x/bilan)
   const h = location.hash.replace(/^#\/?/, "").split("#")[0];
   const [nom, id, action] = h.split("/");
   if (ecran && ecran.detruire) ecran.detruire();
@@ -62,7 +63,16 @@ function monter() {
     ecran = Impression.afficher(main, id);
     actif = "seances";
   } else if (nom === "seance" && id && action === "glace") {
-    ecran = BordGlace.afficher(main, id);
+    // l'ancienne ancre #bilan menait au bas du bord de glace ; le bilan
+    // a maintenant son écran, et les liens d'avant continuent d'y mener
+    if (location.hash.endsWith("#bilan")) {
+      location.replace(`#/seance/${id}/bilan`);
+      return;
+    }
+    ecran = Glace.afficher(main, id);
+    actif = "seances";
+  } else if (nom === "seance" && id && action === "bilan") {
+    ecran = Bilan.afficher(main, id);
     actif = "seances";
   } else if (nom === "seance" && id) {
     ecran = Seance.afficher(main, id);
@@ -76,7 +86,10 @@ function monter() {
   } else ecran = Seances.afficher(main);
 
   document.querySelectorAll("#modes a").forEach((a) => a.classList.toggle("actif", a.dataset.ecran === actif));
-  document.body.dataset.ecran = nom || "seances";
+  /* Le mode « Entraîner » masque la barre de l'appli : il lui faut donc
+     un nom à lui, et non celui de la première partie de l'adresse, qui
+     vaut « seance » aussi bien pour la préparation que pour le banc. */
+  document.body.dataset.ecran = (nom === "seance" && action) || nom || "seances";
 }
 
 

@@ -112,7 +112,7 @@ export const Groupe = {
                     const faite = estFaite(s);
                     const bilan = s.bilan && s.bilan.fait;
                     const nm = noteMoyenne(s);
-                    return `<li class="${faite ? "faite" : "a-venir"}"><a href="#/seance/${s.id}"><span class="date">${esc(formaterDate(s.date, { year: undefined }))}</span><strong>${esc(s.titre) || "Séance sans titre"}</strong></a><span class="meta">${formaterDuree(Store.dureeSeance(s))}${faite ? (bilan ? ` · ${etoiles(s.bilan.note)}${nm ? ` · blocs ${nm.toFixed(1)}/3` : ""}` : ` · <a href="#/seance/${s.id}/glace#bilan">bilan à faire</a>`) : " · à venir"}</span></li>`;
+                    return `<li class="${faite ? "faite" : "a-venir"}"><a href="#/seance/${s.id}"><span class="date">${esc(formaterDate(s.date, { year: undefined }))}</span><strong>${esc(s.titre) || "Séance sans titre"}</strong></a><span class="meta">${formaterDuree(Store.dureeSeance(s))}${faite ? (bilan ? ` · ${etoiles(s.bilan.note)}${nm ? ` · blocs ${nm.toFixed(1)}/3` : ""}` : ` · <a href="#/seance/${s.id}/bilan">bilan à faire</a>`) : " · à venir"}</span></li>`;
                   })
                   .join("")}</ul>`
               : `<p class="vide">Aucune séance pour ce groupe. Créez-en une avec le bouton en haut, ou rattachez des séances existantes depuis leur écran.</p>`

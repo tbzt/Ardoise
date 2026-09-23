@@ -57,6 +57,12 @@
   --dur-base: 240ms;
   --dur-long: 460ms;
   --dur-appui: 200ms;
+  /* L'ambiance — une pulsation lente, jamais un clignotement. Elle ne
+     porte aucune information : sous mouvement réduit on l'ÉTEINT, on ne
+     l'accélère pas. Une durée de 1 ms sur une animation infinie ne
+     calme rien, elle affole. */
+  --dur-ambiance: 4s;
+  --ambiance: 1;
   --sortie: cubic-bezier(0.22, 1, 0.36, 1);
   --entree-sortie: cubic-bezier(0.65, 0, 0.35, 1);
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -85,6 +91,7 @@
     --dur-base: 1ms;
     --dur-long: 1ms;
     --dur-appui: 1ms;
+    --ambiance: 0;
   }
 }
 
@@ -487,12 +494,6 @@ label small {
 ::view-transition-new(root) {
   animation-duration: var(--dur-base);
   animation-timing-function: var(--sortie);
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation: none;
-  }
 }
 
 /* ── Les écrans ─────────────────────────────────────────────── */
@@ -2382,15 +2383,11 @@ label.case input {
 }
 .synchro-envoi {
   animation: tourne 1.2s linear infinite;
+  animation-iteration-count: calc(var(--ambiance) * 1000);
 }
 @keyframes tourne {
   to {
     opacity: 0.55;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .synchro-envoi {
-    animation: none;
   }
 }
 
@@ -2993,4 +2990,308 @@ button.lien:hover {
   color: var(--accent-ink);
   border-top: 2px solid var(--accent);
   font-weight: 600;
+}
+
+/* ── Entraîner : un mode, pas un écran ────────────────────────
+   Debout, une main gantée, l'écran à bout de bras, trente secondes
+   entre deux blocs. La barre de navigation de l'appli n'a rien à
+   faire ici — elle occupait dix-neuf pour cent de la hauteur du
+   téléphone, et mettait « Tout effacer » sous le pouce. */
+
+body[data-ecran="glace"] .barre {
+  display: none;
+}
+body[data-ecran="glace"] main {
+  padding: 0;
+  max-width: none;
+}
+
+.ecran-glace {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.glace-barre {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  padding: var(--e1) var(--e2);
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+}
+.glace-sortir,
+.glace-rang {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 1rem;
+}
+.glace-barre .menu > summary {
+  min-width: var(--tap);
+  min-height: var(--tap);
+  justify-content: center;
+  border-color: transparent;
+  background: none;
+}
+
+/* Le rail : où j'en suis, et où l'horloge en est. Les deux, parce
+   qu'une séance ne se déroule jamais à l'heure. */
+.glace-rail {
+  display: flex;
+  gap: 2px;
+  padding: var(--e1) var(--e2);
+  overflow-x: auto;
+  background: var(--panel);
+  border-bottom: 1px solid var(--rule);
+}
+.glace-rail button {
+  flex: 1;
+  min-width: 34px;
+  min-height: 34px;
+  border: none;
+  background: var(--surface);
+  color: var(--ink-faint);
+  border-radius: var(--rayon-petit);
+  font-size: 0.8rem;
+  justify-content: center;
+  border-bottom: 3px solid transparent;
+}
+.glace-rail button.passe {
+  opacity: 0.45;
+}
+.glace-rail button.horloge {
+  border-bottom-color: var(--warning);
+  color: var(--ink);
+}
+.glace-rail button.vise {
+  background: var(--accent);
+  border-bottom-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.glace-recalage {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+  padding: var(--e2) var(--e3);
+  background: color-mix(in oklab, var(--warning) 18%, var(--surface));
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+.glace-recalage[hidden] {
+  display: none;
+}
+.glace-recalage button {
+  min-height: var(--tap-menu);
+}
+
+.glace-vue {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.glace-carte {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--e4);
+}
+.glace-carte h1 {
+  font-size: 1.6rem;
+  line-height: 1.15;
+  margin-bottom: var(--e2);
+}
+.glace-horaire {
+  display: flex;
+  gap: var(--e3);
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  margin-bottom: var(--e2);
+}
+/* Le temps restant est DANS la carte, pas en tête de page : en haut,
+   il disparaissait au premier défilement. */
+.glace-reste {
+  position: sticky;
+  top: 0;
+  z-index: var(--plan-souleve);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-radius: var(--rayon);
+  padding: var(--e2) var(--e3);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--e3);
+}
+.glace-reste.urgent {
+  background: color-mix(in oklab, var(--warning) 25%, var(--surface));
+  color: var(--ink);
+  animation: souffle var(--dur-ambiance) ease-in-out infinite;
+  animation-iteration-count: calc(var(--ambiance) * 1000);
+}
+.glace-reste.depasse {
+  background: color-mix(in oklab, var(--danger) 18%, var(--surface));
+  color: var(--ink);
+}
+/* Une pulsation lente, jamais un clignotement : au bord de la glace,
+   ce qui clignote se regarde au lieu de s'oublier. */
+@keyframes souffle {
+  50% {
+    opacity: 0.72;
+  }
+}
+.glace-cat {
+  margin-bottom: var(--e3);
+}
+.glace-schema {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  padding: 0;
+  overflow: hidden;
+  background: var(--surface);
+  margin: var(--e3) 0;
+}
+.glace-schema .vignette {
+  display: block;
+  border: none;
+  width: 100%;
+}
+.glace-agrandir {
+  display: block;
+  padding: var(--e1);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--rule);
+}
+.glace-manote {
+  border-left: 3px solid var(--accent);
+  padding-left: var(--e3);
+  font-style: italic;
+}
+.glace-corr summary {
+  cursor: pointer;
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* Le bloc suivant est nommé en permanence : c'est la réponse à
+   « et après ? », et elle ne demande aucune action. */
+.glace-suite {
+  display: flex;
+  gap: var(--e2);
+  align-items: stretch;
+  padding: var(--e2);
+  border-top: 1px solid var(--rule);
+  background: var(--panel);
+}
+.glace-suite > * {
+  min-height: var(--tap);
+}
+.glace-prec {
+  flex: 0 1 auto;
+  max-width: 38%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  color: var(--ink-faint);
+}
+.glace-suiv {
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+  font-weight: 600;
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  gap: var(--e1);
+}
+.glace-suiv small {
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.glace-liste {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.glace-liste button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 4.5em 1fr auto;
+  gap: var(--e3);
+  align-items: baseline;
+  text-align: left;
+  min-height: var(--tap);
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  background: none;
+}
+.glace-liste .passe button {
+  opacity: 0.5;
+}
+.glace-liste .en-cours button {
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+.glace-liste .glace-heure,
+.glace-liste .glace-duree {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.dialogue-schema {
+  width: min(96vw, 900px);
+  padding: var(--e3);
+}
+.schema-tete {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  margin-bottom: var(--e2);
+}
+.schema-tete button {
+  margin-left: auto;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  justify-content: center;
+}
+.schema-grand svg {
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 900px) {
+  .glace-carte {
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .glace-suite {
+    justify-content: center;
+  }
+  .glace-suiv {
+    max-width: 420px;
+  }
 }

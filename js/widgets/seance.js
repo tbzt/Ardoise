@@ -39,7 +39,7 @@ export const Seance = {
         <details class="menu">
           <summary class="bouton" aria-label="Autres actions" title="Autres actions">⋯</summary>
           <div class="menu-liste">
-            <a href="#/seance/${se.id}/glace#bilan">${se.bilan && se.bilan.fait ? "Modifier le bilan" : "Faire le bilan"}</a>
+            <a href="#/seance/${se.id}/bilan">${se.bilan && se.bilan.fait ? "Modifier le bilan" : "Faire le bilan"}</a>
             <button type="button" data-act="dupliquer">Dupliquer</button>
             <button type="button" data-act="vers-groupe" title="Copier cette séance dans un groupe, ou la déplacer">Vers un groupe…</button>
             <hr />
@@ -50,7 +50,7 @@ export const Seance = {
       <nav class="moments" aria-label="Les trois moments de la séance">
         <span class="actif" aria-current="step">1 · Préparer</span>
         <a href="#/seance/${se.id}/glace">2 · Bord de glace</a>
-        <a href="#/seance/${se.id}/glace#bilan">3 · Bilan${se.bilan && se.bilan.fait ? " ✓" : ""}</a>
+        <a href="#/seance/${se.id}/bilan">3 · Bilan${se.bilan && se.bilan.fait ? " ✓" : ""}</a>
       </nav>
 
       <input class="nom" name="titre" placeholder="Titre de la séance" value="${esc(se.titre)}" aria-label="Titre de la séance">
@@ -620,7 +620,7 @@ export const Seance = {
 function actionPrincipale(se) {
   const passee = (se.date || "") < aujourdhuiIso();
   if (!se.blocs.length) return `<button type="button" class="primaire" data-act="proposer">✦ Proposer un déroulé</button>`;
-  if (passee && !(se.bilan && se.bilan.fait)) return `<a class="bouton primaire" href="#/seance/${se.id}/glace#bilan" title="Noter comment ça s'est passé">Faire le bilan</a>`;
+  if (passee && !(se.bilan && se.bilan.fait)) return `<a class="bouton primaire" href="#/seance/${se.id}/bilan" title="Noter comment ça s'est passé">Faire le bilan</a>`;
   return `<a class="bouton primaire" href="#/seance/${se.id}/glace" title="La séance vue du banc : matériel, points clés, bloc en cours">Bord de glace</a>`;
 }
 

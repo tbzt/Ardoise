@@ -113,7 +113,7 @@ function carte(s, prochaine) {
       <p class="carte-pied">
         ${
           faite
-            ? `<a class="carte-lien" href="#/seance/${s.id}/glace#bilan">${s.bilan && s.bilan.fait ? "Voir le bilan" : "Faire le bilan"} →</a>`
+            ? `<a class="carte-lien" href="#/seance/${s.id}/bilan">${s.bilan && s.bilan.fait ? "Voir le bilan" : "Faire le bilan"} →</a>`
             : s.blocs.length
               ? `<a class="carte-lien" href="#/seance/${s.id}/glace" title="La séance vue du banc">Bord de glace →</a>`
               : `<a class="carte-lien" href="#/seance/${s.id}">Composer le déroulé →</a>`
@@ -153,7 +153,7 @@ function aFaire(toutes, avenir) {
 
   for (const s of toutes.filter((s) => estFaite(s) && !(s.bilan && s.bilan.fait)).slice(-3)) {
     lignes.push(
-      `<li><span>Bilan manquant — ${esc(formaterCourt(s.date))}${s.titre ? ` · ${esc(s.titre)}` : ""}</span><a class="bouton" href="#/seance/${s.id}/glace#bilan">Faire le bilan</a></li>`,
+      `<li><span>Bilan manquant — ${esc(formaterCourt(s.date))}${s.titre ? ` · ${esc(s.titre)}` : ""}</span><a class="bouton" href="#/seance/${s.id}/bilan">Faire le bilan</a></li>`,
     );
   }
 

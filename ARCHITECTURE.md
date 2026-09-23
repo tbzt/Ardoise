@@ -26,7 +26,8 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/exercices.js  la bibliothèque : rayons par catégorie, filtres du groupe
                    js/widgets/exercice.js   la fiche en LECTURE ; l'éditeur derrière /modifier
                    js/widgets/seance.js     PRÉPARER : réglages repliés, bande de contexte, déroulé, bibliothèque
-                   js/widgets/bordglace.js  la séance vue du banc : matériel, points clés, bloc en cours
+                   js/widgets/glace.js      ENTRAÎNER : un mode plein écran, un bloc par écran, rail et recalage
+                   js/widgets/bilan.js      DÉBRIEFER : son propre écran, atteint par la fin de la séance
                    js/widgets/impression.js la feuille de séance imprimable
                    js/widgets/feuillepdf.js la même feuille en PDF (schémas rendus en JPEG via canvas)
 2. Composants      js/widgets/editeur.js    l'éditeur de schéma (outils, gestes, historique)
@@ -185,6 +186,8 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **Pas de `onclick` dans les gabarits** : délégation d'événements sur `data-act`, `data-outil`, `data-prop`.
 - **Les écrans rendent des chaînes** (`innerHTML`) et échappent tout texte utilisateur avec `esc()`. Les identifiants internes ne sont jamais saisis par l'utilisateur.
 - **L'accueil est « Séances ».** On ouvre Ardoise pour préparer ou mener sa prochaine séance ; la bibliothèque est une ressource où l'on pioche, pas une porte d'entrée.
+- **« Entraîner » est un mode, pas un écran.** Il masque la barre de l'appli (`body[data-ecran="glace"]`), un bloc occupe l'écran entier, et tout ce qui s'y actionne fait `--tap` — on le tient d'une main gantée.
+- **L'horloge est un conseil, jamais une autorité.** Une séance ne se déroule pas à l'heure ; le rail montre à la fois le bloc qu'on regarde et celui où l'horloge en est, et une bande propose de se recaler. Le coach reste maître de la position.
 - **Une séance a trois moments** — préparer, mener, débriefer — et l'écran les nomme. Le reste (feuille, PDF, carte de poche, fiche atelier) est une sortie, pas un moment : ça vit dans un menu « Exporter ».
 - **Une information du groupe ne s'affiche qu'à un endroit.** La bande de contexte d'une séance réunit cycle, dernière fois, à revoir et répétition ; il y en avait quatre affichages concurrents et on ne savait pas lequel faisait autorité.
 - **Lire n'est pas modifier.** Une fiche s'ouvre en lecture ; l'édition a sa propre adresse, si bien que le bouton « précédent » du navigateur en sort, et qu'elle peut s'annuler.
