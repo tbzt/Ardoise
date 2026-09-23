@@ -45,9 +45,17 @@ function monter() {
   ecran = null;
   if (!location.hash.includes("#", 1)) window.scrollTo(0, 0);
 
-  let actif = "exercices";
-  if (nom === "exercice" && id) ecran = Exercice.afficher(main, id);
-  else if (nom === "seances") {
+  /* L'accueil est « Séances », et non plus la bibliothèque : on ouvre
+     Ardoise pour préparer ou mener sa prochaine séance, pas pour
+     parcourir cent soixante-sept exercices. */
+  let actif = "seances";
+  if (nom === "exercices") {
+    ecran = Exercices.afficher(main);
+    actif = "exercices";
+  } else if (nom === "exercice" && id) {
+    ecran = Exercice.afficher(main, id, action);
+    actif = "exercices";
+  } else if (nom === "seances") {
     ecran = Seances.afficher(main);
     actif = "seances";
   } else if (nom === "seance" && id && action === "imprimer") {
@@ -65,10 +73,10 @@ function monter() {
   } else if (nom === "groupe" && id) {
     ecran = Groupe.afficher(main, id);
     actif = "groupes";
-  } else ecran = Exercices.afficher(main);
+  } else ecran = Seances.afficher(main);
 
   document.querySelectorAll("#modes a").forEach((a) => a.classList.toggle("actif", a.dataset.ecran === actif));
-  document.body.dataset.ecran = nom || "exercices";
+  document.body.dataset.ecran = nom || "seances";
 }
 
 
@@ -157,6 +165,18 @@ document.getElementById("act-vider").addEventListener("click", async () => {
   statut("Tout est vide. « Réinstaller le catalogue » remet les exercices fournis.", { duree: 5000 });
   location.hash = "#/exercices";
 });
+
+/* Les en-têtes de rayon de la bibliothèque collent SOUS la barre, dont
+   la hauteur change quand elle se replie sur un téléphone. On la mesure
+   plutôt que de l'écrire en dur, où elle se démentirait au premier
+   changement de libellé. */
+const barre = document.querySelector(".barre");
+function mesurerLaBarre() {
+  document.documentElement.style.setProperty("--haut-barre", `${Math.round(barre.getBoundingClientRect().height)}px`);
+}
+mesurerLaBarre();
+if (window.ResizeObserver) new ResizeObserver(mesurerLaBarre).observe(barre);
+else window.addEventListener("resize", mesurerLaBarre);
 
 window.addEventListener("hashchange", router);
 router();

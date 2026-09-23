@@ -15,8 +15,13 @@ export function libelleNiveau(n) {
   return NIVEAUX[n] || n || "";
 }
 
+/* La vignette annonce son format par une classe. C'est ce qui permet au
+   navigateur de lui réserver sa place sans rendre le schéma : sans
+   cela, les cartes hors champ se déplient en arrivant et la page
+   s'allonge sous le pouce pendant qu'on descend. */
 export function vignette(schema) {
-  return `<div class="vignette">${svg(schema, { classe: "mini" })}</div>`;
+  const vue = schema && schema.vue === "moitie" ? "moitie" : "entiere";
+  return `<div class="vignette vignette-${vue}">${svg(schema, { classe: "mini" })}</div>`;
 }
 
 export function barreFiltres(filtre) {

@@ -20,11 +20,11 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
 
 ```
 4. Orchestration   js/app.js               démarrage, routage par fragment d'URL, barre
-3. Écrans          js/widgets/groupes.js    la liste des groupes
+3. Écrans          js/widgets/seances.js    l'ACCUEIL : à venir, passées, et ce qui reste à faire
+                   js/widgets/groupes.js    la liste des groupes
                    js/widgets/groupe.js     la fiche d'un groupe : historique, équilibre, conseils, bilans
-                   js/widgets/exercices.js  la bibliothèque (cartes, filtre)
-                   js/widgets/exercice.js   la fiche (éditeur + formulaire, auto-enregistrement)
-                   js/widgets/seances.js    la liste des séances
+                   js/widgets/exercices.js  la bibliothèque : rayons par catégorie, filtres du groupe
+                   js/widgets/exercice.js   la fiche en LECTURE ; l'éditeur derrière /modifier
                    js/widgets/seance.js     le déroulé (blocs, frise, bibliothèque latérale)
                    js/widgets/bordglace.js  la séance vue du banc : matériel, points clés, bloc en cours
                    js/widgets/impression.js la feuille de séance imprimable
@@ -184,6 +184,9 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **Un champ de saisie ne se reconstruit pas sous les doigts.** Une liste filtrable se peint en deux temps : le cadre (champ, filtres) une fois, la liste à chaque frappe.
 - **Pas de `onclick` dans les gabarits** : délégation d'événements sur `data-act`, `data-outil`, `data-prop`.
 - **Les écrans rendent des chaînes** (`innerHTML`) et échappent tout texte utilisateur avec `esc()`. Les identifiants internes ne sont jamais saisis par l'utilisateur.
+- **L'accueil est « Séances ».** On ouvre Ardoise pour préparer ou mener sa prochaine séance ; la bibliothèque est une ressource où l'on pioche, pas une porte d'entrée.
+- **Lire n'est pas modifier.** Une fiche s'ouvre en lecture ; l'édition a sa propre adresse, si bien que le bouton « précédent » du navigateur en sort, et qu'elle peut s'annuler.
+- **Une vignette annonce son format** (`vignette-entiere` / `vignette-moitie`). C'est ce qui permet de sauter le rendu des schémas hors champ sans que la page s'allonge sous le pouce pendant qu'on descend.
 - **Un écran renvoie `{ detruire() }`** ; le routeur l'appelle avant d'en monter un autre (désabonnement du Store, sauvegarde en attente, écouteurs clavier).
 - **Le catalogue a des identifiants fixes** (`cat_…`) : le réinstaller ajoute ce qui manque et n'écrase rien. L'import d'un fichier, lui, ajoute ce qui manque **et** remplace ce dont la version importée est plus récente (`modifie`) — c'est ce qui permet d'exporter un exercice seul, de le retoucher ailleurs et de le rapporter.
 - **Pas d'accès réseau hors de `js/core/distant.js`.** Même loi que pour `localStorage`, même raison.

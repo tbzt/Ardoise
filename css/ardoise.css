@@ -659,11 +659,26 @@ button.chip.actif {
 }
 /* Cent soixante-sept patinoires en SVG dans une grille : le navigateur
    n'a aucune raison de calculer et de peindre celles qui sont hors de
-   l'écran. La hauteur annoncée évite que la barre de défilement saute
-   pendant qu'on descend. */
-.cartes > .carte {
+   l'écran.
+
+   Le saut se pose sur la VIGNETTE et non sur la carte entière. Sur la
+   carte, la hauteur annoncée devrait deviner celle du texte, qui varie
+   d'un exercice à l'autre : chaque carte qui entre dans le champ
+   corrigeait alors sa hauteur, et la page sautait sous le pouce. La
+   vignette, elle, a le format de la patinoire : sa hauteur se déduit de
+   la largeur de colonne, donc rien ne bouge. Et c'est là qu'est tout le
+   coût — le texte ne coûte rien. */
+.vignette {
   content-visibility: auto;
-  contain-intrinsic-size: auto 320px;
+}
+/* Le format vient de la patinoire : 600 × 300 pour la glace entière,
+   310 × 300 pour la demie. La hauteur se déduit donc de la largeur de
+   colonne, sans avoir à rendre le schéma. */
+.vignette-entiere {
+  aspect-ratio: 600 / 300;
+}
+.vignette-moitie {
+  aspect-ratio: 310 / 300;
 }
 .carte-corps {
   padding: var(--e3) var(--e4) var(--e4);
@@ -2554,4 +2569,271 @@ button.lien:hover {
   color: var(--accent-ink);
   background: var(--accent-soft);
   font-weight: 600;
+}
+
+/* ── L'accueil : à venir, passées, à faire ────────────────────
+   La prochaine séance est la seule chose que le coach cherche neuf
+   fois sur dix. Elle a donc sa bordure, son marqueur, et elle passe
+   toute la largeur : le reste s'aligne derrière. */
+
+.onglets {
+  display: flex;
+  gap: var(--e1);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--e4);
+}
+.onglets button {
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: var(--e2) var(--e3);
+  color: var(--ink-soft);
+  font-weight: 600;
+  min-height: var(--tap-menu);
+  transition: color var(--dur-court) var(--sortie), border-color var(--dur-court) var(--sortie);
+}
+.onglets button:hover {
+  color: var(--ink);
+}
+.onglets button.actif {
+  color: var(--accent-ink);
+  border-bottom-color: var(--accent);
+}
+.onglets .compte {
+  color: var(--ink-faint);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.carte-seance.prochaine {
+  grid-column: 1 / -1;
+  border-color: var(--accent);
+  box-shadow: var(--ombre), inset 3px 0 0 var(--accent);
+}
+.carte-seance.prochaine h3 {
+  font-size: 1.25rem;
+}
+.carte .marqueur {
+  margin-left: var(--e2);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+  padding: 2px 7px;
+  border-radius: var(--rayon-petit);
+}
+
+.etiquette {
+  font-size: 0.78rem;
+  padding: 1px 8px;
+  border-radius: var(--rayon-petit);
+  border: 1px solid currentColor;
+}
+.etat-ok {
+  color: var(--ok);
+}
+.etat-vide {
+  color: var(--ink-faint);
+}
+.etat-attente {
+  color: var(--warning);
+}
+.etat-alerte {
+  color: var(--danger);
+}
+
+.bandeau-cycle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e3);
+  padding: var(--e2) var(--e3);
+  margin-bottom: var(--e4);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
+  font-size: 0.9rem;
+}
+.bandeau-cycle span {
+  color: var(--ink-soft);
+}
+.bandeau-cycle .note {
+  font-style: italic;
+}
+
+/* Le seul endroit où l'appli interpelle : chaque ligne porte le geste
+   qui la règle, sinon elle n'a rien à y faire. */
+.a-faire {
+  margin-top: var(--e6);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--e3);
+}
+.a-faire h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-faint);
+  margin-bottom: var(--e2);
+}
+.a-faire ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.a-faire li {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+  padding: var(--e2) 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+.a-faire li > span {
+  flex: 1;
+  min-width: 200px;
+}
+@media (max-width: 640px) {
+  .a-faire .bouton {
+    min-height: var(--tap);
+  }
+}
+
+/* ── Les rayons de la bibliothèque ────────────────────────────
+   Cent soixante-sept patinoires se ressemblent toutes : sans repère,
+   on fait défiler sans jamais savoir où l'on est. L'en-tête colle sous
+   la barre, dont la hauteur est mesurée par app.js — elle change quand
+   la barre se replie sur un téléphone, et une valeur écrite en dur se
+   démentirait au premier changement de libellé. */
+
+.rayon {
+  margin-bottom: var(--e5);
+}
+.tete-rayon {
+  position: sticky;
+  top: var(--haut-barre, 52px);
+  z-index: var(--plan-souleve);
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  margin: 0 0 var(--e3);
+  padding: var(--e2) 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c);
+  background: var(--ground);
+  border-bottom: 2px solid var(--c);
+}
+.tete-rayon .compte {
+  color: var(--ink-faint);
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.filtres-groupe {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  margin-top: calc(var(--e3) * -1);
+}
+.filtres-groupe label {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.carte .indice {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+.carte .indice.jamais {
+  color: var(--ok);
+}
+.carte .indice.recent {
+  color: var(--warning);
+}
+
+/* ── La fiche en lecture ──────────────────────────────────────
+   On ouvre un exercice dix fois pour le relire et une fois pour le
+   retoucher : le schéma passe en grand, les mots respirent, et les
+   trente-cinq contrôles de dessin attendent derrière « Modifier ». */
+
+.fiche-titre {
+  font-size: 1.7rem;
+  margin-bottom: var(--e1);
+}
+.fiche-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+  margin-bottom: var(--e4);
+}
+.fiche-lecture .fiche-corps {
+  align-items: start;
+}
+.fiche-schema-lecture .vignette {
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  border-bottom-width: 1px;
+  position: sticky;
+  top: calc(var(--haut-barre, 52px) + var(--e3));
+}
+.fiche-texte .mini-titre {
+  margin-top: var(--e4);
+}
+.fiche-texte > .mini-titre:first-child {
+  margin-top: 0;
+}
+.fiche-texte .objectif {
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.fiche-texte ul {
+  margin: 0 0 var(--e3);
+  padding-left: var(--e4);
+}
+.fiche-texte details {
+  margin-bottom: var(--e3);
+}
+.fiche-texte details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* Le lien qui manquait : où cet exercice a servi, et ce que le bilan
+   en a dit. L'appli le savait déjà, elle ne le disait nulle part. */
+.fiche-historique {
+  margin-top: var(--e6);
+  border-top: 1px solid var(--rule);
+  padding-top: var(--e3);
+}
+.fiche-historique h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-faint);
+  margin-bottom: var(--e2);
+}
+.fiche-historique ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--e1) var(--e4);
+}
+.fiche-historique li {
+  padding: var(--e1) 0;
+  font-size: 0.9rem;
 }
