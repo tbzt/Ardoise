@@ -47,19 +47,32 @@ export const Seance = {
           </div>
         </details>
       </div>
+      <nav class="moments" aria-label="Les trois moments de la séance">
+        <span class="actif" aria-current="step">1 · Préparer</span>
+        <a href="#/seance/${se.id}/glace">2 · Bord de glace</a>
+        <a href="#/seance/${se.id}/glace#bilan">3 · Bilan${se.bilan && se.bilan.fait ? " ✓" : ""}</a>
+      </nav>
+
       <input class="nom" name="titre" placeholder="Titre de la séance" value="${esc(se.titre)}" aria-label="Titre de la séance">
-      <form class="seance-champs" autocomplete="off">
-        <label>Date <input type="date" name="date" value="${esc(se.date)}"></label>
-        <label>Heure <input type="time" name="heure" value="${esc(se.heure)}"></label>
-        <label>Groupe <select name="groupeId" data-groupe>${optionsGroupes(se)}</select></label>
-        <label>Lieu <input name="lieu" value="${esc(se.lieu)}" placeholder="Patinoire"></label>
-        <label>Glace (min) <input type="number" name="duree_glace" min="5" max="240" value="${esc(se.duree_glace)}"></label>
-        <label class="large">Objectif <input name="objectif" value="${esc(se.objectif)}" placeholder="Le fil rouge de la séance"></label>
-      </form>
-      <div data-derniere></div>
+
+      <!-- Les six champs administratifs se remplissent une fois et
+           occupaient tout le premier écran, devant le déroulé, qui est
+           le travail. Ils tiennent en une ligne, qu'on déplie. -->
+      <details class="seance-reglages" data-reglages ${se.date && se.heure ? "" : "open"}>
+        <summary><span data-resume></span><span class="crayon">✎</span></summary>
+        <form class="seance-champs" autocomplete="off">
+          <label>Date <input type="date" name="date" value="${esc(se.date)}"></label>
+          <label>Heure <input type="time" name="heure" value="${esc(se.heure)}"></label>
+          <label>Groupe <select name="groupeId" data-groupe>${optionsGroupes(se)}</select></label>
+          <label>Lieu <input name="lieu" value="${esc(se.lieu)}" placeholder="Patinoire"></label>
+          <label>Glace (min) <input type="number" name="duree_glace" min="5" max="240" value="${esc(se.duree_glace)}"></label>
+        </form>
+      </details>
+      <label class="objectif-champ">Objectif <input name="objectif" value="${esc(se.objectif)}" placeholder="Le fil rouge de la séance"></label>
+
+      <div class="contexte" data-contexte hidden></div>
       <div class="seance-corps">
         <div class="deroule">
-          <p class="avis" data-repetition hidden></p>
           <div class="deroule-entete">
             <h2>Déroulé</h2>
             <span class="total" data-total></span>
@@ -94,6 +107,12 @@ export const Seance = {
       marquer("Modification…");
       sauver();
     };
+
+    /* Le « + » de la bibliothèque ajoutait toujours à la fin : pour
+       glisser un exercice au milieu, il fallait l'ajouter puis le faire
+       remonter à coups de flèche. On pose un point d'insertion entre
+       deux blocs, et tout ce qu'on ajoute y va. */
+    let insertion = null;
 
     const blocsEl = sec.querySelector("[data-blocs]");
     const friseEl = sec.querySelector("[data-frise]");
@@ -155,12 +174,13 @@ export const Seance = {
                     <button type="button" data-act="descendre" title="Descendre" ${i === se.blocs.length - 1 ? "disabled" : ""}>▼</button>
                     <button type="button" data-act="retirer" class="danger" title="Retirer de la séance">×</button>
                   </div>
-                </li>`;
+                </li>
+                <li class="entre ${insertion === i + 1 ? "vise" : ""}"><button type="button" data-inserer="${i + 1}" title="Insérer ici ce qu'on ajoutera">${insertion === i + 1 ? "on insère ici — cliquer pour annuler" : "+ insérer ici"}</button></li>`;
             })
             .join("")
         : `<li class="vide">Le déroulé est vide : ajoutez des exercices depuis la bibliothèque, ou un bloc libre.</li>`;
       peindreTemps();
-      peindreRepetition();
+      peindreContexte();
       peindreActionPrincipale();
     }
 
@@ -203,6 +223,7 @@ export const Seance = {
         document.removeEventListener("pointercancel", finir);
         li.classList.remove("en-glisse");
         const ordre = [...blocsEl.querySelectorAll("li[data-id]")].map((x) => x.dataset.id);
+        insertion = null;
         const avant = se.blocs.map((b) => b.id).join();
         se.blocs.sort((a, b) => ordre.indexOf(a.id) - ordre.indexOf(b.id));
         if (se.blocs.map((b) => b.id).join() !== avant) {
@@ -229,6 +250,13 @@ export const Seance = {
     });
 
     blocsEl.addEventListener("click", (e) => {
+      const marque = e.target.closest("button[data-inserer]");
+      if (marque) {
+        const i = Number(marque.dataset.inserer);
+        insertion = insertion === i ? null : i;
+        peindreBlocs();
+        return;
+      }
       const btn = e.target.closest("button[data-act]");
       const li = e.target.closest("li[data-id]");
       if (!btn || !li) return;
@@ -307,7 +335,9 @@ export const Seance = {
     sec.querySelector(".ajouts").addEventListener("click", (e) => {
       const b = e.target.closest("button[data-act='libre']");
       if (!b) return;
-      se.blocs.push(blocLibre(b.dataset.titre || "", Number(b.dataset.duree) || 5));
+      const ou = insertion === null ? se.blocs.length : insertion;
+      se.blocs.splice(ou, 0, blocLibre(b.dataset.titre || "", Number(b.dataset.duree) || 5));
+      if (insertion !== null) insertion = ou + 1;
       peindreBlocs();
       toucher();
       if (!b.dataset.titre) {
@@ -322,45 +352,65 @@ export const Seance = {
       return se.groupeId ? seancesDuGroupe(se.groupeId).filter((s) => s.id !== se.id) : [];
     }
 
-    function peindreRepetition() {
-      const el = sec.querySelector("[data-repetition]");
-      const autres = autresSeances().filter(estFaite);
-      const r = recouvrement(se, autres);
-      if (r.avec && r.ratio >= 0.6 && r.communs >= 3) {
-        el.innerHTML = `Cette séance reprend <strong>${r.communs} exercice${r.communs > 1 ? "s" : ""}</strong> de celle du ${esc(formaterCourt(r.avec.date))}${r.avec.titre ? ` (« ${esc(r.avec.titre)} »)` : ""}. Volontaire ? Sinon, la bibliothèque marque ce qui n'a jamais été fait avec ce groupe.`;
-        el.hidden = false;
-      } else el.hidden = true;
-    }
-
-    function peindreDerniere() {
-      const el = sec.querySelector("[data-derniere]");
+    /* Une seule bande, en haut, pour tout ce que le groupe apprend
+       sur cette séance-là. Il y avait trois affichages redondants : le
+       panneau replié « dernière fois », le rappel de cycle, et l'alerte
+       de répétition — plus, ailleurs dans l'appli, la section « pour la
+       prochaine séance » de la fiche du groupe. Le coach ne savait pas
+       laquelle faisait autorité. Une source, à l'endroit où elle sert. */
+    function peindreContexte() {
+      const el = sec.querySelector("[data-contexte]");
       if (!se.groupeId) {
+        el.hidden = true;
         el.innerHTML = "";
         return;
       }
       const groupe = Store.groupes.get(se.groupeId);
       const cycle = cycleCourant(groupe, se.date);
-      const cycleHtml = cycle
-        ? `<p class="cycle-en-cours"><strong>Cycle « ${esc(cycle.nom || "en cours")} »</strong> ${esc(formaterCourt(cycle.debut))} → ${esc(formaterCourt(cycle.fin))}${cycle.categories && cycle.categories.length ? ` · ${cycle.categories.map((c) => chip(c)).join(" ")}` : ""}${cycle.note ? ` · ${esc(cycle.note)}` : ""} <a href="#/groupe/${se.groupeId}">modifier</a></p>`
-        : "";
-      const faites = seancesFaites(se.groupeId).filter((s) => s.id !== se.id && (!se.date || (s.date || "") <= se.date));
+      const faites = seancesFaites(se.groupeId).filter((x) => x.id !== se.id && (!se.date || (x.date || "") <= se.date));
       const derniere = faites[faites.length - 1];
-      if (!derniere) {
-        el.innerHTML = cycleHtml;
+      const revoir = aRevoir(faites, 2);
+      const r = recouvrement(se, autresSeances().filter(estFaite));
+      const repete = r.avec && r.ratio >= 0.6 && r.communs >= 3;
+      const bilan = derniere && derniere.bilan && derniere.bilan.fait ? derniere.bilan : null;
+
+      const lignes = [];
+      if (cycle) {
+        lignes.push(
+          `<p class="contexte-ligne"><span class="contexte-quoi">Cycle</span><span>« ${esc(cycle.nom || "en cours")} » ${esc(formaterCourt(cycle.debut))} → ${esc(formaterCourt(cycle.fin))}${cycle.categories && cycle.categories.length ? ` · ${cycle.categories.map((c) => chip(c)).join(" ")}` : ""}${cycle.note ? ` · <em>${esc(cycle.note)}</em>` : ""}</span></p>`,
+        );
+      }
+      if (derniere) {
+        lignes.push(
+          `<p class="contexte-ligne"><span class="contexte-quoi">Dernière fois</span><span>${esc(formaterCourt(derniere.date))}${derniere.titre ? ` · ${esc(derniere.titre)}` : ""}${bilan && bilan.note ? ` · ${"★".repeat(bilan.note)}` : " · sans bilan"}${bilan && bilan.retenir ? ` — « ${esc(bilan.retenir)} »` : ""}</span></p>`,
+        );
+      }
+      if (revoir.length) {
+        lignes.push(
+          `<p class="contexte-ligne contexte-revoir"><span class="contexte-quoi">↻ À revoir</span><span>${revoir.map((x) => esc(x.titre) + (x.commentaire ? ` <small>(${esc(x.commentaire)})</small>` : "")).join(" · ")}</span></p>`,
+        );
+      }
+      if (repete) {
+        lignes.push(
+          `<p class="contexte-ligne contexte-alerte"><span class="contexte-quoi">⚠ Répétition</span><span>Cette séance reprend ${r.communs} exercices de celle du ${esc(formaterCourt(r.avec.date))}. Volontaire ? Sinon, la bibliothèque marque ce qui n'a jamais été fait avec ce groupe.</span></p>`,
+        );
+      }
+      if (!lignes.length) {
+        el.hidden = true;
+        el.innerHTML = "";
         return;
       }
-      const revoir = aRevoir(faites, 2);
-      const bilan = derniere.bilan && derniere.bilan.fait ? derniere.bilan : null;
-      el.innerHTML = cycleHtml + `
-        <details class="derniere">
-          <summary><strong>Dernière fois avec ce groupe</strong> — ${esc(formaterCourt(derniere.date))}${derniere.titre ? ` · ${esc(derniere.titre)}` : ""}${bilan && bilan.note ? ` · ${"★".repeat(bilan.note)}` : ""}${bilan ? "" : " · sans bilan"}</summary>
-          <div class="derniere-corps">
-            <p><strong>Fait :</strong> ${derniere.blocs.map((b) => esc(b.titre)).join(" · ") || "—"}</p>
-            ${bilan && bilan.retenir ? `<p><strong>À retenir :</strong> ${esc(bilan.retenir)}</p>` : ""}
-            ${revoir.length ? `<p><strong>À revoir :</strong> ${revoir.map((r) => esc(r.titre) + (r.commentaire ? ` <small>(${esc(r.commentaire)})</small>` : "")).join(" · ")}</p>` : ""}
-            <p><a href="#/groupe/${se.groupeId}">Voir tout l'historique du groupe →</a></p>
-          </div>
-        </details>`;
+      el.innerHTML = lignes.join("") + `<p class="contexte-pied"><a href="#/groupe/${se.groupeId}">Tout l'historique de ${esc(groupe && groupe.nom ? groupe.nom : "ce groupe")} →</a></p>`;
+      el.hidden = false;
+    }
+
+    /* La ligne de résumé des réglages, quand ils sont repliés. */
+    function peindreResume() {
+      const g = se.groupeId ? Store.groupes.get(se.groupeId) : null;
+      sec.querySelector("[data-resume]").textContent =
+        [se.date ? formaterDate(se.date, { year: undefined }) : "sans date", se.heure, g && g.nom, se.lieu, `${se.duree_glace} min de glace`]
+          .filter(Boolean)
+          .join(" · ");
     }
 
     /* ── La bibliothèque ────────────────────────────────────── */
@@ -392,10 +442,13 @@ export const Seance = {
     }
 
     function ajouterAuDeroule(ex) {
-      se.blocs.push(blocDepuisExercice(ex));
+      const ou = insertion === null ? se.blocs.length : insertion;
+      se.blocs.splice(ou, 0, blocDepuisExercice(ex));
+      // le point d'insertion avance : on enchaîne deux ajouts d'affilée
+      if (insertion !== null) insertion = ou + 1;
       peindreBlocs();
       toucher();
-      statut(`« ${ex.nom} » ajouté au déroulé.`);
+      statut(`« ${ex.nom} » ajouté${ou < se.blocs.length - 1 ? ` en ${ou + 1}ᵉ position` : " au déroulé"}.`);
     }
 
     bibliEl.addEventListener("click", async (e) => {
@@ -450,15 +503,19 @@ export const Seance = {
           const g = se.groupeId ? Store.groupes.get(se.groupeId) : null;
           se.groupe = g ? g.nom : "";
         }
-        peindreDerniere();
+        peindreContexte();
         peindreBibli();
-        peindreRepetition();
       } else se[c.name] = c.value;
       if (c.name === "duree_glace" || c.name === "heure") peindreTemps();
-      if (c.name === "date") peindreDerniere();
+      if (c.name === "date") peindreContexte();
+      peindreResume();
       toucher();
     });
     sec.querySelector(".seance-champs").addEventListener("submit", (e) => e.preventDefault());
+    sec.querySelector(".objectif-champ input").addEventListener("input", (e) => {
+      se.objectif = e.target.value;
+      toucher();
+    });
     sec.querySelector("textarea[name='notes']").addEventListener("input", (e) => {
       se.notes = e.target.value;
       toucher();
@@ -498,9 +555,9 @@ export const Seance = {
           se.groupe = g.nom;
           Store.seances.sauver(se);
           sec.querySelector("select[name=groupeId]").innerHTML = optionsGroupes(se);
-          peindreDerniere();
+          peindreContexte();
           peindreBibli();
-          peindreRepetition();
+          peindreResume();
           statut(`Séance déplacée dans « ${g.nom} ».`);
         } else {
           const copie = Store.seances.dupliquer(se.id);
@@ -545,7 +602,8 @@ export const Seance = {
 
     peindreBlocs();
     peindreBibli();
-    peindreDerniere();
+    peindreContexte();
+    peindreResume();
 
     return {
       detruire() {

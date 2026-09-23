@@ -2837,3 +2837,160 @@ button.lien:hover {
   padding: var(--e1) 0;
   font-size: 0.9rem;
 }
+
+/* ── Les trois moments d'une séance ───────────────────────────
+   Préparer, mener, débriefer : nommer les trois et les montrer
+   ensemble, c'est ce qui remplace les six sorties concurrentes d'une
+   même séance par un parcours qu'un coach reconnaît. */
+
+.moments {
+  display: flex;
+  gap: var(--e1);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--e4);
+}
+.moments > * {
+  padding: var(--e2) var(--e3);
+  border-bottom: 2px solid transparent;
+  color: var(--ink-faint);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color var(--dur-court) var(--sortie), border-color var(--dur-court) var(--sortie);
+}
+.moments a:hover {
+  color: var(--ink);
+}
+.moments .actif {
+  color: var(--accent-ink);
+  border-bottom-color: var(--accent);
+}
+
+/* Six champs qu'on remplit une fois et qui occupaient tout le premier
+   écran, devant le déroulé — c'est-à-dire devant le travail. */
+.seance-reglages {
+  margin-bottom: var(--e3);
+}
+.seance-reglages > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  cursor: pointer;
+  list-style: none;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  padding: var(--e2) 0;
+  border-bottom: 1px dashed var(--rule);
+}
+.seance-reglages > summary::-webkit-details-marker {
+  display: none;
+}
+.seance-reglages > summary:hover {
+  color: var(--ink);
+}
+.seance-reglages .crayon {
+  color: var(--ink-faint);
+}
+.seance-reglages[open] > summary {
+  margin-bottom: var(--e3);
+}
+.seance-reglages[open] .crayon::after {
+  content: " replier";
+  font-size: 0.8rem;
+}
+.objectif-champ {
+  display: block;
+  margin-bottom: var(--e4);
+}
+.objectif-champ input {
+  width: 100%;
+}
+
+/* Une bande, en haut, pour tout ce que le groupe apprend sur cette
+   séance-là : il y en avait trois, plus une quatrième sur la fiche du
+   groupe, et on ne savait pas laquelle faisait autorité. */
+.contexte {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
+  padding: var(--e3);
+  margin-bottom: var(--e4);
+  font-size: 0.9rem;
+}
+.contexte-ligne {
+  display: flex;
+  gap: var(--e3);
+  align-items: baseline;
+  margin: 0 0 var(--e2);
+}
+.contexte-quoi {
+  flex: none;
+  width: 8.5em;
+  color: var(--ink-faint);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.contexte-revoir .contexte-quoi {
+  color: var(--warning);
+}
+.contexte-alerte .contexte-quoi {
+  color: var(--danger);
+}
+.contexte-pied {
+  margin: 0;
+  padding-left: calc(8.5em + var(--e3));
+  font-size: 0.85rem;
+}
+@media (max-width: 640px) {
+  .contexte-ligne {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .contexte-quoi {
+    width: auto;
+  }
+  .contexte-pied {
+    padding-left: 0;
+  }
+}
+
+/* Le point d'insertion : le « + » de la bibliothèque ajoutait toujours
+   à la fin, et glisser un exercice au milieu demandait de l'ajouter
+   puis de le faire remonter à coups de flèche. */
+.blocs .entre {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  display: block;
+  height: 10px;
+  position: relative;
+}
+.blocs .entre button {
+  position: absolute;
+  inset: -4px 0 auto 0;
+  width: 100%;
+  min-height: 18px;
+  border: none;
+  border-top: 1px dashed transparent;
+  background: none;
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+  justify-content: center;
+  opacity: 0;
+  border-radius: 0;
+  transition: opacity var(--dur-court) var(--sortie);
+}
+.blocs:hover .entre button,
+.blocs .entre button:focus-visible {
+  opacity: 1;
+  border-top-color: var(--rule-controle);
+}
+.blocs .entre.vise button {
+  opacity: 1;
+  color: var(--accent-ink);
+  border-top: 2px solid var(--accent);
+  font-weight: 600;
+}

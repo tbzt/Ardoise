@@ -25,7 +25,7 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/groupe.js     la fiche d'un groupe : historique, équilibre, conseils, bilans
                    js/widgets/exercices.js  la bibliothèque : rayons par catégorie, filtres du groupe
                    js/widgets/exercice.js   la fiche en LECTURE ; l'éditeur derrière /modifier
-                   js/widgets/seance.js     le déroulé (blocs, frise, bibliothèque latérale)
+                   js/widgets/seance.js     PRÉPARER : réglages repliés, bande de contexte, déroulé, bibliothèque
                    js/widgets/bordglace.js  la séance vue du banc : matériel, points clés, bloc en cours
                    js/widgets/impression.js la feuille de séance imprimable
                    js/widgets/feuillepdf.js la même feuille en PDF (schémas rendus en JPEG via canvas)
@@ -185,6 +185,8 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **Pas de `onclick` dans les gabarits** : délégation d'événements sur `data-act`, `data-outil`, `data-prop`.
 - **Les écrans rendent des chaînes** (`innerHTML`) et échappent tout texte utilisateur avec `esc()`. Les identifiants internes ne sont jamais saisis par l'utilisateur.
 - **L'accueil est « Séances ».** On ouvre Ardoise pour préparer ou mener sa prochaine séance ; la bibliothèque est une ressource où l'on pioche, pas une porte d'entrée.
+- **Une séance a trois moments** — préparer, mener, débriefer — et l'écran les nomme. Le reste (feuille, PDF, carte de poche, fiche atelier) est une sortie, pas un moment : ça vit dans un menu « Exporter ».
+- **Une information du groupe ne s'affiche qu'à un endroit.** La bande de contexte d'une séance réunit cycle, dernière fois, à revoir et répétition ; il y en avait quatre affichages concurrents et on ne savait pas lequel faisait autorité.
 - **Lire n'est pas modifier.** Une fiche s'ouvre en lecture ; l'édition a sa propre adresse, si bien que le bouton « précédent » du navigateur en sort, et qu'elle peut s'annuler.
 - **Une vignette annonce son format** (`vignette-entiere` / `vignette-moitie`). C'est ce qui permet de sauter le rendu des schémas hors champ sans que la page s'allonge sous le pouce pendant qu'on descend.
 - **Un écran renvoie `{ detruire() }`** ; le routeur l'appelle avant d'en monter un autre (désabonnement du Store, sauvegarde en attente, écouteurs clavier).
