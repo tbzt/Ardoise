@@ -3295,3 +3295,143 @@ body[data-ecran="glace"] main {
     max-width: 420px;
   }
 }
+
+/* ── La mémoire d'un groupe, rangée par question ──────────────
+   Trois onglets, trois questions. Le troisième — « ce qu'on n'a pas
+   fait » — est le seul qui ait changé de nature : la matrice des
+   techniques était un tableau de bord, elle devient un point de départ
+   où chaque manque porte le geste qui le comble. */
+
+.manques {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.manques li {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  flex-wrap: wrap;
+  padding: var(--e2) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.manques li > span {
+  flex: 1;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.familles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--e4);
+  margin-bottom: var(--e3);
+}
+.famille h4 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--e2);
+  margin: 0 0 var(--e1);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+.jauge {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rule);
+  overflow: hidden;
+  margin-bottom: var(--e2);
+}
+.jauge i {
+  display: block;
+  height: 100%;
+  background: var(--ok);
+  transition: width var(--dur-long) var(--sortie);
+}
+.manquantes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.88rem;
+}
+.manquantes li {
+  padding: 2px 0;
+  color: var(--ink-soft);
+}
+.manquantes li.avance {
+  color: var(--ink-faint);
+}
+.tout-vu {
+  color: var(--ok);
+  font-size: 0.88rem;
+}
+
+/* Un cycle sait où il en est : il était une note dans un repli, sans
+   lien avec le travail réel — donc sans moyen de savoir s'il tenait. */
+.cycle > summary .cycle-avance {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  margin-left: auto;
+}
+.cycle > summary .cycle-avance .jauge {
+  width: 60px;
+  margin: 0;
+}
+.visees {
+  list-style: none;
+  margin: 0 0 var(--e3);
+  padding: 0;
+  font-size: 0.9rem;
+}
+.visees li {
+  padding: 1px 0;
+}
+.visees li.vu {
+  color: var(--ok);
+}
+.visees li.pas-vu {
+  color: var(--ink-faint);
+}
+
+.groupe-section > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.groupe-section > summary::-webkit-details-marker {
+  display: none;
+}
+.groupe-section > summary h2 {
+  display: inline-flex;
+}
+.groupe-section > summary h2::after {
+  content: " ▸";
+  color: var(--ink-faint);
+}
+.groupe-section[open] > summary h2::after {
+  content: " ▾";
+}
+.groupe-section .tri {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+.carte-groupe .carte-cycle {
+  font-size: 0.85rem;
+  color: var(--accent-ink);
+  margin-bottom: var(--e1);
+}
+.carte-groupe .carte-revoir {
+  font-size: 0.85rem;
+  color: var(--warning);
+  margin: var(--e2) 0 0;
+}
+.carte-groupe .objectif {
+  -webkit-line-clamp: 3;
+}

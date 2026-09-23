@@ -2,7 +2,7 @@
 import { Store } from "../core/store.js";
 import { esc, formaterDate, formaterDuree } from "../core/dom.js";
 import { NIVEAUX } from "../data/catalogue.js";
-import { seancesDuGroupe, seancesFaites, repartition } from "../core/analyse.js";
+import { seancesDuGroupe, seancesFaites, repartition, estFaite, aRevoir, cycleCourant, formaterCourt } from "../core/analyse.js";
 
 export const Groupes = {
   afficher(main) {
@@ -41,15 +41,35 @@ export const Groupes = {
   },
 };
 
+/* La carte portait le nom, trois chiffres et la date de la prochaine
+   séance : de quoi savoir que le groupe existe, pas de quoi décider
+   quoi que ce soit. Elle porte maintenant ce qui déclenche un geste —
+   la prochaine séance et son état, le cycle en cours, et ce que le
+   dernier bilan a laissé à revoir. */
 function carte(g) {
   const toutes = seancesDuGroupe(g.id);
-  const faites = seancesFaites(g.id);
+  const faites = toutes.filter(estFaite);
   const { total } = repartition(faites);
-  const prochaine = toutes.find((s) => !faites.includes(s));
+  const prochaine = toutes.filter((s) => !estFaite(s)).sort((a, b) => (a.date || "").localeCompare(b.date || ""))[0];
+  const cycle = cycleCourant(g);
+  const revoir = aRevoir(faites, 2);
+  const sansBilan = faites.filter((s) => !(s.bilan && s.bilan.fait)).length;
+
   return `
-    <a class="carte carte-seance" href="#/groupe/${g.id}">
-      <h3>${esc(g.nom) || "<em>Groupe sans nom</em>"}</h3>
-      <p class="meta"><span>${esc(NIVEAUX[g.niveau] || "")}</span><span>${faites.length} séance${faites.length > 1 ? "s" : ""} faite${faites.length > 1 ? "s" : ""}</span><span>${formaterDuree(total)} de glace</span></p>
-      ${prochaine ? `<p class="objectif">Prochaine : ${esc(formaterDate(prochaine.date))}${prochaine.titre ? ` — ${esc(prochaine.titre)}` : ""}</p>` : g.description ? `<p class="objectif">${esc(g.description)}</p>` : ""}
-    </a>`;
+    <article class="carte carte-seance carte-groupe">
+      <h3><a class="couverture" href="#/groupe/${g.id}">${esc(g.nom) || "<em>Groupe sans nom</em>"}</a></h3>
+      <p class="meta">
+        <span>${esc(NIVEAUX[g.niveau] || "")}</span>
+        <span>${faites.length} séance${faites.length > 1 ? "s" : ""} faite${faites.length > 1 ? "s" : ""}</span>
+        <span>${formaterDuree(total)} de glace</span>
+      </p>
+      ${cycle ? `<p class="carte-cycle">Cycle « ${esc(cycle.nom || "en cours")} » jusqu'au ${esc(formaterCourt(cycle.fin))}</p>` : ""}
+      ${
+        prochaine
+          ? `<p class="objectif"><strong>Prochaine :</strong> ${esc(formaterDate(prochaine.date, { year: undefined }))}${prochaine.titre ? ` — ${esc(prochaine.titre)}` : ""} <span class="etiquette ${prochaine.blocs.length ? "etat-ok" : "etat-vide"}">${prochaine.blocs.length ? "prête" : "déroulé vide"}</span></p>`
+          : `<p class="objectif">Aucune séance prévue.</p>`
+      }
+      ${revoir.length ? `<p class="carte-revoir">↻ À revoir : ${revoir.slice(0, 2).map((r) => esc(r.titre)).join(" · ")}</p>` : ""}
+      ${sansBilan ? `<p class="carte-pied"><a class="carte-lien" href="#/groupe/${g.id}">${sansBilan} bilan${sansBilan > 1 ? "s" : ""} à faire →</a></p>` : ""}
+    </article>`;
 }

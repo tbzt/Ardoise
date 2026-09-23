@@ -22,7 +22,7 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
 4. Orchestration   js/app.js               démarrage, routage par fragment d'URL, barre
 3. Écrans          js/widgets/seances.js    l'ACCUEIL : à venir, passées, et ce qui reste à faire
                    js/widgets/groupes.js    la liste des groupes
-                   js/widgets/groupe.js     la fiche d'un groupe : historique, équilibre, conseils, bilans
+                   js/widgets/groupe.js     PROGRESSER : ce qui vient, ce qu'on a fait, ce qu'on n'a pas fait
                    js/widgets/exercices.js  la bibliothèque : rayons par catégorie, filtres du groupe
                    js/widgets/exercice.js   la fiche en LECTURE ; l'éditeur derrière /modifier
                    js/widgets/seance.js     PRÉPARER : réglages repliés, bande de contexte, déroulé, bibliothèque
@@ -186,6 +186,8 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **Pas de `onclick` dans les gabarits** : délégation d'événements sur `data-act`, `data-outil`, `data-prop`.
 - **Les écrans rendent des chaînes** (`innerHTML`) et échappent tout texte utilisateur avec `esc()`. Les identifiants internes ne sont jamais saisis par l'utilisateur.
 - **L'accueil est « Séances ».** On ouvre Ardoise pour préparer ou mener sa prochaine séance ; la bibliothèque est une ressource où l'on pioche, pas une porte d'entrée.
+- **Un manque porte le geste qui le comble.** La matrice des techniques était un tableau de bord ; elle mène maintenant à la bibliothèque filtrée ou à la création d'un cycle. Un constat qu'on ne peut pas traiter d'un clic n'a rien à faire à l'écran.
+- **Un chiffre trop mince ne s'affiche pas.** L'équilibre se tait sous trois séances faites : une moyenne sur une séance décrit cette séance et la présente comme une tendance. Mieux vaut dire pourquoi on se tait.
 - **« Entraîner » est un mode, pas un écran.** Il masque la barre de l'appli (`body[data-ecran="glace"]`), un bloc occupe l'écran entier, et tout ce qui s'y actionne fait `--tap` — on le tient d'une main gantée.
 - **L'horloge est un conseil, jamais une autorité.** Une séance ne se déroule pas à l'heure ; le rail montre à la fois le bloc qu'on regarde et celui où l'horloge en est, et une bande propose de se recaler. Le coach reste maître de la position.
 - **Une séance a trois moments** — préparer, mener, débriefer — et l'écran les nomme. Le reste (feuille, PDF, carte de poche, fiche atelier) est une sortie, pas un moment : ça vit dans un menu « Exporter ».
