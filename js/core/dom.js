@@ -33,6 +33,26 @@ export function formaterDate(iso, opts = {}) {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
+/* La date du jour en ISO. Elle était réécrite à l'identique dans
+   quatre fichiers (analyse, glace, bilan, seance) : quatre endroits
+   où un fuseau mal choisi se corrigerait trois fois sur quatre. */
+export function aujourdhuiIso() {
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+/* « Mar. 30 sept. » — la date en colonne vertébrale de l'écran
+   Séances : elle y porte la structure, et doit tenir en deux mots
+   sans que la ligne se replie sur un téléphone. */
+export function formaterJour(iso) {
+  if (!iso) return "";
+  const [a, m, j] = iso.split("-").map(Number);
+  if (!a || !m || !j) return iso;
+  const t = new Date(a, m - 1, j).toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
 /* 75 → "1 h 15", 45 → "45 min". */
 export function formaterDuree(min) {
   min = Math.round(Number(min) || 0);

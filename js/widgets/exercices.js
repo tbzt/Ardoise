@@ -16,7 +16,7 @@
 
 import { Store } from "../core/store.js";
 import { esc, formaterDuree } from "../core/dom.js";
-import { chip, libelleNiveau, vignette, barreFiltres, filtrer, trier } from "./communs.js";
+import { pastille, mention, libelleNiveau, vignette, barreFiltres, filtrer, trier } from "./communs.js";
 import { CATEGORIES } from "../data/catalogue.js";
 import { seancesFaites, usageExercices, aRevoir, libelleUsage } from "../core/analyse.js";
 
@@ -36,9 +36,9 @@ export const Exercices = {
       const groupes = Store.groupes.tous();
       sec.innerHTML = `
         <div class="entete">
-          <h1>Bibliothèque <span class="compte">${tous.length}</span></h1>
+          <h1>Bibliothèque ${mention(tous.length)}</h1>
           <span class="spacer"></span>
-          <button type="button" class="primaire" data-act="nouveau">+ Nouvel exercice</button>
+          <button type="button" class="primaire" data-act="nouveau">Nouvel exercice</button>
         </div>
         ${barreFiltres(filtre)}
         ${
@@ -50,10 +50,10 @@ export const Exercices = {
                      ${groupes.map((g) => `<option value="${g.id}"${filtre.groupeId === g.id ? " selected" : ""}>${esc(g.nom || "Groupe sans nom")}</option>`).join("")}
                    </select>
                  </label>
-                 <div class="chips" role="group" aria-label="Usage">
-                   <button type="button" class="chip ${filtre.usage === "" ? "actif" : ""}" data-usage="" style="--c:#5a6b7a">Tous</button>
-                   <button type="button" class="chip ${filtre.usage === "jamais" ? "actif" : ""}" data-usage="jamais" style="--c:#5a6b7a">Jamais fait</button>
-                   <button type="button" class="chip ${filtre.usage === "revoir" ? "actif" : ""}" data-usage="revoir" style="--c:#c62828">À revoir</button>
+                 <div class="jeu" role="group" aria-label="Usage">
+                   <button type="button" class="${filtre.usage === "" ? "actif" : ""}" data-usage="">Tous</button>
+                   <button type="button" class="${filtre.usage === "jamais" ? "actif" : ""}" data-usage="jamais">Jamais fait</button>
+                   <button type="button" class="${filtre.usage === "revoir" ? "actif" : ""}" data-usage="revoir">À revoir</button>
                  </div>
                </div>`
             : ""
@@ -91,9 +91,9 @@ export const Exercices = {
           ([cat, exos]) => `
         <section class="rayon">
           <h2 class="tete-rayon" style="--c:${(CATEGORIES[cat] || {}).couleur || "#888"}">
-            ${esc((CATEGORIES[cat] || {}).libelle || cat)} <span class="compte">${exos.length}</span>
+            ${esc((CATEGORIES[cat] || {}).libelle || cat)} ${mention(exos.length)}
           </h2>
-          <div class="cartes">${exos.map((e) => carte(e, contexte)).join("")}</div>
+          <div class="planche">${exos.map((e) => carte(e, contexte)).join("")}</div>
         </section>`,
         )
         .join("");
@@ -120,11 +120,11 @@ export const Exercices = {
         location.hash = `#/exercice/${ex.id}/modifier`;
       } else if (b.dataset.cat !== undefined) {
         filtre.categorie = b.dataset.cat;
-        sec.querySelectorAll(".filtres .chip[data-cat]").forEach((c) => c.classList.toggle("actif", c.dataset.cat === filtre.categorie));
+        sec.querySelectorAll(".filtres .jeu [data-cat]").forEach((c) => c.classList.toggle("actif", c.dataset.cat === filtre.categorie));
         rendreListe();
       } else if (b.dataset.usage !== undefined) {
         filtre.usage = b.dataset.usage;
-        sec.querySelectorAll(".chip[data-usage]").forEach((c) => c.classList.toggle("actif", c.dataset.usage === filtre.usage));
+        sec.querySelectorAll("[data-usage]").forEach((c) => c.classList.toggle("actif", c.dataset.usage === filtre.usage));
         rendreListe();
       }
     });
@@ -149,21 +149,22 @@ export const Exercices = {
   },
 };
 
+/* LA PLANCHE-CONTACT. Cent soixante-sept schémas de patinoire
+   dessinés à la main sont l'actif le plus singulier d'Ardoise, et ils
+   étaient des vignettes secondaires posées au-dessus d'un bloc de
+   texte, dans une carte à bordure et ombre. Ici le schéma EST
+   l'objet : plus de cadre, plus d'ombre, la légende dessous. */
 function carte(e, contexte) {
   let indice = "";
   if (contexte) {
     const u = contexte.usage.get(e.id);
     const revoir = contexte.revoir.has(e.id);
-    indice = `<span class="indice ${u ? (u.rang === 0 ? "recent" : "") : "jamais"}">${esc(libelleUsage(u))}${revoir ? " · ↻ à revoir" : ""}</span>`;
+    indice = mention(libelleUsage(u), u ? "" : "attire") + (revoir ? `<span class="sep">·</span>${mention("↻ à revoir", "alerte")}` : "");
   }
   return `
-    <a class="carte" href="#/exercice/${e.id}">
-      ${vignette(e.schema)}
-      <div class="carte-corps">
-        <h3>${esc(e.nom) || "<em>Sans nom</em>"}</h3>
-        <p class="meta">${chip(e.categorie)} <span>${formaterDuree(e.duree)}</span> <span>${esc(libelleNiveau(e.niveau))}</span></p>
-        ${indice ? `<p class="meta">${indice}</p>` : ""}
-        ${e.objectif ? `<p class="objectif">${esc(e.objectif)}</p>` : ""}
-      </div>
+    <a class="planche-vue" href="#/exercice/${e.id}">
+      <div class="vue">${vignette(e.schema)}</div>
+      <h3>${esc(e.nom) || "Sans nom"}</h3>
+      <p class="sous">${pastille(e.categorie)}<span class="sep">·</span>${mention(formaterDuree(e.duree))}<span class="sep">·</span>${mention(libelleNiveau(e.niveau))}${indice ? `<span class="sep">·</span>${indice}` : ""}</p>
     </a>`;
 }

@@ -13,15 +13,9 @@
    contexte de la prochaine séance, et le brouillon. Un bilan non rempli
    est la seule chose qui rende l'appli amnésique. */
 
-import { Store, bilanVierge } from "../core/store.js";
-import { esc, debounce, statut, formaterDate } from "../core/dom.js";
-import { chip } from "./communs.js";
-
-function aujourdhuiIso() {
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
-}
+import { Store, bilanVierge, estPause } from "../core/store.js";
+import { esc, debounce, statut, formaterDate, aujourdhuiIso } from "../core/dom.js";
+import { pastille, mention } from "./communs.js";
 
 export const Bilan = {
   afficher(main, id) {
@@ -35,7 +29,7 @@ export const Bilan = {
     }
     if (!se.bilan) se.bilan = bilanVierge();
 
-    const lignes = se.blocs.map((b) => ({ b, ex: b.exerciceId ? Store.exercices.get(b.exerciceId) : null }));
+    const lignes = se.blocs.map((b) => ({ b, ex: b.exerciceId ? Store.exercices.get(b.exerciceId) : null, pause: estPause(b) }));
     const de = (blocId) => {
       if (!se.bilan.blocs[blocId]) se.bilan.blocs[blocId] = { fait: true, note: null, commentaire: "" };
       return se.bilan.blocs[blocId];
@@ -73,12 +67,18 @@ export const Bilan = {
       <h2 class="mini-titre">Bloc par bloc <small>décochez ce qui n'a pas été fait</small></h2>
       <ol class="bilan-blocs">
         ${lignes
-          .map(
-            ({ b, ex }, i) => `
+          .map(({ b, ex, pause }, i) =>
+            /* Une pause garde sa place et son numéro — le bilan doit se
+               lire dans l'ordre de la séance — mais ne porte aucun
+               contrôle : il n'y a rien à y juger. */
+            pause
+              ? `
+          <li class="bilan-pause"><span>${i + 1}. ${esc(b.titre || "Pause")}</span>${mention(`${b.duree} min`)}</li>`
+              : `
           <li data-bloc="${b.id}">
             <div class="bilan-titre">
               <label class="bilan-fait"><input type="checkbox" name="fait" ${de(b.id).fait === false ? "" : "checked"}> <strong>${i + 1}. ${esc(b.titre || (ex && ex.nom) || "")}</strong></label>
-              ${ex ? chip(ex.categorie) : ""}
+              ${ex ? pastille(ex.categorie) : ""}
             </div>
             <div class="bilan-notes" role="group" aria-label="Comment ça s'est passé">
               <button type="button" data-note="1" class="${de(b.id).note === 1 ? "actif" : ""}">À revoir</button>

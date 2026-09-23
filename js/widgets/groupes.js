@@ -1,7 +1,8 @@
 /* Groupes — la liste des équipes et sections qu'on entraîne. */
 import { Store } from "../core/store.js";
-import { esc, formaterDate, formaterDuree } from "../core/dom.js";
+import { esc, formaterJour, formaterDuree } from "../core/dom.js";
 import { NIVEAUX } from "../data/catalogue.js";
+import { mention } from "./communs.js";
 import { seancesDuGroupe, seancesFaites, repartition, estFaite, aRevoir, cycleCourant, formaterCourt } from "../core/analyse.js";
 
 export const Groupes = {
@@ -15,14 +16,14 @@ export const Groupes = {
       const sansGroupe = Store.seances.toutes().filter((s) => !s.groupeId).length;
       sec.innerHTML = `
         <div class="entete">
-          <h1>Groupes <span class="compte">${tous.length}</span></h1>
+          <h1>Groupes ${mention(tous.length)}</h1>
           <span class="spacer"></span>
-          <button type="button" class="primaire" data-act="nouveau">+ Nouveau groupe</button>
+          <button type="button" class="primaire" data-act="nouveau">Nouveau groupe</button>
         </div>
         ${
           tous.length === 0
             ? `<p class="vide">Aucun groupe. Un groupe, c'est une équipe ou une section : ses séances s'y rattachent, et l'appli garde l'historique de ce que vous avez fait ensemble.</p>`
-            : `<div class="cartes cartes-seances">${tous.map(carte).join("")}</div>`
+            : `<div class="spine">${tous.map(rangee).join("")}</div>`
         }
         ${sansGroupe ? `<p class="avis">${sansGroupe} séance${sansGroupe > 1 ? "s" : ""} sans groupe : ouvrez-les pour les rattacher, l'historique sera plus juste.</p>` : ""}`;
     };
@@ -43,10 +44,14 @@ export const Groupes = {
 
 /* La carte portait le nom, trois chiffres et la date de la prochaine
    séance : de quoi savoir que le groupe existe, pas de quoi décider
-   quoi que ce soit. Elle porte maintenant ce qui déclenche un geste —
-   la prochaine séance et son état, le cycle en cours, et ce que le
-   dernier bilan a laissé à revoir. */
-function carte(g) {
+   quoi que ce soit. La rangée porte maintenant ce qui déclenche un
+   geste — la prochaine séance et son état, le cycle en cours, et ce
+   que le dernier bilan a laissé à revoir.
+
+   Même colonne vertébrale que l'écran Séances : une poignée d'objets
+   homogènes n'est pas un catalogue à parcourir. Ici c'est le NOM qui
+   porte la structure, puisqu'un groupe n'a pas de date. */
+function rangee(g) {
   const toutes = seancesDuGroupe(g.id);
   const faites = toutes.filter(estFaite);
   const { total } = repartition(faites);
@@ -55,21 +60,31 @@ function carte(g) {
   const revoir = aRevoir(faites, 2);
   const sansBilan = faites.filter((s) => !(s.bilan && s.bilan.fait)).length;
 
+  const meta = [
+    NIVEAUX[g.niveau] || "",
+    `${faites.length} séance${faites.length > 1 ? "s" : ""} faite${faites.length > 1 ? "s" : ""}`,
+    `${formaterDuree(total)} de glace`,
+  ]
+    .filter(Boolean)
+    .map((x) => mention(x))
+    .join(`<span class="sep">·</span>`);
+
   return `
-    <article class="carte carte-seance carte-groupe">
-      <h3><a class="couverture" href="#/groupe/${g.id}">${esc(g.nom) || "<em>Groupe sans nom</em>"}</a></h3>
-      <p class="meta">
-        <span>${esc(NIVEAUX[g.niveau] || "")}</span>
-        <span>${faites.length} séance${faites.length > 1 ? "s" : ""} faite${faites.length > 1 ? "s" : ""}</span>
-        <span>${formaterDuree(total)} de glace</span>
-      </p>
-      ${cycle ? `<p class="carte-cycle">Cycle « ${esc(cycle.nom || "en cours")} » jusqu'au ${esc(formaterCourt(cycle.fin))}</p>` : ""}
-      ${
-        prochaine
-          ? `<p class="objectif"><strong>Prochaine :</strong> ${esc(formaterDate(prochaine.date, { year: undefined }))}${prochaine.titre ? ` — ${esc(prochaine.titre)}` : ""} <span class="etiquette ${prochaine.blocs.length ? "etat-ok" : "etat-vide"}">${prochaine.blocs.length ? "prête" : "déroulé vide"}</span></p>`
-          : `<p class="objectif">Aucune séance prévue.</p>`
-      }
-      ${revoir.length ? `<p class="carte-revoir">↻ À revoir : ${revoir.slice(0, 2).map((r) => esc(r.titre)).join(" · ")}</p>` : ""}
-      ${sansBilan ? `<p class="carte-pied"><a class="carte-lien" href="#/groupe/${g.id}">${sansBilan} bilan${sansBilan > 1 ? "s" : ""} à faire →</a></p>` : ""}
+    <article class="rang rang-groupe">
+      <p class="quand"><span class="jour">${esc(g.nom) || "Sans nom"}</span></p>
+      <div class="quoi">
+        <p class="ligne-meta">${meta}</p>
+        ${
+          prochaine
+            ? `<p class="objectif">Prochaine : ${esc(formaterJour(prochaine.date))}${prochaine.titre ? ` — ${esc(prochaine.titre)}` : ""}<span class="sep">·</span>${prochaine.blocs.length ? mention("prête", "bien") : mention("déroulé vide", "attire")}</p>`
+            : `<p class="objectif">${mention("aucune séance prévue", "attire")}</p>`
+        }
+        ${cycle ? `<p class="objectif">${mention(`Cycle « ${cycle.nom || "en cours"} » jusqu'au ${formaterCourt(cycle.fin)}`)}</p>` : ""}
+        ${revoir.length ? `<p class="objectif">${mention("↻ À revoir", "alerte")} ${revoir.slice(0, 2).map((r) => esc(r.titre)).join(" · ")}</p>` : ""}
+        <p class="gestes">
+          <a class="lien" href="#/groupe/${g.id}">Ouvrir le groupe</a>
+          ${sansBilan ? `<a class="lien" href="#/groupe/${g.id}">${sansBilan} bilan${sansBilan > 1 ? "s" : ""} à faire</a>` : ""}
+        </p>
+      </div>
     </article>`;
 }

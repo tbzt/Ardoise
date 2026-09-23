@@ -26,6 +26,24 @@
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
+  /* ── L'échelle typographique ──────────────────────────────────
+     Six crans, deux graisses. Il y en avait vingt-trois, dont cinq
+     dans une bande de douze pour cent (0.85 · 0.88 · 0.9 · 0.92 ·
+     0.95rem) : indiscernables à l'œil, mais chacune était une
+     décision à reprendre. La hiérarchie se fait ICI, par la taille
+     et la graisse — pas par une boîte de plus.
+
+     Deux modes redéfinissent l'escalier plus bas plutôt que
+     d'écrire leurs propres tailles : le bord de la glace, qu'on
+     lit debout à bout de bras, et la feuille imprimée, qui est du
+     papier et non un écran. Un seul vocabulaire, trois densités. */
+  --t-titre: 1.5rem;
+  --t-section: 1.125rem;
+  --t-corps: 1rem;
+  --t-second: 0.875rem;
+  --t-mention: 0.8125rem;
+  --t-micro: 0.75rem;
+
   --rayon: 8px;
   --rayon-petit: 5px;
   --e1: 4px;
@@ -164,13 +182,13 @@ h3 {
   letter-spacing: -0.01em;
 }
 h1 {
-  font-size: 1.5rem;
+  font-size: var(--t-titre);
 }
 h2 {
-  font-size: 1.1rem;
+  font-size: var(--t-section);
 }
 h3 {
-  font-size: 1rem;
+  font-size: var(--t-corps);
 }
 a {
   color: var(--accent);
@@ -207,7 +225,7 @@ small {
 button,
 .bouton {
   font: inherit;
-  font-size: 0.9rem;
+  font-size: var(--t-second);
   color: var(--ink);
   background: var(--surface);
   border: 1px solid var(--rule-controle);
@@ -251,15 +269,6 @@ button:active:not(:disabled),
 .bouton.primaire:hover {
   filter: brightness(1.1);
   color: #fff;
-}
-.carte-lien {
-  position: relative;
-  font-weight: 600;
-  font-size: 0.85rem;
-  text-decoration: none;
-}
-.carte-lien:hover {
-  text-decoration: underline;
 }
 button:disabled {
   opacity: 0.45;
@@ -317,7 +326,7 @@ textarea {
 }
 label {
   display: block;
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   font-weight: 600;
   color: var(--ink-soft);
   margin-bottom: var(--e3);
@@ -327,7 +336,7 @@ label > select,
 label > textarea {
   margin-top: var(--e1);
   font-weight: 400;
-  font-size: 0.95rem;
+  font-size: var(--t-second);
   color: var(--ink);
 }
 label small {
@@ -350,7 +359,7 @@ label small {
 }
 .barre .titre {
   font-weight: 800;
-  font-size: 1.15rem;
+  font-size: var(--t-section);
   letter-spacing: -0.02em;
   color: var(--ink);
   text-decoration: none;
@@ -386,7 +395,7 @@ label small {
   background: var(--accent-soft);
 }
 .barre button {
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   min-height: var(--tap-menu);
   padding: 4px 10px;
 }
@@ -396,7 +405,7 @@ label small {
   min-width: var(--tap-menu);
   min-height: var(--tap-menu);
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: var(--t-section);
   line-height: 1;
   padding: 0 10px;
 }
@@ -511,7 +520,7 @@ main {
   margin-bottom: var(--e4);
 }
 .entete .compte {
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   font-weight: 600;
   color: var(--ink-faint);
   background: var(--panel);
@@ -532,7 +541,7 @@ main {
   align-items: center;
   gap: 6px;
   color: var(--ink-soft);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   margin-right: var(--e2);
   transition: color var(--dur-court) var(--sortie);
 }
@@ -554,18 +563,27 @@ main {
   transform: scale(1.35);
 }
 
-.nom {
-  font-size: 1.5rem;
+/* Le titre de la séance est le titre de l'écran : il se lit d'abord,
+   et ne se présente comme un champ qu'au moment où on y touche. */
+/* Le champ de titre d'une séance ou d'un exercice. Il s'appelait
+   « .nom » tout court : une classe d'un mot, sans portée, qui
+   attrapait au passage n'importe quel <span class="nom"> ailleurs
+   dans l'appli. */
+.titre-champ {
+  font-size: var(--t-titre);
   font-weight: 700;
   border: none;
-  border-bottom: 2px solid var(--rule);
+  border-bottom: 2px solid transparent;
   border-radius: 0;
   background: transparent;
   padding: var(--e1) 0;
-  margin-bottom: var(--e4);
+  margin-bottom: var(--e2);
   letter-spacing: -0.01em;
 }
-.nom:focus {
+.titre-champ:hover {
+  border-bottom-color: var(--rule);
+}
+.titre-champ:focus {
   border-bottom-color: var(--accent);
 }
 
@@ -581,83 +599,139 @@ main {
   flex: 1 1 200px;
   max-width: 360px;
 }
-.chips {
-  display: flex;
-  gap: var(--e1);
-  flex-wrap: wrap;
+/* ── Les deux marqueurs ───────────────────────────────────────
+   Il y en avait six : .chip coloré, .etiquette encadrée, .indice,
+   .marqueur, .compte en pastille, .note-*. Six traitements pour
+   six métiers, et jusqu'à huit sur une seule carte de séance.
+   Il en reste deux. */
+
+/* LA PASTILLE — le seul élément coloré de l'interface. Un carré de
+   couleur et un mot : la couleur suffit à distinguer, le mot suffit
+   à nommer. Plus de fond teinté ni de bordure, qui fabriquaient un
+   objet là où il n'y a qu'une étiquette. */
+/* Le sur-titre d'un petit bloc de texte. Il était redéclaré à
+   l'identique sous .fiche-technique, .cycle-corps et .fiche-texte, et
+   n'existait nulle part ailleurs : la quatrième fois, on l'oubliait. */
+.mini-titre {
+  font-size: var(--t-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin: 0 0 2px;
 }
-.chip {
+
+.pastille {
   --c: #5a6b7a;
   display: inline-flex;
   align-items: center;
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1;
-  padding: 4px 9px;
-  min-height: 0;
-  border-radius: 999px;
-  color: var(--c);
-  background: color-mix(in srgb, var(--c) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+  gap: 5px;
+  font-size: var(--t-mention);
+  line-height: 1.2;
+  color: var(--ink-soft);
   white-space: nowrap;
 }
-button.chip {
-  cursor: pointer;
-}
-button.chip:hover {
-  border-color: var(--c);
-  color: var(--c);
-}
-button.chip.actif {
+.pastille::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
   background: var(--c);
-  color: #fff;
-  border-color: var(--c);
 }
 
-/* Cartes */
-.cartes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--e4);
+/* Une pastille qu'on coche : le choix des catégories d'un cycle.
+   C'est le seul endroit où la pastille est un contrôle. */
+.pastilles {
+  display: flex;
+  gap: var(--e1) var(--e3);
+  flex-wrap: wrap;
 }
-.carte {
-  position: relative;
-  display: block;
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--rayon);
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  box-shadow: var(--ombre);
-  transition:
-    transform var(--dur-court) var(--sortie),
-    border-color var(--dur-court) var(--sortie),
-    box-shadow var(--dur-base) var(--sortie);
+label.pastille-case {
+  cursor: pointer;
+  gap: var(--e2);
+  color: var(--ink-faint);
+  padding: 4px 0;
 }
-.carte:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
+label.pastille-case input {
+  width: 14px;
+  height: 14px;
+  min-height: 0;
+  margin: 0;
+  accent-color: var(--c);
 }
-/* Le lien de couverture : il porte le titre, il couvre la carte, et
-   il laisse passer ce qui est posé au-dessus (le lien bord de glace).
-   C'est ce qui remplace le <a> dans un <a>, invalide. */
-.carte .couverture {
-  color: inherit;
-  text-decoration: none;
+label.pastille-case.actif {
+  color: var(--ink);
+  font-weight: 600;
 }
-.carte .couverture::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+
+/* LA MENTION — un état se lit, il ne se décore pas.
+   Le TON ne sert qu'à ce qui appelle un geste. Une mention qui ne
+   demande rien reste grise : c'est ce silence qui rend lisibles les
+   deux ou trois qui parlent. */
+.mention {
+  font-size: var(--t-mention);
+  color: var(--ink-faint);
+  white-space: nowrap;
 }
-.carte .carte-pied {
-  position: relative;
-  margin: var(--e2) 0 0;
+.mention.attire {
+  color: var(--accent);
 }
-.carte-seance:focus-within {
-  border-color: var(--accent);
+.mention.alerte {
+  color: var(--danger);
 }
+.mention.tiede {
+  color: var(--warning);
+}
+.mention.bien {
+  color: var(--ok);
+}
+/* Une mention peut porter une phrase : elle cesse alors d'être un
+   marqueur et doit pouvoir revenir à la ligne. */
+.mention.longue {
+  white-space: normal;
+}
+/* Le point médian qui sépare deux mentions. Il appartient à la
+   ponctuation, pas au contenu : il se tait pour les lecteurs
+   d'écran et ne se sélectionne pas. */
+.sep {
+  color: var(--rule-controle);
+  padding: 0 0.4em;
+  user-select: none;
+}
+
+/* ── Les filtres, en mots ─────────────────────────────────────
+   C'étaient neuf pastilles colorées. La couleur d'une catégorie dit
+   « cet exercice est un exercice de tir » ; elle n'a rien à dire sur
+   le meuble qui sert à filtrer. La couleur reste à l'exercice. */
+.filtres .jeu {
+  display: flex;
+  gap: var(--e1) var(--e3);
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.filtres .jeu button {
+  padding: 4px 0;
+  font-size: var(--t-second);
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  min-height: 0;
+  border-radius: 0;
+  box-shadow: inset 0 -2px 0 transparent;
+  transition: color var(--dur-court) var(--sortie), box-shadow var(--dur-court) var(--sortie);
+}
+.filtres .jeu button:hover {
+  color: var(--ink);
+}
+.filtres .jeu button.actif {
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+/* Les cartes : plus une seule liste n'en pose. Séances et groupes
+   sont des colonnes, la bibliothèque est une planche-contact. */
 /* Cent soixante-sept patinoires en SVG dans une grille : le navigateur
    n'a aucune raison de calculer et de peindre celles qui sont hors de
    l'écran.
@@ -680,39 +754,6 @@ button.chip.actif {
 }
 .vignette-moitie {
   aspect-ratio: 310 / 300;
-}
-.carte-corps {
-  padding: var(--e3) var(--e4) var(--e4);
-}
-.carte h3 {
-  margin-bottom: var(--e1);
-}
-.carte .meta {
-  display: flex;
-  gap: var(--e2);
-  align-items: center;
-  flex-wrap: wrap;
-  color: var(--ink-faint);
-  font-size: 0.85rem;
-  margin-bottom: var(--e2);
-}
-.carte .objectif {
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.carte-seance {
-  padding: var(--e4);
-}
-.carte-seance .date {
-  color: var(--accent-ink);
-  font-weight: 600;
-  font-size: 0.85rem;
-  margin-bottom: var(--e1);
 }
 .vignette {
   background: #f6fafc;
@@ -790,7 +831,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   background: transparent;
   min-height: 30px;
   padding: 4px 9px;
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .editeur .groupe button:hover {
   background: var(--surface);
@@ -823,7 +864,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   min-width: 28px;
   padding: 0;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: var(--t-section);
   line-height: 1;
 }
 .legende {
@@ -834,7 +875,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   border: 1px solid var(--rule);
   border-radius: var(--rayon);
   padding: var(--e3) var(--e5) var(--e3) var(--e4);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   max-width: 100%;
   min-width: 0;
   overflow: hidden;
@@ -853,7 +894,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .legende h4 {
   margin: 0 0 var(--e1);
-  font-size: 0.75rem;
+  font-size: var(--t-micro);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--ink-faint);
@@ -877,14 +918,14 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 .legende-source {
   grid-column: 1 / -1;
   color: var(--ink-faint);
-  font-size: 0.78rem;
+  font-size: var(--t-mention);
   margin: 0;
 }
 .editeur .vue {
   width: auto;
   min-height: 34px;
   padding: 5px 8px;
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .couleurs .couleur {
   width: 26px;
@@ -908,7 +949,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   background: var(--accent-soft);
   border-radius: var(--rayon-petit);
   padding: var(--e2) var(--e3);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .editeur .props label {
   display: inline-flex;
@@ -940,7 +981,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .editeur .aide {
   color: var(--ink-faint);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   margin: 0;
 }
 
@@ -974,9 +1015,16 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 .seance-champs .large {
   grid-column: 1 / -1;
 }
-.seance-corps {
+/* ── L'ÉTABLI ────────────────────────────────────────────────
+   Le déroulé et la bibliothèque, côte à côte. La colonne n'est pas
+   « un meuble parce que les SaaS en ont un » : c'est la palette d'un
+   établi. La remplacer par une recherche au point d'insertion
+   retirerait la possibilité de PARCOURIR — on ne choisirait plus que
+   ce qu'on sait déjà nommer, et un coach qui prépare cherche
+   justement ce à quoi il n'a pas pensé. */
+.etabli {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--e5);
   align-items: start;
 }
@@ -984,71 +1032,124 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   display: flex;
   align-items: baseline;
   gap: var(--e3);
+  flex-wrap: wrap;
+  padding-bottom: var(--e2);
+  border-bottom: 1px solid var(--rule);
   margin-bottom: var(--e2);
 }
 .deroule-entete .total {
   color: var(--ink-faint);
-  font-size: 0.9rem;
+  font-family: var(--mono);
+  font-size: var(--t-mention);
+}
+.deroule-entete .total b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.deroule-entete .total.alerte,
+.deroule-entete .total.alerte b {
+  color: var(--danger);
+}
+
+/* ── La frise ────────────────────────────────────────────────
+   Elle dit les PROPORTIONS et la limite de glace. Le trait de
+   couleur en marge d'un bloc dit la SUITE des catégories. Les deux
+   ne font pas le même métier : aucun arrangement typographique ne
+   remplace une barre proportionnelle, et la légende chiffre enfin ce
+   que la barre montrait sans le dire. */
+.frise-boite {
+  position: relative;
+  margin: var(--e2) 0 var(--e4);
 }
 .frise {
-  position: relative;
   display: flex;
-  height: 12px;
+  height: 10px;
   border-radius: 999px;
   overflow: hidden;
   background: var(--panel);
-  margin-bottom: var(--e3);
 }
-.frise span {
+.frise i {
   display: block;
   height: 100%;
   border-right: 1px solid var(--ground);
+  transition: filter var(--dur-court) var(--sortie);
 }
-.frise .limite {
+.frise i:hover {
+  filter: brightness(1.18);
+}
+.frise-boite .limite {
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: -4px;
+  height: 18px;
   width: 2px;
+  border-radius: 2px;
   background: var(--danger);
 }
+.frise-legende {
+  display: flex;
+  gap: var(--e2) var(--e4);
+  flex-wrap: wrap;
+  margin-top: var(--e2);
+}
+
+/* ── Le déroulé, en document ─────────────────────────────────
+   C'était une grille de six colonnes — poignée, heure, titre,
+   [durée] min, note, quatre boutons — et chaque rangée portait fond,
+   bordure et rayon : neuf boîtes empilées pour ce qui est un
+   document avec un axe de temps. L'heure passe en marge, en chasse
+   fixe ; le titre est du corps de texte ; la note se pose dessous et
+   ne montre son champ qu'au toucher ; la couleur de catégorie
+   devient un trait de marge, qui rejoue la frise verticalement. */
 .blocs {
   list-style: none;
   margin: 0 0 var(--e3);
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--e2);
 }
 .blocs .bloc {
+  position: relative;
   display: grid;
-  grid-template-columns: 22px 52px minmax(0, 1fr) 92px minmax(120px, 1fr) auto;
-  gap: var(--e2);
-  align-items: center;
+  grid-template-columns: 18px 4.25rem minmax(0, 1fr) 5.25rem auto;
+  gap: var(--e2) var(--e3);
+  align-items: baseline;
+  padding: var(--e3) 0 var(--e3) var(--e3);
+  border-radius: var(--rayon-petit);
+}
+.blocs .bloc::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--c, var(--rule));
+}
+.blocs .bloc:hover {
   background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--rayon);
-  padding: var(--e2) var(--e3);
+}
+.blocs .bloc-libre .bloc-titre {
+  font-style: italic;
+  color: var(--ink-soft);
 }
 .blocs .poignee {
   border: none;
   background: transparent;
   color: var(--ink-faint);
   padding: 0;
-  min-height: 30px;
-  min-width: 22px;
+  min-height: 24px;
+  min-width: 18px;
   justify-content: center;
   cursor: grab;
   touch-action: none;
-  font-size: 1rem;
+  font-size: var(--t-mention);
   letter-spacing: -2px;
   user-select: none;
+  align-self: center;
 }
 .blocs .poignee:hover {
   color: var(--accent);
 }
 .blocs .bloc.en-glisse {
-  border-color: var(--accent);
-  box-shadow: var(--ombre);
   background: var(--accent-soft);
   cursor: grabbing;
 }
@@ -1057,17 +1158,15 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .blocs .heure {
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--t-mention);
+  font-weight: 600;
   color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
 }
 .blocs .bloc-titre {
-  display: flex;
-  align-items: center;
-  gap: var(--e2);
-  flex-wrap: wrap;
-  font-weight: 600;
   min-width: 0;
+  font-size: var(--t-corps);
+  line-height: 1.4;
 }
 .blocs .bloc-titre a {
   text-decoration: none;
@@ -1075,112 +1174,365 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .blocs .bloc-titre a:hover {
   color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.blocs .bloc-titre input {
+/* La note est du texte tant qu'on n'y touche pas : le champ
+   n'apparaît qu'au survol et au focus. Une séance de neuf blocs
+   affichait neuf cadres gris portant « Consigne, variante,
+   remarque… » — neuf invitations à remplir un formulaire. */
+.blocs .note {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  padding: 2px 4px;
+  min-height: 0;
+  font-size: var(--t-second);
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--rayon-petit);
+  transition: border-color var(--dur-court) var(--sortie), background var(--dur-court) var(--sortie);
+}
+.blocs .bloc:hover .note,
+.blocs .note:focus {
+  border-color: var(--rule);
+  background: var(--ground);
+}
+.blocs .note:placeholder-shown:not(:focus) {
+  color: var(--ink-faint);
+  opacity: 0;
+}
+.blocs .bloc:hover .note:placeholder-shown,
+.blocs .note:focus {
+  opacity: 1;
+}
+.blocs .titre-libre {
   font-weight: 600;
+  background: transparent;
+  border-color: transparent;
+  padding: 2px 4px;
+  min-height: 0;
+}
+.blocs .titre-libre:hover,
+.blocs .titre-libre:focus {
+  border-color: var(--rule);
+  background: var(--ground);
 }
 .blocs .duree {
   display: inline-flex;
-  align-items: center;
-  gap: var(--e1);
+  align-items: baseline;
+  gap: 3px;
   margin: 0;
+  justify-content: flex-end;
   font-weight: 400;
   color: var(--ink-faint);
-  font-size: 0.85rem;
-}
-.blocs .duree input {
-  width: 56px;
-  padding: 5px 6px;
-  min-height: 30px;
-  text-align: right;
+  font-size: var(--t-mention);
   font-family: var(--mono);
 }
-.blocs .note {
-  min-height: 30px;
-  padding: 5px 8px;
-  font-size: 0.9rem;
+.blocs .duree input {
+  /* Les flèches d'un champ nombre sont du bruit dans un document, et
+     elles mangeaient le second chiffre : « 10 » s'affichait « 1 ». */
+  appearance: textfield;
+  -moz-appearance: textfield;
+  width: 3rem;
+  padding: 2px 4px;
+  min-height: 0;
+  text-align: right;
+  font-family: var(--mono);
+  font-size: var(--t-mention);
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: transparent;
+  border-color: transparent;
 }
+.blocs .duree input::-webkit-outer-spin-button,
+.blocs .duree input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.blocs .duree input:hover,
+.blocs .duree input:focus {
+  border-color: var(--rule);
+  background: var(--ground);
+}
+/* Les commandes sont VISIBLES, seulement discrètes. Un contrôle qui
+   n'apparaît qu'au survol n'existe pas au doigt, et le doigt est
+   l'appareil du bord de la glace. */
 .blocs .bloc-actions {
   display: inline-flex;
-  gap: 2px;
+  gap: 1px;
+  align-self: center;
 }
 .blocs .bloc-actions button {
-  min-height: 28px;
-  min-width: 28px;
+  min-height: 26px;
+  min-width: 26px;
   padding: 2px 6px;
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  border-radius: var(--rayon-petit);
   justify-content: center;
 }
+.blocs .bloc-actions button:hover:not(:disabled) {
+  background: var(--panel);
+  color: var(--ink);
+}
+.blocs .bloc-actions button.danger:hover {
+  color: var(--danger);
+}
+.blocs .bloc-actions .voir[aria-expanded="true"] {
+  color: var(--accent-ink);
+  background: var(--accent-soft);
+}
+
+/* Vérifier un exercice sans quitter le déroulé. Sinon il faut ouvrir
+   la fiche — et perdre l'écran, la frise et la colonne — ou passer
+   par l'aperçu de la bibliothèque, qui ne parle que de ce qui n'est
+   pas encore ajouté. */
+.blocs .bloc-apercu {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  gap: var(--e4);
+  margin: 0 0 var(--e3) var(--e3);
+  padding: var(--e3);
+  background: var(--surface);
+  border-left: 3px solid var(--c, var(--rule));
+  border-radius: 0 var(--rayon) var(--rayon) 0;
+}
+.blocs .bloc-apercu .vue {
+  background: #f6fafc;
+  border-radius: var(--rayon-petit);
+  overflow: hidden;
+}
+.blocs .bloc-apercu .dit {
+  min-width: 0;
+  font-size: var(--t-second);
+}
+.blocs .bloc-apercu ul {
+  margin: 0 0 var(--e3);
+  padding-left: 1.1em;
+}
+.blocs .bloc-apercu li {
+  line-height: 1.45;
+}
+.blocs .bloc-apercu p {
+  margin-bottom: var(--e3);
+}
+.blocs .bloc-apercu .liens {
+  display: flex;
+  gap: var(--e2) var(--e4);
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+/* Le point d'insertion : discret tant qu'on ne survole pas le
+   déroulé, net dès qu'on y est, et nommé quand il est posé. */
+.blocs .entre {
+  height: 0;
+  overflow: visible;
+}
+.blocs .entre button {
+  display: block;
+  width: 100%;
+  margin-left: var(--e3);
+  padding: 1px 0;
+  border: none;
+  background: none;
+  text-align: left;
+  min-height: 0;
+  font-size: var(--t-micro);
+  color: var(--ink-faint);
+  opacity: 0;
+  transition: opacity var(--dur-court) var(--sortie);
+}
+.blocs:hover .entre button {
+  opacity: 0.6;
+}
+.blocs .entre button:hover,
+.blocs .entre button:focus-visible {
+  opacity: 1;
+  color: var(--accent);
+}
+.blocs .entre.vise {
+  height: auto;
+}
+.blocs .entre.vise button {
+  opacity: 1;
+  color: var(--accent);
+  font-weight: 600;
+}
+@media (hover: none) {
+  .blocs .entre {
+    height: auto;
+  }
+  .blocs .entre button {
+    opacity: 0.7;
+    min-height: var(--tap-menu);
+  }
+  .blocs .note {
+    opacity: 1;
+    border-color: var(--rule);
+  }
+}
+
 .ajouts {
   display: flex;
   gap: var(--e2);
   flex-wrap: wrap;
   margin-bottom: var(--e4);
 }
+
+/* ── La colonne bibliothèque ─────────────────────────────────
+   Elle cesse d'être une carte posée à côté du travail pour devenir
+   une colonne du même document : un filet, pas une boîte. */
 .bibli {
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--rayon);
-  padding: var(--e3) var(--e4);
   position: sticky;
-  top: 64px;
-  max-height: calc(100vh - 80px);
-  overflow: auto;
+  top: var(--e3);
+  border-left: 1px solid var(--rule);
+  padding-left: var(--e4);
 }
-.bibli h2 {
-  margin-bottom: var(--e2);
+.bibli > summary {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  flex-wrap: wrap;
+  list-style: none;
+  cursor: pointer;
+  margin-bottom: var(--e3);
+}
+.bibli > summary::-webkit-details-marker {
+  display: none;
+}
+.bibli .bibli-nom {
+  font-size: var(--t-second);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.bibli .ou {
+  font-size: var(--t-mention);
+  color: var(--accent);
+}
+.bibli .fleche {
+  margin-left: auto;
+  color: var(--ink-faint);
+  font-size: var(--t-mention);
+  display: none;
 }
 .bibli .filtres {
   margin-bottom: var(--e2);
+  padding-bottom: var(--e2);
+  border-bottom: 1px solid var(--rule);
 }
 .bibli .filtres input[type="search"] {
   max-width: none;
   flex-basis: 100%;
+  background: transparent;
+  border-color: transparent;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding-left: 0;
 }
+.bibli .filtres input[type="search"]:focus {
+  border-bottom-color: var(--accent);
+}
+.bibli [data-bibli-liste] {
+  max-height: 56vh;
+  overflow: auto;
+}
+
+/* On reconnaît un exercice à son dessin avant de lire son nom : les
+   cent soixante-sept schémas sont l'actif le plus singulier
+   d'Ardoise, et la colonne n'en montrait aucun. */
 .bibli-liste {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 .bibli-liste li {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr) 24px;
   gap: var(--e2);
+  align-items: center;
   padding: var(--e2) 0;
   border-top: 1px solid var(--rule);
 }
+.bibli-liste li:first-child {
+  border-top: none;
+}
+.bibli-liste li:hover {
+  background: var(--surface);
+}
+.bibli-liste .bibli-vue {
+  padding: 0;
+  border: none;
+  background: #f6fafc;
+  border-radius: 3px;
+  overflow: hidden;
+  min-height: 0;
+  display: block;
+}
+.bibli-liste .bibli-vue .vignette {
+  border: none;
+}
 .bibli-liste .bibli-titre {
-  flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-.bibli-liste .meta {
-  display: flex;
-  gap: var(--e2);
-  align-items: center;
-  color: var(--ink-faint);
-  font-size: 0.8rem;
-}
-.bibli-liste button[data-ajouter] {
-  min-width: 34px;
-  justify-content: center;
-  font-weight: 700;
-}
-.bibli-liste button.bibli-titre {
   border: none;
   background: transparent;
   padding: 2px 4px;
   margin-left: -4px;
   text-align: left;
   align-items: flex-start;
+  min-height: 0;
   border-radius: var(--rayon-petit);
 }
-.bibli-liste button.bibli-titre:hover {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
+.bibli-liste .bibli-titre .nom {
+  font-size: var(--t-second);
+  line-height: 1.3;
 }
+.bibli-liste .bibli-titre:hover .nom {
+  color: var(--accent);
+}
+.bibli-liste .meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.bibli-reste {
+  margin: var(--e2) 0 0;
+  padding-top: var(--e2);
+  border-top: 1px solid var(--rule);
+  font-size: var(--t-mention);
+  color: var(--ink-faint);
+}
+.bibli-liste .ajouter {
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  justify-content: center;
+  font-size: var(--t-section);
+  color: var(--ink-faint);
+}
+.bibli-liste .ajouter:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: var(--rayon-petit);
+}
+@media (hover: none) {
+  .bibli-liste .ajouter {
+    min-width: var(--tap-menu);
+    min-height: var(--tap-menu);
+  }
+}
+
 .dialogue-apercu {
   width: min(94vw, 760px);
 }
@@ -1192,7 +1544,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   gap: var(--e2);
   align-items: center;
   color: var(--ink-faint);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .apercu-corps {
   display: grid;
@@ -1208,7 +1560,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   align-self: start;
 }
 .apercu-texte {
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 .apercu-texte .objectif {
   font-style: italic;
@@ -1220,20 +1572,58 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .apercu-texte .materiel {
   color: var(--ink-soft);
-  font-size: 0.88rem;
+  font-size: var(--t-second);
 }
 @media (max-width: 640px) {
   .apercu-corps {
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: 960px) {
-  .seance-corps {
+/* Sous 980 px, la colonne ne tombe plus SOUS le déroulé — c'est-à-dire
+   hors de portée exactement quand l'écran est petit. Elle devient un
+   panneau posé en bas, replié, qu'on appelle d'un doigt. Le <details>
+   est ouvert ou fermé par seance.js selon la largeur. */
+@media (max-width: 980px) {
+  .etabli {
     grid-template-columns: 1fr;
   }
   .bibli {
-    position: static;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: var(--plan-collant);
+    max-height: 76vh;
+    overflow: auto;
+    padding: 0 var(--e4) var(--e4);
+    border: 1px solid var(--rule);
+    border-radius: var(--rayon) var(--rayon) 0 0;
+    background: var(--surface);
+    box-shadow: 0 -8px 30px rgba(10, 20, 30, 0.18);
+  }
+  .bibli > summary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: 0 calc(-1 * var(--e4));
+    padding: 0 var(--e4);
+    min-height: var(--tap);
+    align-items: center;
+    align-content: center;
+    background: var(--surface);
+    border-bottom: 1px solid var(--rule);
+  }
+  .bibli:not([open]) > summary {
+    border-bottom: none;
+  }
+  .bibli .fleche {
+    display: inline;
+  }
+  .bibli [data-bibli-liste] {
     max-height: none;
+  }
+  /* la place du panneau replié, pour que le bas du déroulé reste
+     atteignable */
+  .ecran-seance {
+    padding-bottom: calc(var(--tap) + var(--e5));
   }
   .seance-champs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1241,15 +1631,209 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 @media (max-width: 640px) {
   .blocs .bloc {
-    grid-template-columns: 22px 52px minmax(0, 1fr) auto;
+    grid-template-columns: 18px 4.25rem minmax(0, 1fr) auto;
   }
-  .blocs .note {
-    grid-column: 3 / 4;
+  /* Le titre prend toute la ligne : sinon la colonne des commandes,
+     bien que vide sur la première rangée, réserve sa largeur et le
+     titre se replie sur quatre lignes. */
+  .blocs .bloc-titre {
+    grid-column: 3 / -1;
   }
   .blocs .duree {
+    grid-column: 3 / 4;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+  .blocs .bloc-actions {
     grid-column: 4 / 5;
     grid-row: 2;
   }
+  .blocs .bloc-actions button {
+    min-height: var(--tap-menu);
+    min-width: var(--tap-menu);
+  }
+  .blocs .bloc-apercu {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── La recherche ────────────────────────────────────────────
+   On atteint une chose en disant son nom, plutôt qu'en naviguant
+   jusqu'à elle. Et le résultat porte des ACTIONS : « ajouter au
+   déroulé du 30 sept. » est ce qu'on veut faire neuf fois sur dix
+   quand on cherche un exercice. */
+
+.barre .cherche {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e3);
+  min-width: 190px;
+  padding: 5px var(--e3);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-faint);
+  font-size: var(--t-mention);
+  min-height: var(--tap-menu);
+}
+.barre .cherche:hover {
+  border-color: var(--rule-controle);
+  color: var(--ink-soft);
+}
+.barre .cherche kbd {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  color: var(--ink-faint);
+}
+@media (max-width: 640px) {
+  .barre .cherche {
+    min-width: 0;
+  }
+  .barre .cherche span,
+  .barre .cherche kbd {
+    display: none;
+  }
+  .barre .cherche::before {
+    content: "⌕";
+    font-size: var(--t-section);
+  }
+}
+
+.palette {
+  width: min(94vw, 560px);
+  max-height: min(70vh, 640px);
+  margin-top: 12vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule);
+  border-radius: var(--rayon);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 20px 60px rgba(10, 20, 30, 0.28);
+  overflow: hidden;
+}
+.palette::backdrop {
+  background: rgba(12, 20, 28, 0.45);
+}
+.palette-saisie {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: var(--e3) var(--e4);
+  border-bottom: 1px solid var(--rule);
+}
+.palette-saisie input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: var(--t-section);
+}
+.palette-saisie input:focus {
+  outline: none;
+}
+.palette-corps {
+  flex: 1;
+  overflow: auto;
+  padding-bottom: var(--e2);
+}
+.palette-groupe {
+  margin: var(--e3) 0 2px;
+  padding: 0 var(--e4);
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.palette-corps ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.palette-corps li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e3);
+  padding: 7px var(--e4);
+  font-size: var(--t-second);
+  cursor: pointer;
+}
+.palette-corps li .nom {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.palette-corps li .detail {
+  display: flex;
+  align-items: baseline;
+  flex: none;
+}
+.palette-corps li.sel {
+  background: var(--accent-soft);
+}
+.palette-corps li.sel .nom {
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+.palette-vide {
+  padding: var(--e4);
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: var(--t-second);
+}
+.palette-pied {
+  display: flex;
+  align-items: center;
+  gap: var(--e2) var(--e4);
+  flex-wrap: wrap;
+  margin: 0;
+  padding: var(--e2) var(--e4);
+  border-top: 1px solid var(--rule);
+  background: var(--panel);
+  font-size: var(--t-mention);
+  color: var(--ink-faint);
+  min-height: 34px;
+}
+.palette-touche {
+  white-space: nowrap;
+}
+.palette-pied kbd {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 0 5px;
+  border: 1px solid var(--rule-controle);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: var(--t-micro);
+}
+.palette-actions {
+  display: flex;
+  gap: var(--e2);
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.palette-actions button {
+  padding: 3px var(--e2);
+  min-height: 0;
+  border: 1px solid transparent;
+  border-radius: var(--rayon-petit);
+  background: none;
+  font-size: var(--t-mention);
+  color: var(--accent);
+}
+.palette-actions button.sel,
+.palette-actions button:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
 }
 
 /* ── Dialogue ───────────────────────────────────────────────── */
@@ -1293,6 +1877,15 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 
 /* ── La feuille imprimée ────────────────────────────────────── */
 
+/* Du papier, pas un écran : l'escalier y est légèrement resserré,
+   parce qu'on lit une page A4 à trente centimètres et qu'une ligne
+   de plus par feuille vaut mieux qu'un demi-point de corps. */
+.ecran-impression,
+.feuille {
+  --t-second: 0.92rem;
+  --t-mention: 0.78rem;
+}
+
 .feuille {
   background: #fff;
   color: #111;
@@ -1318,7 +1911,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: var(--e6);
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 .plan th,
 .plan td {
@@ -1328,7 +1921,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   vertical-align: top;
 }
 .plan th {
-  font-size: 0.78rem;
+  font-size: var(--t-mention);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #666;
@@ -1338,7 +1931,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   border-top: 2px solid #111;
   font-weight: 600;
 }
-.plan .chip {
+.plan .pastille {
   vertical-align: middle;
 }
 .fiche-impr {
@@ -1359,20 +1952,20 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .fiche-impr h2 small {
   color: #666;
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   margin-left: var(--e2);
 }
 .fiche-impr .description {
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 .fiche-impr .points {
   margin: 0 0 var(--e2);
   padding-left: 1.2em;
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 .fiche-impr .materiel,
 .fiche-impr .note {
-  font-size: 0.88rem;
+  font-size: var(--t-second);
   color: #333;
 }
 .feuille footer {
@@ -1422,16 +2015,27 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 
 /* ── Bord de glace ──────────────────────────────────────────── */
 
+/* La troisième densité. Le mode ne réécrit pas ses tailles : il
+   redéfinit l'escalier, décalé d'un cran vers le haut. On le lit
+   debout, à bout de bras, une main gantée, trente secondes entre
+   deux blocs — rien n'y est jamais trop grand. */
 .ecran-glace {
+  --t-titre: 1.6rem;
+  --t-section: 1.15rem;
+  --t-corps: 1.05rem;
+  --t-second: 0.95rem;
+  --t-mention: 0.85rem;
+  --t-micro: 0.75rem;
+
   max-width: 720px;
   margin: 0 auto;
-  font-size: 1.05rem;
+  font-size: var(--t-corps);
 }
 .glace-tete {
   margin-bottom: var(--e4);
 }
 .glace-tete h1 {
-  font-size: 1.6rem;
+  font-size: var(--t-titre);
 }
 .glace-tete .meta {
   color: var(--ink-soft);
@@ -1455,7 +2059,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   box-shadow: var(--ombre);
 }
 .glace-panneau h2 {
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
@@ -1482,7 +2086,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   align-items: flex-start;
   padding: var(--e2) 0;
   margin: 0;
-  font-size: 1.05rem;
+  font-size: var(--t-corps);
   font-weight: 400;
   color: var(--ink);
   cursor: pointer;
@@ -1500,7 +2104,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   flex-direction: column;
 }
 .glace-materiel small {
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
 }
 .glace-materiel input:checked + span strong {
   text-decoration: line-through;
@@ -1543,7 +2147,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   align-items: baseline;
   flex-wrap: wrap;
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   color: var(--ink-faint);
   margin-bottom: var(--e1);
 }
@@ -1557,7 +2161,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   padding: 2px 10px;
 }
 .glace-bloc h2 {
-  font-size: 1.15rem;
+  font-size: var(--t-section);
   margin-bottom: var(--e1);
   display: flex;
   gap: var(--e2);
@@ -1567,7 +2171,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 .glace-bloc-objectif {
   color: var(--ink-soft);
   font-style: italic;
-  font-size: 0.95rem;
+  font-size: var(--t-second);
 }
 .glace-points {
   margin: var(--e1) 0 var(--e2);
@@ -1585,7 +2189,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .glace-details {
   margin-top: var(--e2);
-  font-size: 0.95rem;
+  font-size: var(--t-second);
 }
 .glace-details summary {
   cursor: pointer;
@@ -1600,7 +2204,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .glace-materiel-ex {
   color: var(--ink-soft);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 
 /* ── Groupes, historique, bilan ─────────────────────────────── */
@@ -1625,13 +2229,13 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .derniere-corps {
   padding-top: var(--e2);
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 .derniere-corps p {
   margin-bottom: var(--e1);
 }
 .bibli-liste .indice {
-  font-size: 0.75rem;
+  font-size: var(--t-micro);
   color: var(--ink-faint);
 }
 .bibli-liste .indice.jamais {
@@ -1665,12 +2269,12 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
   flex-direction: column;
 }
 .groupe-chiffres strong {
-  font-size: 1.6rem;
+  font-size: var(--t-titre);
   letter-spacing: -0.02em;
 }
 .groupe-chiffres span {
   color: var(--ink-faint);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .groupe-section {
   margin-bottom: var(--e5);
@@ -1683,7 +2287,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 }
 .groupe-section h2 .tri {
   margin-left: auto;
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   font-weight: 400;
   color: var(--ink-faint);
   display: inline-flex;
@@ -1693,7 +2297,7 @@ svg.patinoire.interactive:not([data-outil="sel"]) .obj {
 .groupe-section h2 .tri button {
   min-height: 26px;
   padding: 2px 8px;
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
 }
 details.groupe-section summary {
   cursor: pointer;
@@ -1751,7 +2355,7 @@ details.groupe-section[open] summary::before {
   gap: var(--e3);
   align-items: center;
   margin-bottom: var(--e1);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 .equilibre .barre {
   position: relative;
@@ -1778,7 +2382,7 @@ details.groupe-section[open] summary::before {
 }
 .equilibre .legende {
   color: var(--ink-faint);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   margin-top: var(--e2);
 }
 .groupe-seances {
@@ -1803,14 +2407,14 @@ details.groupe-section[open] summary::before {
 }
 .groupe-seances .date {
   color: var(--accent-ink);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   font-weight: 600;
   min-width: 150px;
 }
 .groupe-seances .meta {
   margin-left: auto;
   color: var(--ink-faint);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .groupe-seances .a-venir strong {
   color: var(--ink-soft);
@@ -1818,7 +2422,7 @@ details.groupe-section[open] summary::before {
 .usage {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 .usage th,
 .usage td {
@@ -1828,25 +2432,13 @@ details.groupe-section[open] summary::before {
   vertical-align: top;
 }
 .usage th {
-  font-size: 0.75rem;
+  font-size: var(--t-micro);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--ink-faint);
 }
 .usage .faible {
   color: var(--ink-faint);
-}
-.note-bien {
-  color: var(--ok);
-  font-weight: 600;
-}
-.note-correct {
-  color: var(--ink-soft);
-  font-weight: 600;
-}
-.note-revoir {
-  color: var(--danger);
-  font-weight: 600;
 }
 
 /* le bilan, au bas du bord de glace */
@@ -1856,12 +2448,12 @@ details.groupe-section[open] summary::before {
   border-top: 2px solid var(--rule);
 }
 .glace-bilan h2 {
-  font-size: 1.3rem;
+  font-size: var(--t-titre);
   margin-bottom: var(--e1);
 }
 .glace-bilan-aide {
   color: var(--ink-soft);
-  font-size: 0.95rem;
+  font-size: var(--t-second);
   margin-bottom: var(--e4);
 }
 .bilan-blocs {
@@ -1901,6 +2493,18 @@ details.groupe-section[open] summary::before {
   min-height: 0;
   accent-color: var(--accent);
 }
+/* Une pause garde sa place dans l'ordre du bilan, et rien d'autre :
+   il n'y a rien à juger d'une gourde. */
+.bilan-pause {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e3);
+  padding: var(--e2) var(--e3);
+  color: var(--ink-faint);
+  font-size: var(--t-second);
+  font-style: italic;
+}
+
 .bilan-notes {
   display: inline-flex;
   gap: 2px;
@@ -1912,7 +2516,7 @@ details.groupe-section[open] summary::before {
   border-color: transparent;
   background: transparent;
   min-height: 32px;
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .bilan-notes button.actif {
   background: var(--surface);
@@ -1929,7 +2533,7 @@ details.groupe-section[open] summary::before {
 .bilan-blocs input[name="commentaire"] {
   grid-column: 1 / -1;
   min-height: 32px;
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 .bilan-global {
   display: flex;
@@ -1949,7 +2553,7 @@ details.groupe-section[open] summary::before {
   padding-bottom: 4px;
 }
 .bilan-etoiles span {
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   font-weight: 600;
   color: var(--ink-soft);
   margin-right: var(--e2);
@@ -1957,7 +2561,7 @@ details.groupe-section[open] summary::before {
 .bilan-etoiles button {
   border: none;
   background: transparent;
-  font-size: 1.6rem;
+  font-size: var(--t-titre);
   color: var(--rule-controle);
   padding: 0 2px;
   min-height: 0;
@@ -1997,7 +2601,7 @@ details.groupe-section[open] summary::before {
   border-radius: var(--rayon);
   padding: var(--e3) var(--e4);
   margin-bottom: var(--e3);
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 .explication-tete {
   display: flex;
@@ -2008,7 +2612,7 @@ details.groupe-section[open] summary::before {
 .explication-tete button {
   min-height: 28px;
   padding: 2px 10px;
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .explication ul {
   margin: 0 0 var(--e2);
@@ -2020,7 +2624,7 @@ details.groupe-section[open] summary::before {
 }
 .explication .legende {
   color: var(--ink-soft);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   margin: 0;
 }
 
@@ -2066,7 +2670,7 @@ details.menu summary::-webkit-details-marker {
   gap: var(--e1);
   color: var(--ink);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: var(--t-second);
   min-height: var(--tap-menu);
   padding: 6px 12px;
 }
@@ -2080,7 +2684,7 @@ details.menu summary::-webkit-details-marker {
 
 .techniques {
   margin-bottom: var(--e3);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 .techniques summary {
   cursor: pointer;
@@ -2090,7 +2694,7 @@ details.menu summary::-webkit-details-marker {
 }
 .techniques-famille h4 {
   margin: var(--e2) 0 var(--e1);
-  font-size: 0.75rem;
+  font-size: var(--t-micro);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--ink-faint);
@@ -2112,12 +2716,12 @@ details.menu summary::-webkit-details-marker {
 }
 .technique b {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   color: var(--accent-ink);
 }
 .technique-bloc {
   margin-top: var(--e3);
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 .forme-travail,
 .corrections-titre {
@@ -2146,11 +2750,7 @@ details.menu summary::-webkit-details-marker {
   color: var(--accent-ink);
 }
 .fiche-technique .mini-titre {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--ink-faint);
-  margin: var(--e2) 0 2px;
+  margin-top: var(--e2);
 }
 .fiche-technique ul {
   margin: 0;
@@ -2160,7 +2760,7 @@ details.menu summary::-webkit-details-marker {
   margin: 0 0 var(--e2);
   padding-left: 1.2em;
   color: var(--danger);
-  font-size: 0.95rem;
+  font-size: var(--t-second);
 }
 .glace-corrections li::marker {
   content: "✗ ";
@@ -2170,17 +2770,17 @@ details.menu summary::-webkit-details-marker {
   padding-top: var(--e2);
   border-top: 1px dashed var(--rule);
   color: var(--ink-faint);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .couverture {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: var(--e3) var(--e5);
-  font-size: 0.88rem;
+  font-size: var(--t-second);
 }
 .couverture h4 {
   margin: 0 0 var(--e1);
-  font-size: 0.75rem;
+  font-size: var(--t-micro);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--ink-faint);
@@ -2199,7 +2799,7 @@ details.menu summary::-webkit-details-marker {
 }
 .couverture li b {
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: var(--t-mention);
   color: var(--accent-ink);
   min-width: 62px;
 }
@@ -2217,7 +2817,7 @@ details.menu summary::-webkit-details-marker {
 .couverture li.socle::after {
   content: "●";
   color: var(--accent);
-  font-size: 0.6rem;
+  font-size: var(--t-micro);
   order: -1;
 }
 .couverture .legende {
@@ -2227,7 +2827,7 @@ details.menu summary::-webkit-details-marker {
   background: transparent;
   padding: 0;
   color: var(--ink-faint);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
 }
 .legende-impr {
   margin-top: var(--e5);
@@ -2289,7 +2889,7 @@ label.case input {
 }
 .cycle summary .meta {
   color: var(--ink-faint);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
 }
 .cycle-corps {
   padding-top: var(--e3);
@@ -2300,30 +2900,7 @@ label.case input {
   gap: var(--e3);
 }
 .cycle-corps .mini-titre {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--ink-faint);
-  margin: 0 0 var(--e1);
-}
-.cycle-corps .chips {
-  margin-bottom: var(--e3);
-}
-.chip-case {
-  cursor: pointer;
-  margin: 0;
-}
-.chip-case input {
-  width: 14px;
-  height: 14px;
-  min-height: 0;
-  margin: 0 4px 0 0;
-  accent-color: var(--c);
-}
-.chip-case.actif {
-  background: var(--c);
-  color: #fff;
-  border-color: var(--c);
+  margin-bottom: var(--e1);
 }
 .cycle-pied {
   display: flex;
@@ -2334,7 +2911,7 @@ label.case input {
   border-radius: var(--rayon-petit);
   padding: var(--e2) var(--e3);
   margin-bottom: var(--e3);
-  font-size: 0.92rem;
+  font-size: var(--t-second);
 }
 @media (max-width: 640px) {
   .cycle-corps .rangee {
@@ -2357,7 +2934,7 @@ label.case input {
   display: none;
 }
 .synchro {
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   color: var(--ink-faint);
   border-color: transparent;
   background: transparent;
@@ -2401,7 +2978,7 @@ label.case input {
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
-  font-size: 0.6rem;
+  font-size: var(--t-micro);
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -2418,7 +2995,7 @@ label.case input {
 }
 .compte-aide {
   color: var(--ink-soft);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
   margin-bottom: var(--e4);
 }
 .compte-actions {
@@ -2441,7 +3018,7 @@ button.lien {
   background: transparent;
   color: var(--accent);
   padding: 4px 0;
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   text-decoration: underline;
   min-height: auto;
 }
@@ -2476,13 +3053,13 @@ button.lien:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: var(--e3);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
   color: var(--ink-soft);
   margin-bottom: var(--e3);
 }
 .conflit-ou {
   display: block;
-  font-size: 0.75rem;
+  font-size: var(--t-micro);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
@@ -2525,7 +3102,7 @@ button.lien:hover {
 }
 .coachs .role {
   color: var(--ink-faint);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -2554,7 +3131,7 @@ button.lien:hover {
   width: min(94vw, 440px);
 }
 .invitation-groupe {
-  font-size: 1.35rem;
+  font-size: var(--t-titre);
   font-weight: 700;
   margin: var(--e2) 0 var(--e3);
 }
@@ -2573,91 +3150,154 @@ button.lien:hover {
    fois sur dix. Elle a donc sa bordure, son marqueur, et elle passe
    toute la largeur : le reste s'aligne derrière. */
 
-.onglets {
-  display: flex;
-  gap: var(--e1);
+/* ── La colonne vertébrale des séances ───────────────────────
+   C'étaient des cartes à bordure et ombre, portant jusqu'à huit
+   atomes d'information pour répondre à une question qui en vaut
+   deux : « quelle est ma prochaine séance, et est-elle prête ».
+   Une poignée d'objets homogènes ordonnés par date n'est pas un
+   catalogue à parcourir : c'est une liste, et c'est la DATE qui
+   porte la structure. Elle passe en marge ; le reste se range
+   derrière elle. Plus une seule boîte. */
+
+.filtres-seances {
+  align-items: baseline;
   border-bottom: 1px solid var(--rule);
-  margin-bottom: var(--e4);
+  padding-bottom: var(--e2);
+  margin-bottom: 0;
 }
-.onglets button {
-  border: none;
-  background: transparent;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
-  padding: var(--e2) var(--e3);
-  color: var(--ink-soft);
+.ligne-cycle {
+  font-size: var(--t-mention);
+  color: var(--ink-faint);
+}
+.ligne-cycle b {
+  color: var(--ink);
   font-weight: 600;
-  min-height: var(--tap-menu);
-  transition: color var(--dur-court) var(--sortie), border-color var(--dur-court) var(--sortie);
 }
-.onglets button:hover {
+
+.spine {
+  display: flex;
+  flex-direction: column;
+}
+.rang {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: var(--e4);
+  align-items: start;
+  padding: var(--e4) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.rang .quand {
+  font-family: var(--mono);
+  font-size: var(--t-mention);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 2px;
+}
+.rang .quand .jour {
+  display: block;
   color: var(--ink);
 }
-.onglets button.actif {
-  color: var(--accent-ink);
-  border-bottom-color: var(--accent);
+.rang.aujourdhui .quand .jour {
+  color: var(--accent);
 }
-.onglets .compte {
-  color: var(--ink-faint);
-  font-weight: 400;
-  font-size: 0.85rem;
+.rang .quoi h3 {
+  font-size: var(--t-corps);
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 3px;
 }
-
-.carte-seance.prochaine {
-  grid-column: 1 / -1;
-  border-color: var(--accent);
-  box-shadow: var(--ombre), inset 3px 0 0 var(--accent);
+.rang.aujourdhui .quoi h3 {
+  font-size: var(--t-section);
 }
-.carte-seance.prochaine h3 {
-  font-size: 1.25rem;
+/* Le titre est du CONTENU, pas une action : il se lit en encre. Ce
+   qui est en accent dans une rangée, ce sont les gestes. */
+.rang .quoi h3 a {
+  color: var(--ink);
+  text-decoration: none;
 }
-.carte .marqueur {
-  margin-left: var(--e2);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--accent-ink);
-  background: var(--accent-soft);
-  padding: 2px 7px;
-  border-radius: var(--rayon-petit);
+.rang .quoi h3 a:hover {
+  color: var(--accent);
 }
-
-.etiquette {
-  font-size: 0.78rem;
-  padding: 1px 8px;
-  border-radius: var(--rayon-petit);
-  border: 1px solid currentColor;
+.rang .quoi h3 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
-.etat-ok {
-  color: var(--ok);
-}
-.etat-vide {
-  color: var(--ink-faint);
-}
-.etat-attente {
-  color: var(--warning);
-}
-.etat-alerte {
-  color: var(--danger);
-}
-
-.bandeau-cycle {
+.rang .ligne-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--e3);
-  padding: var(--e2) var(--e3);
-  margin-bottom: var(--e4);
-  border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
-  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
-  font-size: 0.9rem;
 }
-.bandeau-cycle span {
+.rang .objectif {
+  font-size: var(--t-second);
+  color: var(--ink-soft);
+  margin-top: var(--e1);
+}
+.rang .gestes {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  margin-top: var(--e2);
+}
+/* Une séance passée se lit, elle ne s'actionne presque plus : elle
+   s'efface d'un ton, et ses gestes n'apparaissent qu'à la demande. */
+.rang.passee .quoi h3 {
+  font-weight: 400;
   color: var(--ink-soft);
 }
-.bandeau-cycle .note {
-  font-style: italic;
+.rang.passee .gestes {
+  opacity: 0;
+  transition: opacity var(--dur-court) var(--sortie);
+}
+.rang.passee:hover .gestes,
+.rang.passee:focus-within .gestes {
+  opacity: 1;
+}
+/* Au doigt il n'y a pas de survol : ce qui se révèle au survol doit
+   être là d'emblée, sinon la moitié de l'écran n'existe pas sur le
+   téléphone — qui est l'appareil du bord de la glace. */
+@media (hover: none) {
+  .rang.passee .gestes {
+    opacity: 1;
+  }
+}
+
+/* Un groupe n'a pas de date : c'est son NOM qui tient la marge, et il
+   lui faut plus de place qu'une date. */
+.rang-groupe {
+  grid-template-columns: 13rem minmax(0, 1fr);
+}
+/* Un nom de groupe est un nom propre, pas un horodatage : il ne se
+   met ni en chasse fixe ni en capitales. */
+.rang-groupe .quand {
+  font-family: var(--sans);
+  font-size: var(--t-second);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.rang-groupe .objectif {
+  margin-top: 2px;
+}
+
+@media (max-width: 640px) {
+  .rang,
+  .rang-groupe {
+    grid-template-columns: 1fr;
+    gap: var(--e1);
+  }
+  .rang .quand .jour {
+    display: inline;
+  }
+  .rang .gestes {
+    gap: var(--e3);
+  }
+  .rang .gestes .bouton {
+    min-height: var(--tap);
+  }
 }
 
 /* Le seul endroit où l'appli interpelle : chaque ligne porte le geste
@@ -2668,7 +3308,7 @@ button.lien:hover {
   padding-top: var(--e3);
 }
 .a-faire h2 {
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--ink-faint);
@@ -2687,7 +3327,7 @@ button.lien:hover {
   padding: var(--e2) 0;
   border-bottom: 1px solid var(--rule);
   color: var(--ink-soft);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 .a-faire li > span {
   flex: 1;
@@ -2709,6 +3349,9 @@ button.lien:hover {
 .rayon {
   margin-bottom: var(--e5);
 }
+/* Le rayon : une tête de chapitre, pas une barre colorée. Le trait
+   de catégorie tient dans un carré, comme une pastille — c'est le
+   même système de couleurs. */
 .tete-rayon {
   position: sticky;
   top: var(--haut-barre, 52px);
@@ -2716,46 +3359,98 @@ button.lien:hover {
   display: flex;
   align-items: baseline;
   gap: var(--e2);
-  margin: 0 0 var(--e3);
-  padding: var(--e2) 0;
-  font-size: 0.85rem;
+  margin: var(--e6) 0 var(--e3);
+  padding: var(--e2) 0 6px;
+  font-size: var(--t-second);
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--c);
+  letter-spacing: 0.06em;
+  color: var(--ink);
   background: var(--ground);
-  border-bottom: 2px solid var(--c);
+  border-bottom: 1px solid var(--rule);
 }
-.tete-rayon .compte {
-  color: var(--ink-faint);
-  letter-spacing: 0;
-  font-weight: 400;
+.tete-rayon::before {
+  content: "";
+  align-self: center;
+  width: 18px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--c);
+}
+.rayon:first-child .tete-rayon {
+  margin-top: 0;
 }
 
 .filtres-groupe {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--e4);
   flex-wrap: wrap;
-  margin-top: calc(var(--e3) * -1);
+  margin: calc(var(--e3) * -1) 0 var(--e4);
 }
 .filtres-groupe label {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--e2);
-  font-size: 0.85rem;
-  color: var(--ink-soft);
+  font-size: var(--t-second);
+  color: var(--ink-faint);
   margin: 0;
 }
+.filtres-groupe select {
+  width: auto;
+  background: transparent;
+  border-color: transparent;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 2px 4px 2px 0;
+  min-height: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
 
-.carte .indice {
-  font-size: 0.8rem;
-  color: var(--ink-faint);
+/* ── La planche-contact ──────────────────────────────────────
+   Le schéma EST l'objet. Plus de carte, plus d'ombre : une image,
+   son nom dessous, et ce que le groupe en sait. */
+.planche {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--e5) var(--e4);
 }
-.carte .indice.jamais {
-  color: var(--ok);
+.planche-vue {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
-.carte .indice.recent {
-  color: var(--warning);
+.planche-vue .vue {
+  background: #f6fafc;
+  border-radius: var(--rayon-petit);
+  overflow: hidden;
+  transition: box-shadow var(--dur-court) var(--sortie);
+}
+.planche-vue:hover .vue,
+.planche-vue:focus-visible .vue {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.planche-vue:focus-visible {
+  outline: none;
+}
+.planche-vue .vignette {
+  border: none;
+}
+.planche-vue h3 {
+  font-size: var(--t-second);
+  font-weight: 400;
+  line-height: 1.35;
+  margin-top: var(--e2);
+}
+.planche-vue:hover h3 {
+  color: var(--accent);
+}
+.planche-vue .sous {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 2px 0 0;
 }
 
 /* ── La fiche en lecture ──────────────────────────────────────
@@ -2764,7 +3459,7 @@ button.lien:hover {
    trente-cinq contrôles de dessin attendent derrière « Modifier ». */
 
 .fiche-titre {
-  font-size: 1.7rem;
+  font-size: var(--t-titre);
   margin-bottom: var(--e1);
 }
 .fiche-meta {
@@ -2772,7 +3467,7 @@ button.lien:hover {
   align-items: center;
   gap: var(--e2);
   color: var(--ink-faint);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
   margin-bottom: var(--e4);
 }
 .fiche-lecture .fiche-corps {
@@ -2792,7 +3487,7 @@ button.lien:hover {
   margin-top: 0;
 }
 .fiche-texte .objectif {
-  font-size: 1.05rem;
+  font-size: var(--t-corps);
   color: var(--ink);
 }
 .fiche-texte ul {
@@ -2816,7 +3511,7 @@ button.lien:hover {
   padding-top: var(--e3);
 }
 .fiche-historique h2 {
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--ink-faint);
@@ -2832,7 +3527,7 @@ button.lien:hover {
 }
 .fiche-historique li {
   padding: var(--e1) 0;
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 
 /* ── Les trois moments d'une séance ───────────────────────────
@@ -2851,7 +3546,7 @@ button.lien:hover {
   border-bottom: 2px solid transparent;
   color: var(--ink-faint);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: var(--t-second);
   font-weight: 600;
   transition: color var(--dur-court) var(--sortie), border-color var(--dur-court) var(--sortie);
 }
@@ -2875,7 +3570,7 @@ button.lien:hover {
   cursor: pointer;
   list-style: none;
   color: var(--ink-soft);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
   padding: var(--e2) 0;
   border-bottom: 1px dashed var(--rule);
 }
@@ -2893,38 +3588,58 @@ button.lien:hover {
 }
 .seance-reglages[open] .crayon::after {
   content: " replier";
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
 }
 .objectif-champ {
-  display: block;
-  margin-bottom: var(--e4);
+  display: flex;
+  align-items: baseline;
+  gap: var(--e2);
+  margin-bottom: var(--e5);
+  font-size: var(--t-mention);
+  color: var(--ink-faint);
 }
 .objectif-champ input {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--t-second);
+  color: var(--ink);
+  background: transparent;
+  border-color: transparent;
+  border-radius: var(--rayon-petit);
+  padding: 2px 4px;
+  min-height: 0;
+}
+.objectif-champ input:hover,
+.objectif-champ input:focus {
+  border-color: var(--rule);
+  background: var(--ground);
 }
 
 /* Une bande, en haut, pour tout ce que le groupe apprend sur cette
    séance-là : il y en avait trois, plus une quatrième sur la fiche du
    groupe, et on ne savait pas laquelle faisait autorité. */
+/* Une bande de contexte n'est pas une alerte : c'est ce que le groupe
+   apprend sur cette séance-là. Elle se range derrière un filet, en
+   second rang, au lieu d'occuper un bandeau teinté au-dessus du
+   travail. */
 .contexte {
-  border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
-  border-radius: 0 var(--rayon-petit) var(--rayon-petit) 0;
-  padding: var(--e3);
-  margin-bottom: var(--e4);
-  font-size: 0.9rem;
+  border-left: 2px solid var(--rule);
+  padding: 0 0 0 var(--e3);
+  margin-bottom: var(--e5);
+  font-size: var(--t-second);
+  color: var(--ink-soft);
 }
 .contexte-ligne {
   display: flex;
   gap: var(--e3);
   align-items: baseline;
-  margin: 0 0 var(--e2);
+  margin: 0 0 3px;
 }
 .contexte-quoi {
   flex: none;
   width: 8.5em;
   color: var(--ink-faint);
-  font-size: 0.78rem;
+  font-size: var(--t-mention);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -2935,9 +3650,9 @@ button.lien:hover {
   color: var(--danger);
 }
 .contexte-pied {
-  margin: 0;
+  margin: var(--e2) 0 0;
   padding-left: calc(8.5em + var(--e3));
-  font-size: 0.85rem;
+  font-size: var(--t-mention);
 }
 @media (max-width: 640px) {
   .contexte-ligne {
@@ -2974,7 +3689,7 @@ button.lien:hover {
   border-top: 1px dashed transparent;
   background: none;
   color: var(--ink-faint);
-  font-size: 0.75rem;
+  font-size: var(--t-micro);
   justify-content: center;
   opacity: 0;
   border-radius: 0;
@@ -3031,7 +3746,7 @@ body[data-ecran="glace"] main {
   background: none;
   color: var(--ink-soft);
   text-decoration: none;
-  font-size: 1rem;
+  font-size: var(--t-corps);
 }
 .glace-barre .menu > summary {
   min-width: var(--tap);
@@ -3059,7 +3774,7 @@ body[data-ecran="glace"] main {
   background: var(--surface);
   color: var(--ink-faint);
   border-radius: var(--rayon-petit);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   justify-content: center;
   border-bottom: 3px solid transparent;
 }
@@ -3085,7 +3800,7 @@ body[data-ecran="glace"] main {
   padding: var(--e2) var(--e3);
   background: color-mix(in oklab, var(--warning) 18%, var(--surface));
   color: var(--ink);
-  font-size: 0.88rem;
+  font-size: var(--t-second);
 }
 .glace-recalage[hidden] {
   display: none;
@@ -3106,7 +3821,7 @@ body[data-ecran="glace"] main {
   padding: var(--e4);
 }
 .glace-carte h1 {
-  font-size: 1.6rem;
+  font-size: var(--t-titre);
   line-height: 1.15;
   margin-bottom: var(--e2);
 }
@@ -3115,7 +3830,7 @@ body[data-ecran="glace"] main {
   gap: var(--e3);
   color: var(--ink-faint);
   font-family: var(--mono);
-  font-size: 0.95rem;
+  font-size: var(--t-second);
   margin-bottom: var(--e2);
 }
 /* Le temps restant est DANS la carte, pas en tête de page : en haut,
@@ -3128,7 +3843,7 @@ body[data-ecran="glace"] main {
   color: var(--accent-ink);
   border-radius: var(--rayon);
   padding: var(--e2) var(--e3);
-  font-size: 1.15rem;
+  font-size: var(--t-section);
   font-weight: 700;
   text-align: center;
   margin-bottom: var(--e3);
@@ -3171,7 +3886,7 @@ body[data-ecran="glace"] main {
 .glace-agrandir {
   display: block;
   padding: var(--e1);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   color: var(--ink-faint);
   border-top: 1px solid var(--rule);
 }
@@ -3224,7 +3939,7 @@ body[data-ecran="glace"] main {
 }
 .glace-suiv small {
   text-transform: uppercase;
-  font-size: 0.65rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.08em;
   color: var(--ink-faint);
 }
@@ -3257,7 +3972,7 @@ body[data-ecran="glace"] main {
 .glace-liste .glace-heure,
 .glace-liste .glace-duree {
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   color: var(--ink-faint);
 }
 
@@ -3318,7 +4033,7 @@ body[data-ecran="glace"] main {
 .manques li > span {
   flex: 1;
   color: var(--ink-soft);
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 
 .familles {
@@ -3333,7 +4048,7 @@ body[data-ecran="glace"] main {
   align-items: baseline;
   gap: var(--e2);
   margin: 0 0 var(--e1);
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--ink-faint);
@@ -3356,7 +4071,7 @@ body[data-ecran="glace"] main {
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 0.88rem;
+  font-size: var(--t-second);
 }
 .manquantes li {
   padding: 2px 0;
@@ -3367,7 +4082,7 @@ body[data-ecran="glace"] main {
 }
 .tout-vu {
   color: var(--ok);
-  font-size: 0.88rem;
+  font-size: var(--t-second);
 }
 
 /* Un cycle sait où il en est : il était une note dans un repli, sans
@@ -3376,7 +4091,7 @@ body[data-ecran="glace"] main {
   display: inline-flex;
   align-items: center;
   gap: var(--e2);
-  font-size: 0.8rem;
+  font-size: var(--t-mention);
   color: var(--ink-faint);
   margin-left: auto;
 }
@@ -3388,7 +4103,7 @@ body[data-ecran="glace"] main {
   list-style: none;
   margin: 0 0 var(--e3);
   padding: 0;
-  font-size: 0.9rem;
+  font-size: var(--t-second);
 }
 .visees li {
   padding: 1px 0;
@@ -3418,20 +4133,7 @@ body[data-ecran="glace"] main {
   content: " ▾";
 }
 .groupe-section .tri {
-  font-size: 0.85rem;
+  font-size: var(--t-second);
   color: var(--ink-faint);
 }
 
-.carte-groupe .carte-cycle {
-  font-size: 0.85rem;
-  color: var(--accent-ink);
-  margin-bottom: var(--e1);
-}
-.carte-groupe .carte-revoir {
-  font-size: 0.85rem;
-  color: var(--warning);
-  margin: var(--e2) 0 0;
-}
-.carte-groupe .objectif {
-  -webkit-line-clamp: 3;
-}

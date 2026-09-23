@@ -23,9 +23,10 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
 3. Écrans          js/widgets/seances.js    l'ACCUEIL : à venir, passées, et ce qui reste à faire
                    js/widgets/groupes.js    la liste des groupes
                    js/widgets/groupe.js     PROGRESSER : ce qui vient, ce qu'on a fait, ce qu'on n'a pas fait
-                   js/widgets/exercices.js  la bibliothèque : rayons par catégorie, filtres du groupe
+                   js/widgets/exercices.js  la bibliothèque : une PLANCHE-CONTACT, rayons par catégorie, filtres du groupe
+                   js/widgets/recherche.js  ⌘K : exercices, séances, groupes — et des ACTIONS sur le résultat
                    js/widgets/exercice.js   la fiche en LECTURE ; l'éditeur derrière /modifier
-                   js/widgets/seance.js     PRÉPARER : réglages repliés, bande de contexte, déroulé, bibliothèque
+                   js/widgets/seance.js     PRÉPARER : l'ÉTABLI — frise, déroulé en document, colonne bibliothèque
                    js/widgets/glace.js      ENTRAÎNER : un mode plein écran, un bloc par écran, rail et recalage
                    js/widgets/bilan.js      DÉBRIEFER : son propre écran, atteint par la fin de la séance
                    js/widgets/impression.js la feuille posée en HTML (elle s'imprime)
@@ -108,9 +109,17 @@ Un bloc recopie le **titre** de l'exercice au moment de l'ajout : si l'exercice 
 ### Groupe
 ```js
 { id, nom, niveau, description,
+  duree_glace,                                 // le créneau habituel, en minutes
   cycles: [ { id, nom, debut, fin, categories: [], techniques: [], note } ],
   cree, modifie }
 ```
+`duree_glace` est le **créneau du groupe** : un créneau ne change pas d'une
+semaine sur l'autre, et le retaper à chaque séance est une corvée qui finit
+par se tromper. `Store.seances.creer({ groupeId })` le reprend, et rattacher
+une séance à un groupe le reprend aussi — mais **seulement si la durée vaut
+encore `GLACE_PAR_DEFAUT`**. Un défaut qui écrase une décision n'est plus un
+défaut, c'est une surprise.
+
 Supprimer un groupe détache ses séances, il ne les efface pas. Un **cycle** est une période avec un thème ; `cycleCourant(groupe, date)` donne celui qui couvre une date, et le brouillon multiplie par 1,5 le poids de ses catégories et favorise les exercices qui visent ses techniques.
 
 ### Matériel
@@ -189,6 +198,14 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **L'accueil est « Séances ».** On ouvre Ardoise pour préparer ou mener sa prochaine séance ; la bibliothèque est une ressource où l'on pioche, pas une porte d'entrée.
 - **Un document se décide à un seul endroit.** `core/feuille.js` dit ce que porte une feuille de séance et dans quel ordre ; `impression.js` la pose en HTML, `feuillepdf.js` en PDF. Tant que chacun décidait de son côté, les deux ont dérivé — le PDF avait perdu les fiches techniques et les corrections. Ce qu'un moteur omet volontairement est écrit dans son en-tête, pour que ça ne repasse pas pour un oubli.
 - **Un manque porte le geste qui le comble.** La matrice des techniques était un tableau de bord ; elle mène maintenant à la bibliothèque filtrée ou à la création d'un cycle. Un constat qu'on ne peut pas traiter d'un clic n'a rien à faire à l'écran.
+- **Une pause n'a pas de bilan.** `estPause(bloc)` (dans `store.js`) est vrai
+  pour un bloc libre dont l'intitulé se lit comme une pause. Le bilan lui garde
+  sa place et son numéro — il doit se lire dans l'ordre de la séance — mais pas
+  ses contrôles : « Pause eau — à revoir » ne veut rien dire, et la ligne
+  encombrait un bilan qu'on remplit debout, en deux minutes, avec des gants.
+  La reconnaissance passe par le titre et non par un champ de type : un bloc
+  libre n'a que son titre, donc rien à migrer, et les séances déjà bilanées se
+  corrigent toutes seules — `aRevoir()` écarte les pauses à la lecture.
 - **Un chiffre trop mince ne s'affiche pas.** L'équilibre se tait sous trois séances faites : une moyenne sur une séance décrit cette séance et la présente comme une tendance. Mieux vaut dire pourquoi on se tait.
 - **« Entraîner » est un mode, pas un écran.** Il masque la barre de l'appli (`body[data-ecran="glace"]`), un bloc occupe l'écran entier, et tout ce qui s'y actionne fait `--tap` — on le tient d'une main gantée.
 - **L'horloge est un conseil, jamais une autorité.** Une séance ne se déroule pas à l'heure ; le rail montre à la fois le bloc qu'on regarde et celui où l'horloge en est, et une bande propose de se recaler. Le coach reste maître de la position.
@@ -201,6 +218,55 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **Pas d'accès réseau hors de `js/core/distant.js`.** Même loi que pour `localStorage`, même raison.
 - **Rien du distant dans le chemin d'affichage.** Un écran se peint depuis le Store, toujours.
 - **`verifier.html` est le filet.** Toute règle de sécurité ou de synchronisation ajoutée s'y accompagne d'une épreuve — une régression y est silencieuse et coûte des données. On y vérifie surtout ce qui doit être REFUSÉ : une épreuve qui passe alors qu'elle devrait échouer est le pire des cas.
+- **La hiérarchie se fait par la typographie, pas par une boîte.** Six crans
+  (`--t-titre`, `--t-section`, `--t-corps`, `--t-second`, `--t-mention`,
+  `--t-micro`) et deux graisses. Il y en avait vingt-trois, dont cinq dans une
+  bande de douze pour cent : indiscernables, mais chacune était une décision à
+  reprendre. Aucune taille en dur ailleurs — sauf `html` et le point du
+  `@media print`. Avant d'ajouter une bordure ou un fond, essayer un
+  changement de graisse.
+- **Deux modes redéfinissent l'escalier, ils ne réécrivent pas leurs tailles.**
+  `.ecran-glace` (on lit debout, à bout de bras) et `.ecran-impression` (c'est
+  du papier) redéclarent les six jetons. Un seul vocabulaire, trois densités :
+  *parcourir* (dense, sans chrome), *travailler* (aéré, contrôles à la
+  demande), *glace* (énorme, `--tap` partout).
+- **Deux marqueurs, pas six.** `pastille(categorie)` est le **seul élément
+  coloré de l'interface** : elle porte le système de couleurs qui sert aussi de
+  trait de marge au déroulé, de frise et de tête de rayon. Tout le reste —
+  « prête », « jamais fait », « bilan à faire », « il y a 3 séances » — est une
+  `mention()` : du texte, sans fond ni bordure. **Le ton (`attire`, `alerte`,
+  `tiede`, `bien`) ne sert qu'à ce qui appelle un geste** ; une mention qui ne
+  demande rien reste grise. Mettre un ton partout revient à n'en mettre nulle
+  part. Il y avait `.chip`, `.etiquette`, `.indice`, `.marqueur`, `.compte` et
+  `.note-*`, et une carte de séance en affichait jusqu'à huit.
+- **Une liste d'objets homogènes est une colonne, pas une grille de cartes.**
+  Séances et groupes sont des `.rang` dans une `.spine`, où la marge porte la
+  structure (la date, le nom). Les cartes restent là où la vignette EST le
+  contenu — c'est-à-dire nulle part ailleurs que dans la bibliothèque, qui est
+  une planche-contact sans cadre ni ombre.
+- **Un déroulé est un document, pas un tableur.** L'heure en marge en chasse
+  fixe, le titre en corps de texte, la note dessous, la couleur de catégorie en
+  trait de marge. Un champ (note, durée, titre) ne montre sa bordure qu'au
+  survol ou au focus : neuf blocs, c'était neuf cadres gris portant « Consigne,
+  variante, remarque… ».
+- **La frise et le trait de marge ne font pas le même métier.** La frise dit les
+  PROPORTIONS et la limite de glace ; le trait dit la SUITE des catégories.
+  Supprimer l'une au profit de l'autre est une perte de fonction, pas une épure.
+- **Rien d'important ne se révèle au survol.** Un téléphone n'a pas de survol,
+  et c'est l'appareil du bord de la glace. Ce qui apparaît au `:hover` doit être
+  reposé en dur sous `@media (hover: none)`.
+- **La colonne bibliothèque reste à demeure.** Une recherche au point
+  d'insertion ne permet de choisir que ce qu'on sait déjà nommer ; un coach qui
+  prépare cherche justement ce à quoi il n'a pas pensé. **Parcourir n'est pas
+  chercher.** Sous 980 px elle ne tombe pas *sous* le déroulé — hors de portée
+  quand l'écran est petit — elle devient un panneau qu'on appelle.
+- **On atteint une chose en disant son nom.** `⌘K` (`recherche.js`) cherche les
+  trois types d'objets et propose des **actions** sur le résultat, pas seulement
+  une destination. C'est ce qui autorise la barre à rester mince.
+- **Une classe d'un mot est un piège.** `.nom` habillait le champ de titre d'un
+  écran en 1,5 rem, et attrapait au passage tout `<span class="nom">` ailleurs.
+  Une classe porte le nom de ce qu'elle est (`.titre-champ`) ou vit sous une
+  portée.
 - **Un seul auteur dans l'historique git.** Pas de `Co-Authored-By`, pas de pied de message généré.
 
 ---

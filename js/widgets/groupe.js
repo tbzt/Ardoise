@@ -23,11 +23,11 @@
    statistique, et une analyse d'équilibre sur une seule séance est du
    bruit affiché comme un signal. */
 
-import { Store, cycleVierge } from "../core/store.js";
+import { Store, cycleVierge, GLACE_PAR_DEFAUT } from "../core/store.js";
 import { proposerDeroule } from "../core/brouillon.js";
 import { esc, debounce, statut, formaterDate, formaterDuree } from "../core/dom.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
-import { chip } from "./communs.js";
+import { pastille, mention } from "./communs.js";
 import { choisir } from "./dialogue.js";
 import { panneauCoachs, badgePartage, nomDuProprietaire } from "./partage.js";
 import { FICHES, FAMILLES, fichesParFamille } from "../data/referentiel.js";
@@ -80,7 +80,7 @@ export const Groupe = {
         </div>
 
         <h1 class="fiche-titre">${esc(g.nom) || "<em>Groupe sans nom</em>"}</h1>
-        <p class="fiche-meta">${esc(NIVEAUX[g.niveau] || "")}${g.description ? ` · ${esc(g.description)}` : ""}</p>
+        <p class="fiche-meta">${[NIVEAUX[g.niveau] || "", `${g.duree_glace || GLACE_PAR_DEFAUT} min de glace`, g.description].filter(Boolean).map(esc).join(" · ")}</p>
         ${nomDuProprietaire(g.id) ? `<p class="avis">Ce groupe vous a été confié. Vous le préparez et le menez comme les vôtres ; son propriétaire garde la main sur qui y participe.</p>` : ""}
 
         <div class="onglets" role="tablist">
@@ -267,7 +267,7 @@ function ceQuiVient(g, faites, avenir) {
           ? `<ul class="groupe-seances">${avenir
               .map(
                 (s) =>
-                  `<li class="a-venir"><a href="#/seance/${s.id}"><span class="date">${esc(formaterDate(s.date, { year: undefined }))}</span><strong>${esc(s.titre) || "Séance sans titre"}</strong></a><span class="meta">${s.blocs.length ? `${formaterDuree(Store.dureeSeance(s))} · prête` : `<span class="etiquette etat-vide">déroulé vide</span>`}</span></li>`,
+                  `<li class="a-venir"><a href="#/seance/${s.id}"><span class="date">${esc(formaterDate(s.date, { year: undefined }))}</span><strong>${esc(s.titre) || "Séance sans titre"}</strong></a><span class="meta">${s.blocs.length ? `${formaterDuree(Store.dureeSeance(s))} · prête` : `${mention("déroulé vide", "attire")}`}</span></li>`,
               )
               .join("")}</ul>`
           : `<p class="vide">Rien de prévu. « ✦ Proposer une séance » en compose une d'après l'historique, à retoucher.</p>`
@@ -329,7 +329,7 @@ function ceQuOnAFait(g, faites, tri) {
           ? `<table class="usage"><thead><tr><th>Exercice</th><th>Fois</th><th>Dernière</th><th>Temps</th><th>Bilan</th></tr></thead><tbody>${lignes
               .map(
                 (u) =>
-                  `<tr><td>${u.ex ? `<a href="#/exercice/${u.exerciceId}">${esc(u.titre)}</a> ${chip(u.ex.categorie)}` : esc(u.titre)}</td><td class="mono">${u.fois}</td><td class="mono">${esc(formaterCourt(u.derniere))}</td><td class="mono">${u.minutes}'</td><td>${noteBlocs(u.notes)}</td></tr>`,
+                  `<tr><td>${u.ex ? `<a href="#/exercice/${u.exerciceId}">${esc(u.titre)}</a> ${pastille(u.ex.categorie)}` : esc(u.titre)}</td><td class="mono">${u.fois}</td><td class="mono">${esc(formaterCourt(u.derniere))}</td><td class="mono">${u.minutes}'</td><td>${noteBlocs(u.notes)}</td></tr>`,
               )
               .join("")}</tbody></table>`
           : `<p class="vide">Rien encore : l'historique se remplit avec les séances faites.</p>`
@@ -367,7 +367,7 @@ function ceQuOnNaPasFait(g, faites) {
              <ul class="manques">${absentes
                .map((cat) => {
                  const n = jamais.filter((e) => e.categorie === cat).length;
-                 return `<li>${chip(cat)} <span>rien depuis ${trois.length} séances</span><a class="bouton" href="#/exercices">voir ${n} exercice${n > 1 ? "s" : ""} jamais fait${n > 1 ? "s" : ""}</a></li>`;
+                 return `<li>${pastille(cat)} <span>rien depuis ${trois.length} séances</span><a class="bouton" href="#/exercices">voir ${n} exercice${n > 1 ? "s" : ""} jamais fait${n > 1 ? "s" : ""}</a></li>`;
                })
                .join("")}</ul>
            </section>`
@@ -381,7 +381,7 @@ function ceQuOnNaPasFait(g, faites) {
       <ul class="jamais">${Object.keys(CATEGORIES)
         .map((cat) => {
           const liste = jamais.filter((e) => e.categorie === cat);
-          return liste.length ? `<li>${chip(cat)} ${liste.map((e) => `<a href="#/exercice/${e.id}">${esc(e.nom)}</a>`).join(" · ")}</li>` : "";
+          return liste.length ? `<li>${pastille(cat)} ${liste.map((e) => `<a href="#/exercice/${e.id}">${esc(e.nom)}</a>`).join(" · ")}</li>` : "";
         })
         .join("")}</ul>
     </details>`;
@@ -517,9 +517,9 @@ function unCycle(g, cy, enCours) {
           <label>Au <input type="date" name="fin" value="${esc(cy.fin)}"></label>
         </div>
         <p class="mini-titre">Catégories à pousser</p>
-        <div class="chips">${Object.entries(CATEGORIES)
+        <div class="pastilles">${Object.entries(CATEGORIES)
           .filter(([k]) => k !== "gardien")
-          .map(([k, c]) => `<label class="chip chip-case ${(cy.categories || []).includes(k) ? "actif" : ""}" style="--c:${c.couleur}"><input type="checkbox" name="categories" value="${k}" ${(cy.categories || []).includes(k) ? "checked" : ""}> ${esc(c.libelle)}</label>`)
+          .map(([k, c]) => `<label class="pastille pastille-case ${(cy.categories || []).includes(k) ? "actif" : ""}" style="--c:${c.couleur}"><input type="checkbox" name="categories" value="${k}" ${(cy.categories || []).includes(k) ? "checked" : ""}> ${esc(c.libelle)}</label>`)
           .join("")}</div>
         <details class="techniques"><summary>Techniques à viser <small>${visees.length || "aucune"}</small></summary>
           ${Object.entries(fichesParFamille())
@@ -535,10 +535,10 @@ function unCycle(g, cy, enCours) {
 /* ── Le reste ─────────────────────────────────────────────────── */
 
 function noteBlocs(notes) {
-  if (!notes.length) return `<span class="faible">—</span>`;
+  if (!notes.length) return mention("—");
   const m = moy(notes);
   const lib = m >= 2.5 ? "bien" : m >= 1.75 ? "correct" : "à revoir";
-  return `<span class="note-${lib.replace(/\W/g, "")}">${lib}</span> <small>${m.toFixed(1)}/3 sur ${notes.length}</small>`;
+  return `${mention(lib, m >= 2.5 ? "bien" : m >= 1.75 ? "" : "alerte")} ${mention(`${m.toFixed(1)}/3 sur ${notes.length}`)}`;
 }
 
 function equilibre(seances) {
@@ -593,10 +593,13 @@ function reglages(g) {
           .map(([k, v]) => `<option value="${k}"${g.niveau === k ? " selected" : ""}>${esc(v)}</option>`)
           .join("")}</select></label>
         <label>Description <input name="description" value="${esc(g.description)}" placeholder="Effectif, créneau, ce qui caractérise ce groupe…"></label>
+        <label>Temps de glace <input type="number" name="duree_glace" min="5" max="240" value="${esc(g.duree_glace || GLACE_PAR_DEFAUT)}">
+          <small>Le créneau habituel, en minutes. Toute nouvelle séance du groupe part de là.</small></label>
         <div class="dialogue-pied"><button type="submit" value="" class="primaire">Terminé</button></div>
       </form>`;
     d.addEventListener("input", (e) => {
-      if (e.target.name) g[e.target.name] = e.target.value;
+      if (!e.target.name) return;
+      g[e.target.name] = e.target.name === "duree_glace" ? Math.max(5, Number(e.target.value) || GLACE_PAR_DEFAUT) : e.target.value;
     });
     d.addEventListener("close", () => {
       d.remove();

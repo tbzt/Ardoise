@@ -45,7 +45,7 @@ export function apercu(ex) {
       <form method="dialog">
         <div class="apercu-entete">
           <h2>${esc(ex.nom) || "<em>Sans nom</em>"}</h2>
-          <p class="meta"><span class="chip" style="--c:${cat.couleur}">${esc(cat.libelle)}</span> <span>${formaterDuree(ex.duree)}</span> <span>${esc(NIVEAUX[ex.niveau] || "")}</span></p>
+          <p class="meta"><span class="pastille" style="--c:${cat.couleur}">${esc(cat.libelle)}</span> <span>${formaterDuree(ex.duree)}</span> <span>${esc(NIVEAUX[ex.niveau] || "")}</span></p>
         </div>
         <div class="apercu-corps">
           <div class="vignette">${svg(ex.schema)}</div>

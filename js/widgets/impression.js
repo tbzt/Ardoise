@@ -16,7 +16,7 @@ import { Store } from "../core/store.js";
 import { Storage } from "../core/storage.js";
 import { esc } from "../core/dom.js";
 import { feuille } from "../core/feuille.js";
-import { chip, vignette, exporterPdf, exporterCarte } from "./communs.js";
+import { pastille, vignette, exporterPdf, exporterCarte } from "./communs.js";
 import { legende } from "./patinoire.js";
 
 export const Impression = {
@@ -58,7 +58,7 @@ export const Impression = {
               <tr>
                 <td class="mono">${esc(l.heure)}</td>
                 <td class="mono">${l.duree}'</td>
-                <td><strong>${l.numero}. ${esc(l.titre)}</strong>${l.categorie ? ` ${chip(l.categorie.cle)}` : ""}</td>
+                <td><strong>${l.numero}. ${esc(l.titre)}</strong>${l.categorie ? ` ${pastille(l.categorie.cle)}` : ""}</td>
                 <td>${esc(l.note)}</td>
               </tr>`,
               )

@@ -24,20 +24,14 @@
 
 import { Store } from "../core/store.js";
 import { Storage } from "../core/storage.js";
-import { esc, statut, formaterDuree, heureA } from "../core/dom.js";
-import { chip, blocTechnique } from "./communs.js";
+import { esc, statut, formaterDuree, heureA, aujourdhuiIso } from "../core/dom.js";
+import { pastille, blocTechnique } from "./communs.js";
 import { cumulMateriel, libelleMateriel } from "../core/materiel.js";
 import { svg } from "./patinoire.js";
 
 function minutesDe(heure) {
   const m = /^(\d{1,2}):(\d{2})$/.exec(heure || "");
   return m ? Number(m[1]) * 60 + Number(m[2]) : null;
-}
-
-function aujourdhuiIso() {
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
 /* Le matériel de tous les exercices, chiffré : par objet, le maximum
@@ -171,7 +165,7 @@ export const Glace = {
           </p>
           <p class="glace-reste" data-reste hidden></p>
           <h1>${courant + 1}. ${esc(b.titre || (ex && ex.nom) || "")}</h1>
-          ${ex ? `<p class="glace-cat">${chip(ex.categorie)}</p>` : ""}
+          ${ex ? `<p class="glace-cat">${pastille(ex.categorie)}</p>` : ""}
           ${ex && ex.objectif ? `<p class="glace-objectif">${esc(ex.objectif)}</p>` : ""}
           ${ex && ex.points_cles && ex.points_cles.length ? `<ul class="glace-points">${ex.points_cles.map((p) => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}
           ${ex ? `<button type="button" class="glace-schema" data-act="schema"><span class="vignette vignette-${ex.schema && ex.schema.vue === "moitie" ? "moitie" : "entiere"}">${svg(ex.schema)}</span><span class="glace-agrandir">⤢ plein écran</span></button>` : ""}

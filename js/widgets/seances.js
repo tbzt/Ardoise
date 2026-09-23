@@ -1,25 +1,31 @@
 /* Séances — l'écran d'accueil, et la réponse à « qu'est-ce qui vient ? ».
 
-   C'est ici qu'on arrive désormais, et non plus dans la bibliothèque :
-   un coach ouvre Ardoise pour préparer ou pour mener sa prochaine
-   séance, pas pour parcourir cent soixante-sept exercices. La
-   bibliothèque est une ressource où l'on pioche ; elle ne pouvait pas
-   être la porte d'entrée.
+   C'est ici qu'on arrive, et non plus dans la bibliothèque : un coach
+   ouvre Ardoise pour préparer ou pour mener sa prochaine séance, pas
+   pour parcourir cent soixante-sept exercices.
 
    Trois choses que l'écran doit dire sans qu'on ouvre quoi que ce soit :
    — quelle est la prochaine séance, et est-elle prête ;
    — ce qui vient après, pour que « préparer les prochaines semaines »
      devienne un parcours et non une reconstitution ;
-   — ce qui reste à faire, et qui se perd sinon : un bilan qu'on n'a pas
-     rempli, un déroulé resté vide, un point à revoir qu'aucune séance à
-     venir ne reprend.
+   — ce qui reste à faire, et qui se perd sinon.
 
-   Le dernier point est le seul endroit de l'appli où l'on interpelle le
-   coach. Il est donc court, et chaque ligne porte le geste qui la
-   règle. */
+   UNE COLONNE, PAS UNE GRILLE. C'étaient des cartes à bordure et
+   ombre, portant jusqu'à huit atomes d'information pour répondre à
+   une question qui en vaut deux. Une poignée de séances ordonnées
+   par date n'est pas un catalogue à parcourir : c'est une liste, et
+   c'est la DATE qui doit porter la structure. Elle passe donc en
+   marge, et le reste se range derrière elle.
 
-import { Store } from "../core/store.js";
-import { esc, formaterDate, formaterDuree } from "../core/dom.js";
+   LE GESTE DU JOUR. L'appli sait quel jour on est ; ses boutons
+   doivent le dire. Le mardi à 19 h 40, « Bord de glace » n'est pas
+   une action parmi d'autres, c'est la seule qui existe — elle devient
+   le bouton principal, et seulement ce jour-là. */
+
+import { Store, blocDepuisExercice } from "../core/store.js";
+import { esc, formaterJour, formaterDuree, aujourdhuiIso, statut } from "../core/dom.js";
+import { mention } from "./communs.js";
+import { proposerDeroule } from "../core/brouillon.js";
 import { estFaite, aRevoir, seancesFaites, cycleCourant, formaterCourt } from "../core/analyse.js";
 
 let onglet = "avenir";
@@ -40,22 +46,24 @@ export const Seances = {
         <div class="entete">
           <h1>Séances</h1>
           <span class="spacer"></span>
-          <button type="button" class="primaire" data-act="nouvelle">+ Nouvelle séance</button>
+          <button type="button" class="primaire" data-act="nouvelle">Nouvelle séance</button>
         </div>
 
-        <div class="onglets" role="tablist">
-          <button type="button" role="tab" data-onglet="avenir" class="${onglet === "avenir" ? "actif" : ""}" aria-selected="${onglet === "avenir"}">À venir <span class="compte">${avenir.length}</span></button>
-          <button type="button" role="tab" data-onglet="passees" class="${onglet === "passees" ? "actif" : ""}" aria-selected="${onglet === "passees"}">Passées <span class="compte">${passees.length}</span></button>
+        <div class="filtres filtres-seances" role="tablist">
+          <div class="jeu">
+            <button type="button" role="tab" data-onglet="avenir" class="${onglet === "avenir" ? "actif" : ""}" aria-selected="${onglet === "avenir"}">À venir ${mention(avenir.length)}</button>
+            <button type="button" role="tab" data-onglet="passees" class="${onglet === "passees" ? "actif" : ""}" aria-selected="${onglet === "passees"}">Passées ${mention(passees.length)}</button>
+          </div>
+          <span class="spacer"></span>
+          ${onglet === "avenir" ? ligneCycle(avenir[0]) : ""}
         </div>
-
-        ${onglet === "avenir" ? bandeauCycle(avenir[0]) : ""}
 
         ${
           toutes.length === 0
             ? `<p class="vide">Aucune séance. Créez-en une : la proposition de déroulé la remplit d'un coup, et il n'y a plus qu'à retoucher.</p>`
             : liste.length === 0
               ? `<p class="vide">${onglet === "avenir" ? "Rien à venir. La prochaine séance se crée avec le bouton en haut." : "Aucune séance passée pour l'instant."}</p>`
-              : `<div class="cartes cartes-seances">${liste.map((s, i) => carte(s, onglet === "avenir" && i === 0)).join("")}</div>`
+              : `<div class="spine">${liste.map((s) => rangee(s, onglet === "passees")).join("")}</div>`
         }
 
         ${aFaire(toutes, avenir)}`;
@@ -67,6 +75,10 @@ export const Seances = {
       if (b.dataset.act === "nouvelle") {
         const se = Store.seances.creer();
         location.hash = `#/seance/${se.id}`;
+      } else if (b.dataset.act === "proposer" && b.dataset.id) {
+        proposerPour(b.dataset.id);
+      } else if (b.dataset.act === "reprendre") {
+        reprendre(b.dataset.seance, b.dataset.exercice);
       } else if (b.dataset.onglet) {
         onglet = b.dataset.onglet;
         rendre();
@@ -79,52 +91,113 @@ export const Seances = {
   },
 };
 
+/* ── Deux gestes que l'écran peut rendre lui-même ─────────────── */
+
+/* Un déroulé vide porte le geste qui le remplit : on n'envoie pas le
+   coach ouvrir la séance pour y trouver un bouton. */
+function proposerPour(id) {
+  const se = Store.seances.get(id);
+  if (!se) return;
+  const r = proposerDeroule(se);
+  se.blocs = r.blocs;
+  if (!se.objectif && r.objectif) se.objectif = r.objectif;
+  Store.seances.sauver(se);
+  statut(`Déroulé proposé pour le ${formaterCourt(se.date)} — à retoucher.`, {
+    annuler: () => {
+      se.blocs = [];
+      Store.seances.sauver(se);
+    },
+  });
+}
+
+/* « À revoir, et dans aucune séance à venir » : le geste qui comble
+   ce manque est de le remettre au programme, pas d'aller consulter
+   une fiche de groupe. */
+function reprendre(seanceId, exerciceId) {
+  const se = Store.seances.get(seanceId);
+  const ex = Store.exercices.get(exerciceId);
+  if (!se || !ex) return;
+  const bloc = blocDepuisExercice(ex);
+  se.blocs.push(bloc);
+  Store.seances.sauver(se);
+  statut(`« ${ex.nom} » ajouté à la séance du ${formaterCourt(se.date)}.`, {
+    annuler: () => {
+      se.blocs = se.blocs.filter((b) => b.id !== bloc.id);
+      Store.seances.sauver(se);
+    },
+  });
+}
+
 /* ── L'état d'une séance, lisible sans l'ouvrir ───────────────── */
 
+/* Le TON ne sert qu'à ce qui appelle un geste : « prête » se dit en
+   vert parce que c'est une bonne nouvelle qu'on cherche du regard,
+   le reste se tait. */
 function etat(s) {
   const total = Store.dureeSeance(s);
   const glace = Number(s.duree_glace) || 0;
-  if (!s.blocs.length) return { mot: "déroulé vide", classe: "etat-vide" };
-  if (glace && total > glace) return { mot: `dépasse de ${formaterDuree(total - glace)}`, classe: "etat-alerte" };
-  if (estFaite(s) && !(s.bilan && s.bilan.fait)) return { mot: "bilan à faire", classe: "etat-attente" };
-  if (estFaite(s)) return { mot: `★ ${s.bilan.note || "—"}`, classe: "etat-ok" };
-  return { mot: "prête", classe: "etat-ok" };
+  if (!s.blocs.length) return { mot: "déroulé vide", ton: "attire" };
+  if (glace && total > glace) return { mot: `dépasse de ${formaterDuree(total - glace)}`, ton: "alerte" };
+  if (estFaite(s) && !(s.bilan && s.bilan.fait)) return { mot: "bilan à faire", ton: "tiede" };
+  if (estFaite(s)) return { mot: s.bilan.note ? `${"★".repeat(s.bilan.note)}` : "bilan fait", ton: "" };
+  return { mot: "prête", ton: "bien" };
 }
 
-/* La carte n'est pas un <a> : elle en contient plusieurs, et un lien
-   dans un lien est du HTML invalide — le parseur ferme le premier au
-   second et la carte se disloque. C'est donc un <article> avec un lien
-   de couverture étendu par CSS, et les autres posés au-dessus. */
-function carte(s, prochaine) {
-  const total = Store.dureeSeance(s);
+/* ── Une rangée ───────────────────────────────────────────────── */
+
+function rangee(s, passee) {
   const e = etat(s);
-  const faite = estFaite(s);
+  const total = Store.dureeSeance(s);
+  const aujourdhui = !passee && s.date === aujourdhuiIso();
+
+  const meta = [
+    s.groupe ? esc(s.groupe) : "",
+    s.blocs.length ? `${s.blocs.length} bloc${s.blocs.length > 1 ? "s" : ""}` : "",
+    s.blocs.length ? `${formaterDuree(total)}${s.duree_glace ? ` sur ${formaterDuree(s.duree_glace)}` : ""}` : "",
+  ]
+    .filter(Boolean)
+    .map((x) => mention(x))
+    .concat(mention(e.mot, e.ton))
+    .join(`<span class="sep">·</span>`);
+
   return `
-    <article class="carte carte-seance ${prochaine ? "prochaine" : ""}">
-      <p class="date">${esc(formaterDate(s.date))}${s.heure ? ` · ${esc(s.heure)}` : ""}${prochaine ? `<span class="marqueur">prochaine</span>` : ""}</p>
-      <h3><a class="couverture" href="#/seance/${s.id}">${esc(s.titre) || "<em>Séance sans titre</em>"}</a></h3>
-      <p class="meta">
-        ${s.groupe ? `<span>${esc(s.groupe)}</span>` : ""}
-        <span>${s.blocs.length} bloc${s.blocs.length > 1 ? "s" : ""}</span>
-        <span>${formaterDuree(total)}${s.duree_glace ? ` / ${formaterDuree(s.duree_glace)}` : ""}</span>
-        <span class="etiquette ${e.classe}">${esc(e.mot)}</span>
+    <article class="rang ${aujourdhui ? "aujourdhui" : ""} ${passee ? "passee" : ""}">
+      <p class="quand">
+        ${aujourdhui ? `<span class="jour">Aujourd'hui</span>` : `<span class="jour">${esc(formaterJour(s.date))}</span>`}
+        ${aujourdhui ? `${esc(formaterJour(s.date))} · ` : ""}${s.heure ? esc(s.heure.replace(":", " h ")) : ""}
       </p>
-      ${s.objectif ? `<p class="objectif">${esc(s.objectif)}</p>` : ""}
-      <p class="carte-pied">
-        ${
-          faite
-            ? `<a class="carte-lien" href="#/seance/${s.id}/bilan">${s.bilan && s.bilan.fait ? "Voir le bilan" : "Faire le bilan"} →</a>`
-            : s.blocs.length
-              ? `<a class="carte-lien" href="#/seance/${s.id}/glace" title="La séance vue du banc">Bord de glace →</a>`
-              : `<a class="carte-lien" href="#/seance/${s.id}">Composer le déroulé →</a>`
-        }
-      </p>
+      <div class="quoi">
+        <h3><a href="#/seance/${s.id}">${esc(s.titre) || "Séance sans titre"}</a></h3>
+        <p class="ligne-meta">${meta}</p>
+        ${s.objectif && !passee ? `<p class="objectif">${esc(s.objectif)}</p>` : ""}
+        <p class="gestes">${gestes(s, aujourdhui, passee)}</p>
+      </div>
     </article>`;
 }
 
-/* ── Le cycle en cours, en bandeau ────────────────────────────── */
+/* Un seul geste est primaire, et il dépend du jour. */
+function gestes(s, aujourdhui, passee) {
+  if (passee || estFaite(s)) {
+    const fait = s.bilan && s.bilan.fait;
+    return `<a class="${fait ? "lien" : "bouton primaire"}" href="#/seance/${s.id}/bilan">${fait ? "Voir le bilan" : "Faire le bilan"}</a>
+            <a class="lien" href="#/seance/${s.id}">Revoir le déroulé</a>`;
+  }
+  if (!s.blocs.length) {
+    return `<a class="lien" href="#/seance/${s.id}">Préparer</a>
+            <button type="button" class="lien" data-act="proposer" data-id="${s.id}" title="Un déroulé complet calé sur le temps de glace et l'historique du groupe, à retoucher">✦ Proposer un déroulé</button>`;
+  }
+  return aujourdhui
+    ? `<a class="bouton primaire" href="#/seance/${s.id}/glace" title="La séance vue du banc">Bord de glace</a>
+       <a class="lien" href="#/seance/${s.id}">Préparer</a>`
+    : `<a class="lien" href="#/seance/${s.id}">Préparer</a>
+       <a class="lien" href="#/seance/${s.id}/glace" title="La séance vue du banc">Bord de glace</a>`;
+}
 
-function bandeauCycle(prochaine) {
+/* ── Le cycle en cours ────────────────────────────────────────── */
+
+/* C'était une manchette encadrée en haut de l'écran. C'est du
+   contexte : ça se range en fin de ligne de filtres, en gris. */
+function ligneCycle(prochaine) {
   if (!prochaine || !prochaine.groupeId) return "";
   const g = Store.groupes.get(prochaine.groupeId);
   const cy = g && cycleCourant(g, prochaine.date);
@@ -134,33 +207,28 @@ function bandeauCycle(prochaine) {
     .filter((s) => s.groupeId === g.id && s.date >= (cy.debut || "") && s.date <= (cy.fin || "9999"));
   const faites = dans.filter(estFaite).length;
   return `
-    <p class="bandeau-cycle">
-      <strong>Cycle « ${esc(cy.nom || "en cours")} »</strong>
-      <span>${esc(formaterCourt(cy.debut))} → ${esc(formaterCourt(cy.fin))}</span>
-      <span>${faites} séance${faites > 1 ? "s" : ""} sur ${dans.length}</span>
-      ${cy.note ? `<span class="note">${esc(cy.note)}</span>` : ""}
-      <a href="#/groupe/${g.id}">voir le groupe →</a>
+    <p class="ligne-cycle">
+      Cycle <b>« ${esc(cy.nom || "en cours")} »</b><span class="sep">·</span>${faites} sur ${dans.length}<span class="sep">·</span>jusqu'au ${esc(formaterCourt(cy.fin))}<span class="sep">·</span><a class="lien" href="#/groupe/${g.id}">le groupe</a>
     </p>`;
 }
 
 /* ── À faire ──────────────────────────────────────────────────── */
 
 /* Le seul endroit où l'appli interpelle le coach. Trois motifs, pas un
-   de plus, et chacun porte le geste qui le règle. Un rappel qu'on ne
-   peut pas traiter d'un clic n'a rien à faire ici. */
+   de plus, et chacun porte le geste qui le règle — le geste lui-même,
+   pas un lien vers l'écran où il se trouve. */
 function aFaire(toutes, avenir) {
   const lignes = [];
 
   for (const s of toutes.filter((s) => estFaite(s) && !(s.bilan && s.bilan.fait)).slice(-3)) {
     lignes.push(
-      `<li><span>Bilan manquant — ${esc(formaterCourt(s.date))}${s.titre ? ` · ${esc(s.titre)}` : ""}</span><a class="bouton" href="#/seance/${s.id}/bilan">Faire le bilan</a></li>`,
+      `<li><span>${mention("Bilan manquant", "tiede")}<span class="sep">·</span>${esc(formaterCourt(s.date))}${s.titre ? `<span class="sep">·</span>${esc(s.titre)}` : ""}</span><a class="lien" href="#/seance/${s.id}/bilan">Faire le bilan</a></li>`,
     );
   }
 
-  const vides = avenir.filter((s) => !s.blocs.length);
-  for (const s of vides.slice(0, 2)) {
+  for (const s of avenir.filter((s) => !s.blocs.length).slice(0, 2)) {
     lignes.push(
-      `<li><span>Déroulé vide — ${esc(formaterCourt(s.date))}${s.titre ? ` · ${esc(s.titre)}` : ""}</span><a class="bouton" href="#/seance/${s.id}">Préparer</a></li>`,
+      `<li><span>${mention("Déroulé vide", "attire")}<span class="sep">·</span>${esc(formaterCourt(s.date))}${s.titre ? `<span class="sep">·</span>${esc(s.titre)}` : ""}</span><button type="button" class="lien" data-act="proposer" data-id="${s.id}">✦ Proposer un déroulé</button></li>`,
     );
   }
 
@@ -170,13 +238,18 @@ function aFaire(toutes, avenir) {
   for (const g of Store.groupes.tous()) {
     const revoir = aRevoir(seancesFaites(g.id), 2);
     if (!revoir.length) continue;
-    const prevus = new Set(
-      avenir.filter((s) => s.groupeId === g.id).flatMap((s) => (s.blocs || []).map((b) => b.exerciceId).filter(Boolean)),
-    );
-    const oublies = [...new Set(revoir.filter((r) => r.exerciceId && !prevus.has(r.exerciceId)).map((r) => r.titre))];
+    const suivantes = avenir.filter((s) => s.groupeId === g.id);
+    const prevus = new Set(suivantes.flatMap((s) => (s.blocs || []).map((b) => b.exerciceId).filter(Boolean)));
+    const oublies = revoir.filter((r) => r.exerciceId && !prevus.has(r.exerciceId));
     if (!oublies.length) continue;
+    const cible = suivantes[0];
+    const noms = [...new Set(oublies.map((r) => r.titre))].slice(0, 3).map(esc).join(" · ");
     lignes.push(
-      `<li><span>À revoir avec ${esc(g.nom || "ce groupe")}, dans aucune séance à venir : ${oublies.slice(0, 3).map(esc).join(" · ")}</span><a class="bouton" href="#/groupe/${g.id}">Voir le groupe</a></li>`,
+      `<li><span>${mention("↻ À revoir", "alerte")} avec ${esc(g.nom || "ce groupe")}, dans aucune séance à venir<span class="sep">·</span>${noms}</span>${
+        cible
+          ? `<button type="button" class="lien" data-act="reprendre" data-seance="${cible.id}" data-exercice="${oublies[0].exerciceId}" title="Ajouter « ${esc(oublies[0].titre)} » au déroulé">Le mettre au ${esc(formaterCourt(cible.date))}</button>`
+          : `<a class="lien" href="#/groupe/${g.id}">Voir le groupe</a>`
+      }</li>`,
     );
   }
 

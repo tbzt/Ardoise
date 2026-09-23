@@ -6,9 +6,29 @@ import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { FORMES_TRAVAIL, fiche } from "../data/referentiel.js";
 import { svg } from "./patinoire.js";
 
-export function chip(categorie) {
+/* LA PASTILLE — le seul élément coloré de l'interface. Elle porte le
+   système de couleurs qui sert aussi de trait de marge au déroulé, de
+   frise et de tête de rayon : une couleur, un sens, partout le même. */
+export function pastille(categorie) {
   const c = CATEGORIES[categorie] || { libelle: categorie, couleur: "#888" };
-  return `<span class="chip" style="--c:${c.couleur}">${esc(c.libelle)}</span>`;
+  return `<span class="pastille" style="--c:${c.couleur}">${esc(c.libelle)}</span>`;
+}
+
+/* LA MENTION — un état se lit, il ne se décore pas.
+
+   Il y avait six espèces de petites étiquettes (.chip coloré,
+   .etiquette encadrée, .indice, .marqueur, .compte en pastille,
+   .note-*), toutes de tailles et de traitements différents pour des
+   métiers différents, et une carte de séance en affichait jusqu'à
+   huit. Il en reste deux : la pastille ci-dessus, et ceci — du texte.
+
+   Le TON ne sert qu'à ce qui appelle un geste. Une mention qui ne
+   demande rien reste grise : c'est ce silence-là qui rend lisibles
+   les deux ou trois qui parlent. Mettre un ton partout revient à
+   n'en mettre nulle part. */
+export function mention(texte, ton = "") {
+  if (texte === "" || texte === null || texte === undefined) return "";
+  return `<span class="mention${ton ? ` ${ton}` : ""}">${esc(texte)}</span>`;
 }
 
 export function libelleNiveau(n) {
@@ -24,14 +44,18 @@ export function vignette(schema) {
   return `<div class="vignette vignette-${vue}">${svg(schema, { classe: "mini" })}</div>`;
 }
 
+/* Les filtres étaient neuf pastilles colorées. La couleur d'une
+   catégorie dit « cet exercice est un exercice de tir » ; elle n'a rien
+   à dire sur le MEUBLE qui sert à filtrer. Ce sont donc des mots, et la
+   couleur reste à l'exercice. */
 export function barreFiltres(filtre) {
   return `
     <div class="filtres">
       <input type="search" name="q" placeholder="Chercher un exercice…" value="${esc(filtre.q)}" aria-label="Recherche">
-      <div class="chips" role="group" aria-label="Catégories">
-        <button type="button" class="chip ${filtre.categorie ? "" : "actif"}" data-cat="" style="--c:#5a6b7a">Toutes</button>
+      <div class="jeu" role="group" aria-label="Catégories">
+        <button type="button" class="${filtre.categorie ? "" : "actif"}" data-cat="">Toutes</button>
         ${Object.entries(CATEGORIES)
-          .map(([k, c]) => `<button type="button" class="chip ${filtre.categorie === k ? "actif" : ""}" data-cat="${k}" style="--c:${c.couleur}">${esc(c.libelle)}</button>`)
+          .map(([k, c]) => `<button type="button" class="${filtre.categorie === k ? "actif" : ""}" data-cat="${k}">${esc(c.libelle)}</button>`)
           .join("")}
       </div>
     </div>`;

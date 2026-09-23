@@ -20,7 +20,7 @@ import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { FORMES_TRAVAIL, FAMILLES, fichesParFamille } from "../data/referentiel.js";
 import { creerEditeur } from "./editeur.js";
 import { choisir } from "./dialogue.js";
-import { exporterFicheAtelier, chip, blocTechnique } from "./communs.js";
+import { exporterFicheAtelier, pastille, mention, blocTechnique } from "./communs.js";
 import { svg } from "./patinoire.js";
 import { estFaite, formaterCourt } from "../core/analyse.js";
 
@@ -62,7 +62,7 @@ function lire(sec, ex) {
     </div>
 
     <h1 class="fiche-titre">${esc(ex.nom) || "<em>Sans nom</em>"}</h1>
-    <p class="fiche-meta">${chip(ex.categorie)} <span>${ex.duree} min</span> <span>${esc(NIVEAUX[ex.niveau] || "")}</span></p>
+    <p class="fiche-meta">${pastille(ex.categorie)} <span>${ex.duree} min</span> <span>${esc(NIVEAUX[ex.niveau] || "")}</span></p>
 
     <div class="fiche-corps">
       <div class="fiche-schema-lecture">
@@ -115,7 +115,7 @@ function historique(ex) {
           .slice(0, 8)
           .map(
             (l) =>
-              `<li><a href="#/seance/${l.se.id}">${esc(formaterCourt(l.se.date))}${l.se.titre ? ` · ${esc(l.se.titre)}` : ""}</a>${l.mot ? ` <span class="note-${l.mot.replace(/\W/g, "")}">${esc(l.mot)}</span>` : ""}${l.commentaire ? ` <small>${esc(l.commentaire)}</small>` : ""}</li>`,
+              `<li><a href="#/seance/${l.se.id}">${esc(formaterCourt(l.se.date))}${l.se.titre ? ` · ${esc(l.se.titre)}` : ""}</a>${l.mot ? ` ${mention(l.mot, l.mot === "bien" ? "bien" : l.mot === "à revoir" ? "alerte" : "")}` : ""}${l.commentaire ? ` <small>${esc(l.commentaire)}</small>` : ""}</li>`,
           )
           .join("")}
       </ul>
@@ -138,7 +138,7 @@ function modifier(sec, ex) {
       <span class="etat" data-etat>Enregistré</span>
       <a class="bouton primaire" href="#/exercice/${ex.id}">Terminé</a>
     </div>
-    <input class="nom" name="nom" placeholder="Nom de l'exercice" value="${esc(ex.nom)}" aria-label="Nom de l'exercice">
+    <input class="titre-champ" name="nom" placeholder="Nom de l'exercice" value="${esc(ex.nom)}" aria-label="Nom de l'exercice">
     <div class="fiche-corps">
       <div class="fiche-schema" data-editeur></div>
       <form class="fiche-form" autocomplete="off">
@@ -196,7 +196,7 @@ function modifier(sec, ex) {
     },
   });
 
-  sec.querySelector(".nom").addEventListener("input", (e) => {
+  sec.querySelector(".titre-champ").addEventListener("input", (e) => {
     ex.nom = e.target.value;
     toucher();
   });

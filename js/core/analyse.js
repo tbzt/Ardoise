@@ -2,25 +2,20 @@
    Rien n'est stocké ici : tout se recalcule à partir des séances et des
    bilans. Les règles sont volontairement simples et lisibles ; un coach
    doit pouvoir comprendre pourquoi l'appli lui dit quelque chose. */
-import { Store } from "./store.js";
+import { Store, estPause } from "./store.js";
 import { CATEGORIES } from "../data/catalogue.js";
+import { aujourdhuiIso } from "./dom.js";
 
 /* Part de temps de glace conseillée, par catégorie, pour un groupe
    d'adultes débutants. Ce n'est pas une loi : c'est le point de départ
    des conseils, et il se lit dans l'écran du groupe. */
 export const CIBLE = { echauffement: 8, patinage: 30, maniement: 15, passe: 15, tir: 12, jeu: 15, retour: 5 };
 
-function aujourdhui() {
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
-}
-
 /* Une séance compte comme faite si son bilan le dit, ou si sa date est
    passée et qu'elle avait un déroulé. */
 export function estFaite(se) {
   if (se.bilan && se.bilan.fait) return true;
-  return !!(se.date && se.date < aujourdhui() && se.blocs && se.blocs.length);
+  return !!(se.date && se.date < aujourdhuiIso() && se.blocs && se.blocs.length);
 }
 
 export function seancesDuGroupe(groupeId) {
@@ -105,6 +100,9 @@ export function aRevoir(seances, n = 3) {
   for (const se of faites) {
     const notes = (se.bilan && se.bilan.blocs) || {};
     for (const b of se.blocs || []) {
+      // une pause notée « à revoir » dans un ancien bilan ne doit pas
+      // ressortir : la règle se tient ici, pas dans chaque écran
+      if (estPause(b)) continue;
       const r = notes[b.id];
       if (r && r.note === 1) out.push({ titre: b.titre, exerciceId: b.exerciceId, date: se.date, commentaire: r.commentaire || "" });
     }
@@ -190,6 +188,6 @@ export function libelleUsage(u) {
 /* Le cycle d'un groupe qui couvre une date (ou aujourd'hui). */
 export function cycleCourant(groupe, date) {
   if (!groupe || !Array.isArray(groupe.cycles)) return null;
-  const d = date || aujourdhui();
+  const d = date || aujourdhuiIso();
   return groupe.cycles.find((c) => c.debut && c.fin && c.debut <= d && d <= c.fin) || null;
 }

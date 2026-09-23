@@ -3,6 +3,7 @@
    écriture, et un signal « ça a changé » pour les écrans. */
 import { Storage } from "./storage.js";
 import { nouvelId } from "./ids.js";
+import { aujourdhuiIso, sansAccents } from "./dom.js";
 
 let exercices = Storage.lire("exercices", []);
 let seances = Storage.lire("seances", []);
@@ -24,12 +25,6 @@ function persisterSeances() {
 function persisterGroupes() {
   Storage.ecrire("groupes", groupes);
   notifier("groupes");
-}
-
-function aujourdhui() {
-  const d = new Date();
-  const p = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
 /* Un exercice vide, complet : chaque champ existe, même vide, pour que
@@ -55,16 +50,22 @@ export function exerciceVierge() {
   };
 }
 
+/* La durée de glace d'une séance sans groupe. Avec un groupe, c'est
+   la sienne qui vaut : un créneau ne change pas d'une semaine sur
+   l'autre, et la retaper à chaque fois est une corvée qui finit par
+   se tromper. */
+export const GLACE_PAR_DEFAUT = 60;
+
 export function seanceVierge() {
   return {
     id: nouvelId("se"),
     titre: "",
-    date: aujourdhui(),
+    date: aujourdhuiIso(),
     heure: "",
     groupe: "",
     groupeId: null,
     lieu: "",
-    duree_glace: 60,
+    duree_glace: GLACE_PAR_DEFAUT,
     objectif: "",
     notes: "",
     blocs: [],
@@ -82,6 +83,8 @@ export function groupeVierge() {
     nom: "",
     niveau: "debutant",
     description: "",
+    // le créneau du groupe : repris par toutes ses séances
+    duree_glace: GLACE_PAR_DEFAUT,
     cycles: [],
     cree: Date.now(),
     modifie: Date.now(),
@@ -109,6 +112,21 @@ export function blocDepuisExercice(ex) {
 }
 export function blocLibre(titre = "", duree = 5) {
   return { id: nouvelId("bl"), exerciceId: null, titre, duree, note: "" };
+}
+
+/* Une pause occupe du temps de glace, mais il n'y a rien à y juger :
+   « Pause eau — à revoir » ne veut rien dire, et la ligne encombrait un
+   bilan qu'on remplit debout, en deux minutes, avec des gants.
+
+   On la reconnaît à son intitulé plutôt qu'à un champ de type : un bloc
+   libre n'a que son titre, et une pause écrite l'an dernier n'aurait
+   pas eu le champ. Rien à migrer, donc, et les séances déjà bilanées se
+   corrigent toutes seules. Un bloc rattaché à un exercice n'est jamais
+   une pause, quel que soit son nom. */
+const MOTS_PAUSE = /(^|\W)(pause|eau|boire|hydrat|recup|repos|souffler|gourde)/;
+
+export function estPause(b) {
+  return !!b && !b.exerciceId && MOTS_PAUSE.test(sansAccents(b.titre || ""));
 }
 
 export const Store = {
@@ -184,8 +202,13 @@ export const Store = {
       persisterSeances();
       return se;
     },
+    /* Créée depuis un groupe, une séance prend son créneau. C'est le
+       seul endroit où la valeur par défaut se décide : partout
+       ailleurs (brouillon, frise, dépassement) elle est déjà là. */
     creer(base = {}) {
-      return this.sauver({ ...seanceVierge(), ...base });
+      const g = base.groupeId ? Store.groupes.get(base.groupeId) : null;
+      const glace = g && Number(g.duree_glace) > 0 ? { duree_glace: Number(g.duree_glace) } : {};
+      return this.sauver({ ...seanceVierge(), ...glace, ...base });
     },
     dupliquer(id) {
       const src = this.get(id);
@@ -193,7 +216,7 @@ export const Store = {
       const copie = JSON.parse(JSON.stringify(src));
       copie.id = nouvelId("se");
       copie.titre = src.titre ? `${src.titre} (copie)` : "";
-      copie.date = aujourdhui();
+      copie.date = aujourdhuiIso();
       copie.blocs.forEach((b) => (b.id = nouvelId("bl")));
       copie.cree = Date.now();
       return this.sauver(copie);

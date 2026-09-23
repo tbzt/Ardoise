@@ -19,6 +19,7 @@ import { Groupes } from "./widgets/groupes.js";
 import { Groupe } from "./widgets/groupe.js";
 import { choisir } from "./widgets/dialogue.js";
 import { brancherCompte } from "./widgets/compte.js";
+import { brancherRecherche } from "./widgets/recherche.js";
 
 const main = document.getElementById("main");
 let ecran = null;
@@ -96,6 +97,7 @@ function monter() {
 /* ── Démarrage ─────────────────────────────────────────────────── */
 
 Theme.brancher(document.getElementById("act-theme"));
+brancherRecherche(document.getElementById("act-recherche"));
 
 /* Le compte est facultatif : sans lui, rien de ce qui suit ne
    s'exécute et l'appli est exactement celle d'avant. */

@@ -41,8 +41,8 @@ Livrée avec **167 exercices** et deux séances types pour **adultes débutants*
 - Si la séance a une heure et qu'on est le bon jour, le **bloc en cours** est mis en avant avec le temps restant, les blocs passés s'estompent, et l'écran reste allumé.
 
 ### Suivre — les groupes et leur historique
-- Chaque séance se rattache à un **groupe** (une équipe, une section). Le groupe garde la mémoire : séances faites, temps de glace, exercices déjà faits (combien de fois, la dernière date, comment ça s'est passé), et ceux jamais essayés.
-- Un **bilan** se remplit en deux minutes au bas du bord de glace : par bloc, fait ou non, à revoir / correct / bien, un mot ; pour la séance, présents, une note sur cinq, et ce qu'il faut retenir.
+- Chaque séance se rattache à un **groupe** (une équipe, une section). Le groupe porte son **temps de glace habituel** : ses nouvelles séances partent de là, sans qu'on ait à le retaper. Il garde la mémoire : séances faites, temps de glace, exercices déjà faits (combien de fois, la dernière date, comment ça s'est passé), et ceux jamais essayés.
+- Un **bilan** se remplit en deux minutes au bas du bord de glace : par bloc, fait ou non, à revoir / correct / bien, un mot — les pauses gardent leur place dans la liste mais ne se jugent pas ; pour la séance, présents, une note sur cinq, et ce qu'il faut retenir.
 - La fiche du groupe montre les **techniques travaillées** (et celles jamais abordées, le socle des débutants étant marqué) et **analyse** l'historique : équilibre du temps par catégorie face à une part conseillée pour des adultes débutants, catégories absentes depuis plusieurs séances, séance qui en répète une autre, blocs à retravailler d'après les bilans.
 - Un groupe se planifie par **cycles** : quatre à six semaines avec un thème, des catégories à pousser et des techniques à viser. Le brouillon de séance s'y cale, et la séance affiche le cycle en cours.
 - En préparant une séance, la bibliothèque indique **« jamais fait »** ou **« fait il y a N séances »** pour ce groupe, un panneau rappelle la **dernière fois** (ce qui a été fait, à retenir, à revoir), et une alerte signale une séance qui **répète** une précédente.
