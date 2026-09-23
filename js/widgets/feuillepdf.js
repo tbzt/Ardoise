@@ -1,11 +1,21 @@
 /* FeuillePdf — la feuille de séance en PDF, fabriquée dans le
-   navigateur : le plan en tête, puis chaque exercice avec son schéma
-   (rendu en image), sa description et ses points clés. Même contenu
-   que l'écran d'impression, mais un vrai fichier qu'on envoie au groupe
-   ou qu'on garde sur le téléphone. */
+   navigateur.
+
+   Ce fichier ne décide pas de ce que porte la feuille : il reçoit le
+   document de `core/feuille.js` — le même que l'écran d'impression — et
+   le pose en points PostScript. Les deux sorties portaient les mêmes
+   parties tant qu'on pensait à les modifier toutes les deux ; elles
+   avaient dérivé, le PDF ayant perdu en route les fiches techniques et
+   les corrections de chaque exercice.
+
+   Une seule chose de la feuille écran ne se retrouve pas ici : la
+   LÉGENDE des schémas. Elle vaut vingt-cinq vignettes, qu'il faudrait
+   rasteriser une à une ; c'est délibéré, et c'est écrit ici pour que ça
+   ne repasse pas pour un oubli. */
 import { Store } from "../core/store.js";
 import { nouveauDocument, couperLignes, largeurTexte } from "../core/pdf.js";
 import { formaterDate, formaterDuree, heureA } from "../core/dom.js";
+import { feuille } from "../core/feuille.js";
 import { CATEGORIES, NIVEAUX } from "../data/catalogue.js";
 import { FORMES_TRAVAIL, fiche } from "../data/referentiel.js";
 import { cumulMateriel, libelleMateriel } from "../core/materiel.js";
@@ -61,6 +71,7 @@ async function rasteriser(schema, echelle = 2.5, qualite = 0.88) {
 }
 
 export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
+  const d = feuille(se);
   const doc = nouveauDocument(A4);
   let page = doc.nouvellePage();
   let y = HAUT;
@@ -74,29 +85,19 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
   };
 
   /* ── En-tête ────────────────────────────────────────────── */
-  const titre = se.titre || "Séance";
+  const titre = d.titre;
   const lignesTitre = couperLignes(titre, "gras", 20, LARGEUR_UTILE);
   y += 14;
   y = page.lignes(MARGE, y, lignesTitre, { police: "gras", taille: 20, couleur: ENCRE, interligne: 1.15 });
-  const meta = [formaterDate(se.date), se.heure, se.groupe, se.lieu, `${formaterDuree(se.duree_glace)} de glace`].filter(Boolean).join("  ·  ");
-  y = page.lignes(MARGE, y + 2, couperLignes(meta, "normal", 10, LARGEUR_UTILE), { taille: 10, couleur: GRIS });
-  if (se.objectif) {
-    y = page.lignes(MARGE, y + 2, couperLignes(se.objectif, "oblique", 10.5, LARGEUR_UTILE), { police: "oblique", taille: 10.5, couleur: ENCRE });
+  y = page.lignes(MARGE, y + 2, couperLignes(d.meta.join("  ·  "), "normal", 10, LARGEUR_UTILE), { taille: 10, couleur: GRIS });
+  if (d.objectif) {
+    y = page.lignes(MARGE, y + 2, couperLignes(d.objectif, "oblique", 10.5, LARGEUR_UTILE), { police: "oblique", taille: 10.5, couleur: ENCRE });
   }
   y += 6;
   page.ligne(MARGE, y, MARGE + LARGEUR_UTILE, y, { epaisseur: 1.2, couleur: ENCRE });
   y += 14;
 
   /* ── Le plan ────────────────────────────────────────────── */
-  const total = Store.dureeSeance(se);
-  let t = 0;
-  const lignesPlan = se.blocs.map((b) => {
-    const ex = b.exerciceId ? Store.exercices.get(b.exerciceId) : null;
-    const debut = t;
-    t += Number(b.duree) || 0;
-    return { b, ex, debut };
-  });
-
   const colonnes = { heure: MARGE, duree: MARGE + 48, bloc: MARGE + 84, note: MARGE + 320 };
   const largeurBloc = colonnes.note - colonnes.bloc - 10;
   const largeurNote = MARGE + LARGEUR_UTILE - colonnes.note;
@@ -105,31 +106,27 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
      texte est un peu plus bas, et le filet se trace sous la rangée. */
   const entetePlan = () => {
     const yb = y + 7;
-    page.texte(colonnes.heure, yb, "HEURE", { police: "gras", taille: 7.5, couleur: GRIS });
-    page.texte(colonnes.duree, yb, "DURÉE", { police: "gras", taille: 7.5, couleur: GRIS });
-    page.texte(colonnes.bloc, yb, "BLOC", { police: "gras", taille: 7.5, couleur: GRIS });
-    page.texte(colonnes.note, yb, "NOTE", { police: "gras", taille: 7.5, couleur: GRIS });
+    const x = [colonnes.heure, colonnes.duree, colonnes.bloc, colonnes.note];
+    d.plan.colonnes.forEach((c, i) => page.texte(x[i], yb, c.toUpperCase(), { police: "gras", taille: 7.5, couleur: GRIS }));
     y += 12;
     page.ligne(MARGE, y, MARGE + LARGEUR_UTILE, y, { epaisseur: 0.6, couleur: REGLE });
     y += 2;
   };
   entetePlan();
 
-  lignesPlan.forEach(({ b, ex, debut }, i) => {
-    const titreBloc = `${i + 1}. ${b.titre || (ex && ex.nom) || ""}`;
-    const lTitre = couperLignes(titreBloc, "gras", 10, largeurBloc);
-    const lNote = couperLignes(b.note || "", "normal", 9, largeurNote);
-    const cat = ex ? CATEGORIES[ex.categorie] : null;
-    const hauteur = Math.max(lTitre.length * 12 + (cat ? 10 : 0), lNote.length * 11.5, 12) + 10;
+  d.plan.lignes.forEach((l) => {
+    const lTitre = couperLignes(`${l.numero}. ${l.titre}`, "gras", 10, largeurBloc);
+    const lNote = couperLignes(l.note, "normal", 9, largeurNote);
+    const hauteur = Math.max(lTitre.length * 12 + (l.categorie ? 10 : 0), lNote.length * 11.5, 12) + 10;
     if (y + hauteur > BAS) {
       nouvellePage();
       entetePlan();
     }
     const yb = y + 13;
-    page.texte(colonnes.heure, yb, heureA(se.heure, debut), { taille: 9.5, couleur: GRIS });
-    page.texte(colonnes.duree, yb, `${b.duree}'`, { taille: 9.5, couleur: GRIS });
+    page.texte(colonnes.heure, yb, l.heure, { taille: 9.5, couleur: GRIS });
+    page.texte(colonnes.duree, yb, `${l.duree}'`, { taille: 9.5, couleur: GRIS });
     const yFin = page.lignes(colonnes.bloc, yb, lTitre, { police: "gras", taille: 10, couleur: ENCRE, interligne: 1.2 });
-    if (cat) page.texte(colonnes.bloc, yFin - 1, cat.libelle, { taille: 8, couleur: hex(cat.couleur) });
+    if (l.categorie) page.texte(colonnes.bloc, yFin - 1, l.categorie.libelle, { taille: 8, couleur: hex(l.categorie.couleur) });
     if (lNote.length && lNote[0]) page.lignes(colonnes.note, yb, lNote, { taille: 9, couleur: ENCRE, interligne: 1.28 });
     y += hauteur;
     page.ligne(MARGE, y, MARGE + LARGEUR_UTILE, y, { epaisseur: 0.4, couleur: REGLE });
@@ -137,12 +134,11 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
   place(24);
   page.ligne(MARGE, y, MARGE + LARGEUR_UTILE, y, { epaisseur: 1, couleur: ENCRE });
   y += 14;
-  page.texte(colonnes.duree, y, `${total}'`, { police: "gras", taille: 9.5, couleur: ENCRE });
-  const depasse = total > (Number(se.duree_glace) || 0);
-  page.texte(colonnes.bloc, y, depasse ? `Dépasse le temps de glace de ${total - se.duree_glace} min` : "Total", {
+  page.texte(colonnes.duree, y, `${d.plan.total.minutes}'`, { police: "gras", taille: 9.5, couleur: ENCRE });
+  page.texte(colonnes.bloc, y, d.plan.total.libelle, {
     police: "gras",
     taille: 9.5,
-    couleur: depasse ? ROUGE : ENCRE,
+    couleur: d.plan.total.depasse ? ROUGE : ENCRE,
   });
   y += 26;
 
@@ -150,9 +146,8 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
   const xTexte = MARGE + LARGEUR_IMAGE + ECART;
   const largeurTexteCol = LARGEUR_UTILE - LARGEUR_IMAGE - ECART;
 
-  for (const { b, ex, debut } of lignesPlan) {
-    if (!ex) continue;
-    const image = await rasteriser(ex.schema, echelle);
+  for (const f of d.fiches) {
+    const image = await rasteriser(f.schema, echelle);
     const idImage = doc.ajouterImage(image.octets, image.w, image.h);
     const hImage = LARGEUR_IMAGE * image.ratio;
 
@@ -162,17 +157,25 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
       const lignes = couperLignes(texte, opts.police || "normal", opts.taille, largeurTexteCol - (opts.retrait || 0));
       parties.push({ lignes, opts, avant });
     };
-    ajouter(b.titre || ex.nom, { police: "gras", taille: 12.5, couleur: ENCRE, interligne: 1.15 });
-    const catLib = (CATEGORIES[ex.categorie] || {}).libelle || "";
-    ajouter(`${heureA(se.heure, debut)}  ·  ${b.duree} min  ·  ${catLib}`, { taille: 8.5, couleur: GRIS }, 1);
-    if (ex.objectif) ajouter(ex.objectif, { police: "oblique", taille: 9.5, couleur: ENCRE }, 5);
-    if (ex.description) ajouter(ex.description, { taille: 9.2, couleur: ENCRE, interligne: 1.32 }, 5);
-    if (ex.points_cles && ex.points_cles.length) {
+    ajouter(f.titre, { police: "gras", taille: 12.5, couleur: ENCRE, interligne: 1.15 });
+    ajouter(f.situation, { taille: 8.5, couleur: GRIS }, 1);
+    if (f.objectif) ajouter(f.objectif, { police: "oblique", taille: 9.5, couleur: ENCRE }, 5);
+    if (f.description) ajouter(f.description, { taille: 9.2, couleur: ENCRE, interligne: 1.32 }, 5);
+    if (f.points.length) {
       parties.push({ lignes: [], opts: {}, avant: 4 });
-      for (const p of ex.points_cles) ajouter(p, { taille: 9.2, couleur: ENCRE, retrait: 10, puce: true, interligne: 1.32 }, 0);
+      for (const p of f.points) ajouter(p, { taille: 9.2, couleur: ENCRE, retrait: 10, puce: true, interligne: 1.32 }, 0);
     }
-    if (ex.materiel) ajouter(`Matériel : ${ex.materiel}`, { taille: 8.8, couleur: GRIS }, 5);
-    if (b.note) ajouter(`Pour cette séance : ${b.note}`, { police: "gras", taille: 9, couleur: ENCRE }, 4);
+    /* Matériel, fiches techniques, corrections, note du bloc : le
+       document les donne dans l'ordre, avec leur étiquette. C'est ce
+       qui fait qu'en ajouter une les met dans les deux sorties. */
+    for (const p of f.parties) {
+      const valeur = Array.isArray(p.valeur) ? p.valeur.join(" · ") : p.valeur;
+      ajouter(
+        `${p.etiquette} : ${valeur}`,
+        p.appuye ? { police: "gras", taille: 9, couleur: ENCRE } : { taille: 8.8, couleur: GRIS, interligne: 1.3 },
+        p.appuye ? 4 : 5,
+      );
+    }
 
     const hTexte = parties.reduce((h, p) => h + p.avant + p.lignes.length * (p.opts.taille || 9) * (p.opts.interligne || 1.3), 0);
     /* Un bloc commence sur la page s'il y a la place du schéma et de
@@ -213,8 +216,8 @@ export async function seanceEnPdf(se, { echelle = 2.5 } = {}) {
   }
 
   /* ── Notes ──────────────────────────────────────────────── */
-  if (se.notes) {
-    const lignes = couperLignes(se.notes, "normal", 9.5, LARGEUR_UTILE);
+  if (d.notes) {
+    const lignes = couperLignes(d.notes, "normal", 9.5, LARGEUR_UTILE);
     place(30 + lignes.length * 12.5);
     page.ligne(MARGE, y, MARGE + LARGEUR_UTILE, y, { epaisseur: 1, couleur: ENCRE });
     y += 16;

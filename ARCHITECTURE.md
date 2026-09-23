@@ -28,8 +28,8 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/seance.js     PRÉPARER : réglages repliés, bande de contexte, déroulé, bibliothèque
                    js/widgets/glace.js      ENTRAÎNER : un mode plein écran, un bloc par écran, rail et recalage
                    js/widgets/bilan.js      DÉBRIEFER : son propre écran, atteint par la fin de la séance
-                   js/widgets/impression.js la feuille de séance imprimable
-                   js/widgets/feuillepdf.js la même feuille en PDF (schémas rendus en JPEG via canvas)
+                   js/widgets/impression.js la feuille posée en HTML (elle s'imprime)
+                   js/widgets/feuillepdf.js la MÊME feuille posée en PDF (schémas rendus en JPEG via canvas)
 2. Composants      js/widgets/editeur.js    l'éditeur de schéma (outils, gestes, historique)
                    js/widgets/patinoire.js  le rendu SVG : la glace et les objets
                    js/widgets/communs.js    pastilles, filtres, vignettes partagés
@@ -37,6 +37,7 @@ Le patron vient de [GNomon](https://github.com/tbzt/GNomon) et de [ShadowHerds](
                    js/widgets/compte.js     la porte, l'indicateur de synchro, l'arbitrage des conflits
                    js/widgets/partage.js    confier un groupe : coachs, invitations, réception
 1. Noyau           js/core/brouillon.js     propose un déroulé : structure, parts de temps, cycle, score des exercices, raisons
+                   js/core/feuille.js       ce que porte une feuille de séance, et dans quel ordre — sans savoir la poser
                    js/core/materiel.js      lit « 10 plots », « 1 palet par joueur » et cumule le matériel d'une séance
                    js/core/analyse.js       ce qu'un groupe a fait : répartition, usage, répétition, conseils
                    js/core/pdf.js           un générateur PDF minimal : Helvetica, traits, rectangles, JPEG
@@ -186,6 +187,7 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **Pas de `onclick` dans les gabarits** : délégation d'événements sur `data-act`, `data-outil`, `data-prop`.
 - **Les écrans rendent des chaînes** (`innerHTML`) et échappent tout texte utilisateur avec `esc()`. Les identifiants internes ne sont jamais saisis par l'utilisateur.
 - **L'accueil est « Séances ».** On ouvre Ardoise pour préparer ou mener sa prochaine séance ; la bibliothèque est une ressource où l'on pioche, pas une porte d'entrée.
+- **Un document se décide à un seul endroit.** `core/feuille.js` dit ce que porte une feuille de séance et dans quel ordre ; `impression.js` la pose en HTML, `feuillepdf.js` en PDF. Tant que chacun décidait de son côté, les deux ont dérivé — le PDF avait perdu les fiches techniques et les corrections. Ce qu'un moteur omet volontairement est écrit dans son en-tête, pour que ça ne repasse pas pour un oubli.
 - **Un manque porte le geste qui le comble.** La matrice des techniques était un tableau de bord ; elle mène maintenant à la bibliothèque filtrée ou à la création d'un cycle. Un constat qu'on ne peut pas traiter d'un clic n'a rien à faire à l'écran.
 - **Un chiffre trop mince ne s'affiche pas.** L'équilibre se tait sous trois séances faites : une moyenne sur une séance décrit cette séance et la présente comme une tendance. Mieux vaut dire pourquoi on se tait.
 - **« Entraîner » est un mode, pas un écran.** Il masque la barre de l'appli (`body[data-ecran="glace"]`), un bloc occupe l'écran entier, et tout ce qui s'y actionne fait `--tap` — on le tient d'une main gantée.
