@@ -4288,6 +4288,342 @@ export function exercicesDeBase() {
         ],
       },
     }),
+
+    /* ── Deux classiques du patinage ──────────────────────────── */
+
+    ex({
+      id: "cat_banane",
+      techniques: ["TS.P 9", "TS.P 7", "TF.M 2"],
+      forme: "parcours",
+      nom: "La banane",
+      categorie: "patinage",
+      duree: 8,
+      objectif: "Tenir une longue courbe sans la casser : croiser tout le long, d'un coin à l'autre.",
+      description:
+        "Une file dans un coin. On traverse la glace en diagonale, mais jamais en ligne droite : on décrit une grande courbe — la banane — dont le ventre passe près du centre, et on croise du départ jusqu'à l'arrivée. Retour au calme par la bande, et on repart.\n\nDeux séries dans un sens, deux dans l'autre : la banane ne se courbe pas du même côté, et c'est justement le but. Un départ toutes les cinq secondes.\n\nLa faute ordinaire est de patiner droit puis de tourner d'un coup à la fin. On pose trois plots sur le tracé pour obliger la courbe à être continue. Sans palet la première fois.",
+      points_cles: [
+        "La courbe est continue : jamais de ligne droite, jamais d'angle",
+        "Se pencher vers l'intérieur de la courbe, épaules dans l'axe du tracé",
+        "Le pied extérieur croise par-dessus, le pied intérieur pousse sur sa carre externe",
+        "Le regard loin devant, sur la sortie de la courbe",
+      ],
+      corrections: [
+        "Patiner droit puis tourner à la fin → poser trois plots sur le ventre de la courbe",
+        "Buste vertical, pas d'inclinaison → fléchir les genoux et laisser le corps tomber vers l'intérieur",
+        "Le croisé s'arrête dès que ça va vite → ralentir, la continuité avant la vitesse",
+        "Le côté faible est évité → imposer le sens, deux séries de chaque",
+      ],
+      materiel: "3 plots",
+      variantes:
+        "Avec palet une fois la courbe tenue. Deux bananes en miroir pour occuper les deux diagonales. Avec les gros boudins de mousse posés sur le tracé, pour les groupes qui coupent au court.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(58, 252), J(42, 262), J(74, 266),
+          K(190, 215), K(300, 160), K(430, 95),
+          L("patin", [[78, 248], [165, 228], [265, 188], [370, 125], [470, 78], [540, 62]], "bleu"),
+          L("patin", [[552, 72], [572, 140], [548, 232], [430, 276], [230, 282], [96, 274]]),
+          J(300, 150, "C"),
+          T(150, 120, "La courbe ne se casse jamais", "bleu", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_croises_cinq_cercles",
+      techniques: ["TS.P 9", "TS.P 10", "TS.P 7"],
+      forme: "parcours",
+      nom: "Croisés enchaînés sur les cinq cercles",
+      categorie: "patinage",
+      niveau: "intermediaire",
+      duree: 10,
+      objectif: "Enchaîner les croisés sur les cinq cercles, en alternant le sens : les deux côtés au même prix.",
+      description:
+        "Le tour complet de chaque cercle de mise au jeu, dans l'ordre : coin bas, coin haut, centre, coin haut opposé, coin bas opposé. Le tracé est déjà sur la glace, on n'a rien à poser.\n\nLa règle qui fait tout : on change de sens à chaque cercle. Un tour à gauche, le suivant à droite. Le pied qui croise change donc cinq fois, et le côté faible ne peut pas se cacher.\n\nTrois passages. Le premier lentement, le deuxième en cherchant la vitesse dans la courbe, le troisième seulement avec le palet.",
+      points_cles: [
+        "Un tour complet par cercle, sur la ligne, sans couper",
+        "Le sens change à chaque cercle — c'est la moitié de l'exercice",
+        "Le pied intérieur pousse sur sa carre externe : c'est la partie difficile",
+        "On accélère DANS le cercle, on ne subit pas la courbe",
+      ],
+      corrections: [
+        "Le même sens partout → annoncer le sens à voix haute avant chaque cercle",
+        "Le cercle est coupé en trajectoire large → suivre la ligne peinte, elle est là pour ça",
+        "Les pieds se décroisent et marchent → ralentir jusqu'à ce que le croisé revienne",
+        "Le buste tourne dans le vide → épaules face à la sortie du cercle, pas vers l'intérieur",
+      ],
+      materiel: "1 palet par joueur",
+      variantes:
+        "En marche arrière pour ceux qui la tiennent. Chronométré, un passage par joueur, pour situer les progrès d'un mois sur l'autre. En file indienne de trois, le premier donne le rythme.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          J(58, 262), J(42, 272),
+          L("patin", tour(100, 220, 45), "bleu"),
+          L("patin", tour(100, 80, 45, Math.PI / 2, 1), "bleu"),
+          L("patin", tour(300, 150, 45), "bleu"),
+          L("patin", tour(500, 80, 45, Math.PI / 2, 1), "bleu"),
+          L("patin", tour(500, 220, 45), "bleu"),
+          T(100, 220, "1", "rouge", "grand"), T(100, 80, "2", "rouge", "grand"),
+          T(300, 150, "3", "rouge", "grand"), T(500, 80, "4", "rouge", "grand"),
+          T(500, 220, "5", "rouge", "grand"),
+          T(215, 285, "Le sens change à chaque cercle", "rouge", "petit"),
+          J(300, 40, "C"),
+        ],
+      },
+    }),
+
+
+    /* ── Apprendre et parfaire le tir ─────────────────────────── */
+
+    ex({
+      id: "cat_tir_poignet_decompose",
+      techniques: ["TS.M 1", "TF.A 2"],
+      forme: "actif",
+      nom: "Le tir du poignet, décomposé à l'arrêt",
+      categorie: "tir",
+      duree: 8,
+      objectif: "Apprendre le geste avant de le faire vite : transférer, balayer, finir la palette vers la cible.",
+      description:
+        "Tout le monde en ligne, face à la bande ou face aux cages, à l'arrêt. Trois temps, annoncés, et on ne passe au suivant que quand le précédent est propre.\n\n1 · SANS PALET. Le geste à vide, dix fois. Poids sur le pied arrière, on bascule sur le pied avant pendant que la palette balaie.\n\n2 · PALET IMMOBILE. Le palet est posé au talon de la palette. On le traîne sur toute la longueur du balayage avant qu'il parte. Le bruit doit être un frottement, pas un claquement.\n\n3 · VISER. Même geste, mais la palette finit vers l'endroit visé — en haut, en bas, à gauche, à droite. C'est la fin du geste qui décide où va le palet, pas le début.\n\nQuinze tirs chacun. Personne ne tire fort : on tire juste. Des cibles dans les cages, ou quatre plots posés dans les coins, donnent quelque chose à viser.",
+      points_cles: [
+        "Le palet part du TALON de la palette et sort par la pointe",
+        "Le poids passe du pied arrière au pied avant pendant le balayage",
+        "Les deux mains travaillent en sens contraire : la main basse tire, la main haute pousse",
+        "La palette finit vers la cible et reste là une seconde",
+      ],
+      corrections: [
+        "Le palet est tapé, pas balayé → repartir au temps 2, on doit entendre le frottement",
+        "Le poids reste derrière → poser le pied avant plus près du palet et sentir le transfert",
+        "Le palet se lève sans qu'on l'ait voulu → la palette se referme, elle doit finir ouverte vers la cible",
+        "Le geste se fait avec les bras seuls → les hanches ouvrent en premier, les bras suivent",
+        "On vise en regardant le palet → regarder la cible au moment où la palette part",
+      ],
+      materiel: "20 palets\n4 plots",
+      variantes:
+        "Face à la bande pour les tout débutants : le bruit du palet contre la bande suffit à corriger. À genoux, pour isoler le haut du corps. Un partenaire tient la crosse à mi-hauteur : le palet doit passer dessous.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(240, 60), P(226, 64), J(240, 120), P(226, 124), J(240, 180), P(226, 184), J(240, 240), P(226, 244),
+          L("tir", [[220, 64], [50, 132]], "rouge"),
+          L("tir", [[220, 124], [50, 144]], "rouge"),
+          L("tir", [[220, 184], [50, 156]], "rouge"),
+          L("tir", [[220, 244], [50, 168]], "rouge"),
+          J(150, 150, "C"),
+          T(120, 30, "Sans palet, puis palet immobile, puis viser", "bleu", "petit"),
+          T(120, 278, "Personne ne tire fort : on tire juste", "rouge", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_tir_palet_devant_derriere",
+      techniques: ["TS.M 4", "TF.A 2"],
+      forme: "vagues",
+      nom: "Le palet devant, le palet derrière",
+      categorie: "tir",
+      duree: 8,
+      objectif: "Sentir d'où part un tir : le même geste donne deux résultats selon la place du palet.",
+      description:
+        "Un exercice de comparaison, pas de répétition. Deux plots marquent le haut du cercle. Chacun tire quatre fois depuis là, en changeant une seule chose : où se trouve le palet au moment où la palette part.\n\n1 · PALET TROP EN ARRIÈRE, derrière le pied arrière. Le tir part mou et se lève tout seul.\n2 · PALET SOUS LE CORPS. Le tir part, sans force.\n3 · PALET DEVANT LE PIED AVANT. Le balayage a toute sa longueur : c'est là que ça part.\n4 · AU CHOIX, et on annonce avant de tirer où on a mis le palet.\n\nOn regarde les quatre tirs ensemble, on n'explique rien avant. La différence s'entend.",
+      points_cles: [
+        "Le palet commence derrière et FINIT devant le pied avant : c'est la longueur du balayage qui fait la force",
+        "Un palet parti trop en arrière se lève sans qu'on l'ait décidé",
+        "Le pied avant se pose vers la cible pendant que le palet avance",
+        "On annonce à voix haute avant de tirer : ça oblige à savoir ce qu'on fait",
+      ],
+      corrections: [
+        "Les quatre tirs se ressemblent → ralentir, poser le palet à la main avant chaque essai",
+        "On tire plus fort au lieu de déplacer le palet → interdire de forcer, c'est la place qui change",
+        "Le palet est devant mais le poids reste derrière → avancer le pied avant en même temps",
+      ],
+      materiel: "20 palets\n2 plots",
+      variantes:
+        "En revers, la même comparaison. En mouvement, une fois les quatre tirs compris à l'arrêt. Le partenaire dit où était le palet en regardant le tir partir — il se trompe rarement.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(150, 80), P(178, 86), P(150, 92), P(120, 86),
+          T(196, 84, "3", "vert", "moyen"), T(150, 108, "2", "noir", "moyen"), T(104, 84, "1", "rouge", "moyen"),
+          L("tir", [[114, 86], [52, 128]], "rouge"),
+          L("tir", [[146, 92], [50, 146]], "noir"),
+          L("tir", [[174, 86], [48, 158]], "vert"),
+          K(180, 60), K(120, 60),
+          J(150, 230), J(170, 244), J(130, 244),
+          J(230, 150, "C"),
+          T(120, 278, "1 trop en arrière · 2 sous le corps · 3 devant le pied avant", "bleu", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_tir_tete_haute",
+      techniques: ["TS.M 1", "TF.A 2"],
+      forme: "duo",
+      nom: "Tirer sans regarder le palet",
+      categorie: "tir",
+      niveau: "intermediaire",
+      duree: 8,
+      objectif: "Lever les yeux avant de tirer : le gardien se regarde, le palet se sent.",
+      description:
+        "Par deux, un tireur et un donneur. Le tireur est au haut du cercle, dos à la cage. Au signal, il pivote, reçoit la passe du donneur — et pendant qu'il arme, le donneur montre un nombre avec la main, ou se place d'un côté de la cage.\n\nLe tireur doit annoncer le nombre (ou le côté) AVANT que son palet touche la cage. S'il n'a pas vu, le tir ne compte pas, même s'il est bon.\n\nChasubles pour distinguer donneurs et tireurs. Huit tirs, puis on échange. Ce n'est pas un exercice de puissance : un tir mou avec le bon regard vaut mieux qu'une frappe aveugle.",
+      points_cles: [
+        "Le palet se contrôle au toucher, pas au regard",
+        "Le regard monte pendant l'armement, pas après",
+        "On annonce avant que le palet arrive : sinon on a regardé trop tard",
+        "Viser l'espace laissé libre, pas le milieu de la cage",
+      ],
+      corrections: [
+        "La tête reste baissée → poser le palet plus loin devant, il oblige à lever les yeux",
+        "On annonce au hasard → le donneur change de nombre à chaque fois, et le note",
+        "Le regard monte mais le palet se perd → revenir au maniement tête haute avant de tirer",
+        "Le tir devient mou à force de regarder → c'est normal la première séance, la force revient ensuite",
+      ],
+      materiel: "20 palets\nChasubles",
+      variantes:
+        "Le donneur crie un coin au lieu de le montrer. Deux donneurs, un seul montre. Avec gardien : le tireur doit dire de quel côté le gardien s'est déplacé.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(160, 100, "O"), P(140, 104),
+          J(255, 160, "X"), P(240, 164),
+          L("passe", [[236, 162], [176, 110]], "vert"),
+          L("tir", [[134, 102], [50, 130]], "rouge"),
+          J(60, 150, "G", "", "bleu"),
+          J(95, 235, "C"),
+          T(140, 60, "Il annonce ce que montre le donneur", "bleu", "petit"),
+          T(230, 200, "Le donneur montre pendant l'armement", "vert", "petit"),
+        ],
+      },
+    }),
+
+
+    /* ── Apprendre et parfaire la passe ───────────────────────── */
+
+    ex({
+      id: "cat_amortir_reception",
+      techniques: ["TS.M 1", "TS.M 4"],
+      forme: "duo",
+      nom: "Amortir : recevoir sans que le palet rebondisse",
+      categorie: "passe",
+      duree: 8,
+      objectif: "Une réception ne s'attrape pas, elle s'accompagne : la palette recule quand le palet arrive.",
+      description:
+        "Par deux, à six mètres, à l'arrêt. Le donneur passe franchement — pas doucement, sinon il n'y a rien à amortir.\n\nLe receveur tend la palette vers le palet, puis la RECULE de vingt centimètres au moment du contact, comme on rattrape un œuf. Le palet doit mourir sur la palette : s'il rebondit, c'est raté, même si on le récupère.\n\nDix passes chacun, puis on recule d'un mètre. Le test : après la réception, le palet doit être immobile et sous contrôle, prêt à repartir.\n\nEnsuite, la même chose en revers : c'est le côté qu'on n'apprend jamais et qui lâche en match.",
+      points_cles: [
+        "La palette va CHERCHER le palet, puis recule au contact",
+        "Palette légèrement fermée sur le palet, jamais verticale",
+        "Les mains sont souples : des bras raides renvoient le palet",
+        "Le palet doit s'arrêter mort, pas rebondir d'un mètre",
+      ],
+      corrections: [
+        "Le palet rebondit et part → la palette n'a pas reculé, exagérer le retrait",
+        "La palette est verticale → la fermer un peu vers le palet",
+        "On attend le palet sans aller le chercher → tendre la crosse en avant avant qu'il arrive",
+        "Bon en coup droit, catastrophique en revers → moitié du temps en revers, sans négocier",
+        "On regarde le palet jusqu'au bout → une fois sur deux, annoncer un nombre montré par le donneur",
+      ],
+      materiel: "1 palet par duo",
+      variantes:
+        "En mouvement, sur la largeur. Le donneur passe de plus en plus fort. Réception en une touche derrière : amortir et redonner sans immobiliser. Sur un palet qui rebondit sur la bande.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(80, 70, "O"), P(96, 74), J(230, 70, "O"),
+          L("passe", [[102, 72], [214, 72]], "vert"),
+          J(80, 150, "O"), P(96, 154), J(230, 150, "O"),
+          L("passe", [[102, 152], [214, 152]], "vert"),
+          J(80, 230, "O"), P(96, 234), J(230, 230, "O"),
+          L("passe", [[102, 232], [214, 232]], "vert"),
+          T(155, 40, "La palette recule au contact", "vert", "petit"),
+          T(155, 275, "Le palet meurt sur la palette : pas de rebond", "rouge", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_revers_decompose",
+      techniques: ["TS.M 3.2", "TS.M 1"],
+      forme: "duo",
+      nom: "La passe en revers, décomposée",
+      categorie: "passe",
+      duree: 8,
+      objectif: "Le côté qu'on n'apprend jamais : passer du revers sans retourner la crosse.",
+      description:
+        "Par deux, à cinq mètres. Trois temps, et on ne passe au suivant que quand le précédent tient.\n\n1 · SANS PARTENAIRE. Le palet au talon de la palette côté revers. On le pousse contre la bande, dix fois, sans le lever. On cherche seulement le contact et le balayage.\n\n2 · À L'ARRÊT, à cinq mètres. La passe part du talon, la palette accompagne jusqu'au bout, la main basse tire. Le palet doit glisser à plat, pas sautiller.\n\n3 · LE CORPS ENTRE. Les hanches ouvrent vers le partenaire avant que les bras bougent. C'est ce qui donne la force qu'on croit chercher dans les poignets.\n\nDix passes, puis on échange le sens : chacun a un revers, personne n'en a deux.",
+      points_cles: [
+        "La crosse ne se retourne pas : le revers se passe avec l'autre face de la palette",
+        "Le palet part du talon et sort par la pointe, comme en coup droit",
+        "Les hanches ouvrent d'abord, les bras suivent",
+        "La palette finit vers le partenaire et reste là",
+      ],
+      corrections: [
+        "La crosse est retournée dans les mains → poser la main haute et refaire au ralenti",
+        "Le palet sautille → la palette est trop ouverte, la fermer sur le palet",
+        "La passe n'a aucune force → ce sont les hanches qui manquent, pas les poignets",
+        "Le palet part vers les patins → finir le geste vers la poitrine du partenaire",
+      ],
+      materiel: "1 palet par duo\n1 crosse par joueur",
+      variantes:
+        "Contre la bande, seul, pour les premiers essais. En mouvement sur la largeur. Alterner coup droit et revers sur commande. Passe en revers par-dessus une crosse posée au sol.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(90, 90, "O"), P(106, 96), J(220, 90, "O"),
+          L("passe", [[112, 94], [204, 92]], "vert"),
+          J(90, 200, "O"), P(106, 206), J(220, 200, "O"),
+          L("echange", [[112, 204], [204, 202]], "vert"),
+          J(155, 150, "C"),
+          T(155, 55, "Le palet part du talon, la palette accompagne", "vert", "petit"),
+          T(155, 265, "Les hanches ouvrent avant les bras", "bleu", "petit"),
+        ],
+      },
+    }),
+
+    ex({
+      id: "cat_controle_oriente",
+      techniques: ["TS.M 4", "TS.P 19"],
+      forme: "groupes3",
+      nom: "Le contrôle orienté : recevoir et repartir de l'autre côté",
+      categorie: "passe",
+      niveau: "intermediaire",
+      duree: 10,
+      objectif: "Ne pas s'arrêter sur la réception : le palet arrive d'un côté et repart déjà de l'autre.",
+      description:
+        "Par trois, en triangle : un donneur, un relais au milieu, une cible. Le relais reçoit la passe du donneur et doit la renvoyer à la cible qui est DERRIÈRE lui, sur le côté.\n\nLa faute ordinaire est d'arrêter le palet, de se retourner, puis de passer — trois temps. On en cherche un seul : le palet est amorti déjà orienté vers la cible, le corps pivote pendant que le palet arrive, et la passe part dans la foulée.\n\nHuit passages, on tourne les rôles. Puis on met un joueur qui gêne — en chasuble, sans tacler : le relais doit se retourner du bon côté, c'est-à-dire du côté où il n'y a personne.",
+      points_cles: [
+        "Regarder par-dessus l'épaule AVANT que le palet arrive : on sait déjà où on va",
+        "La palette amortit en orientant le palet vers la sortie, pas vers soi",
+        "Le corps pivote pendant la réception, pas après",
+        "Un seul temps : recevoir et repartir sont le même geste",
+      ],
+      corrections: [
+        "Le palet est arrêté puis repris → imposer deux touches maximum, puis une",
+        "On se retourne toujours du même côté → le gêneur se place au hasard",
+        "La tête tourne après la réception → annoncer à voix haute la cible avant que le palet parte",
+        "Le palet est amorti dans les patins → tendre la palette sur le côté, vers la sortie",
+      ],
+      materiel: "1 palet par trio\n4 plots\nChasubles",
+      variantes:
+        "Une touche obligatoire. Deux cibles : le relais choisit. Avec un gêneur actif, puis deux. En ajoutant un tir après la passe à la cible.",
+      schema: {
+        vue: "moitie",
+        objets: [
+          J(70, 150, "O", "D"), P(88, 156),
+          J(170, 150, "O", "R"),
+          J(255, 70, "O", "C"),
+          L("passe", [[94, 154], [152, 152]], "vert"),
+          L("passe", [[186, 142], [240, 82]], "vert"),
+          L("pivot", [[168, 168], [182, 176], [190, 160]], "bleu"),
+          K(140, 110), K(140, 190), K(210, 110), K(210, 190),
+          J(90, 245, "C"),
+          T(160, 235, "Recevoir et repartir : un seul temps", "bleu", "petit"),
+          T(255, 105, "La cible est derrière, sur le côté", "vert", "petit"),
+        ],
+      },
+    }),
+
   ];
   return liste.map((e, i) => ({ ...e, cree: t0 + i, modifie: t0 + i }));
 }

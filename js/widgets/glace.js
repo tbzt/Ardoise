@@ -34,8 +34,19 @@ function minutesDe(heure) {
   return m ? Number(m[1]) * 60 + Number(m[2]) : null;
 }
 
-/* Le matériel de tous les exercices, chiffré : par objet, le maximum
-   demandé par un exercice — on ne sort les plots qu'une fois. */
+/* Sous la ligne, qui demande cet objet — et ce qu'il en demande quand
+   ce n'est pas ce que la ligne annonce. C'est là que « 1 par joueur »
+   se lit, sans que la ligne ait à inventer un total. */
+function detailsMateriel(m) {
+  const vus = new Set();
+  return m.details
+    .filter((d) => !vus.has(d.titre + d.texte) && vus.add(d.titre + d.texte))
+    .map((d) => (m.n !== null && m.details.length < 2 ? d.titre : `${d.titre} (${d.texte})`))
+    .join(" · ");
+}
+
+/* Le matériel de tous les exercices : UNE ligne par objet. Le chiffre
+   ne s'affiche que s'il est honnête — voir core/materiel.js. */
 function materielDe(se) {
   return cumulMateriel(
     se.blocs
@@ -216,7 +227,7 @@ export const Glace = {
               ? `<ul class="glace-materiel" data-materiel>${materiel
                   .map(
                     (m, i) => `
-              <li><label><input type="checkbox" data-coche="${i}" ${coches.has(String(i)) ? "checked" : ""}> <span><strong>${esc(libelleMateriel(m))}</strong><small>${esc(m.details.map((d) => (d.n !== null && m.n !== null && m.details.length > 1 ? `${d.titre} (${d.n})` : d.titre)).join(" · "))}</small></span></label></li>`,
+              <li><label><input type="checkbox" data-coche="${i}" ${coches.has(String(i)) ? "checked" : ""}> <span><strong>${esc(libelleMateriel(m))}</strong><small>${esc(detailsMateriel(m))}</small></span></label></li>`,
                   )
                   .join("")}</ul>`
               : `<p class="glace-rien">Rien à sortir : les exercices choisis n'ont pas de matériel.</p>`

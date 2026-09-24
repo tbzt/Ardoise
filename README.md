@@ -6,7 +6,7 @@ Application web à page unique, **100 % locale** : aucun serveur, aucune dépend
 
 → [tbzt.github.io/Ardoise](https://tbzt.github.io/Ardoise)
 
-Livrée avec **167 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute et le protéger, passer (coup droit, revers, bande, une touche), tirer (poignet, revers, frappé, en mouvement, en déviation), quinze ateliers de gardien — dont un pour celui qui dépanne sans équipement —, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
+Livrée avec **175 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute et le protéger, passer (coup droit, revers, bande, une touche, amortir, contrôle orienté), tirer (poignet décomposé, revers, frappé, en mouvement, tête haute, en déviation), quinze ateliers de gardien — dont un pour celui qui dépanne sans équipement —, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
 
 ---
 
@@ -25,6 +25,7 @@ Livrée avec **167 exercices** et deux séances types pour **adultes débutants*
 - **Fiche atelier (PDF)** : une page par exercice pour celui qui tient l'atelier — schéma en grand, organisation, points clés, corrections, matériel, forme de travail, et les repères pour bien le mener (quinze minutes avant, une consigne d'une phrase, temps d'attente limité, feedback un collectif trois individuels). Depuis une séance, la fiche reprend la note du bloc.
 - Huit catégories : échauffement, patinage, maniement, passes, tirs, jeu, gardien, retour au calme.
 - Recherche plein texte et filtre par catégorie ; duplication pour décliner un exercice.
+- La liste **« à sortir »** du bord de glace donne **une ligne par objet** — chasubles, plots, boudins, crosses au sol — et ne chiffre que ce qui se chiffre honnêtement : on ne compte pas ses palets, on prend le seau.
 - Tout s'enregistre tout seul, un instant après la frappe.
 
 ### Composer — les séances

@@ -278,7 +278,7 @@ async function verifierDistant() {
       restes.push(`espaces/${moi}/exercices/${lid}`);
     }
     await Distant.fusionner(`espaces/${moi}/exercices`, lot);
-    dire(true, "Envoi groupé accepté", "trois objets en une requête — la première synchronisation en pousse cent soixante-sept ainsi");
+    dire(true, "Envoi groupé accepté", "trois objets en une requête — la première synchronisation pousse toute la bibliothèque ainsi");
 
     // 10. un lot dont un membre est invalide est refusé EN ENTIER
     const lotSale = { [`${id}_sale`]: { ...objet(1), id: "pas-la-bonne-cle" } };

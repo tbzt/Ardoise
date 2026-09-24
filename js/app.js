@@ -49,7 +49,7 @@ function monter() {
 
   /* L'accueil est « Séances », et non plus la bibliothèque : on ouvre
      Ardoise pour préparer ou mener sa prochaine séance, pas pour
-     parcourir cent soixante-sept exercices. */
+     parcourir toute la bibliothèque. */
   let actif = "seances";
   if (nom === "exercices") {
     ecran = Exercices.afficher(main);

@@ -123,7 +123,25 @@ défaut, c'est une surprise.
 Supprimer un groupe détache ses séances, il ne les efface pas. Un **cycle** est une période avec un thème ; `cycleCourant(groupe, date)` donne celui qui couvre une date, et le brouillon multiplie par 1,5 le poids de ses catégories et favorise les exercices qui visent ses techniques.
 
 ### Matériel
-Le champ `materiel` d'un exercice reste du texte, une ligne par objet. `js/core/materiel.js` y lit une quantité, un objet et un éventuel « par joueur / duo / équipe… », et `cumulMateriel()` regroupe par objet en gardant le **maximum** demandé (le matériel se réutilise d'un exercice à l'autre, il ne s'additionne pas). Les lignes qu'il ne sait pas chiffrer restent listées telles quelles.
+Le champ `materiel` d'un exercice reste du texte, **une ligne par objet et rien
+d'autre** : « 20 palets », « Chasubles », pas « 2 plots pour marquer le haut du
+cercle » — l'analyseur en ferait un objet nommé « plots pour marquer le haut du
+cercle ». L'explication va dans la description.
+
+`js/core/materiel.js` y lit une quantité, un objet et un éventuel « par joueur /
+duo / équipe… ». `cumulMateriel()` regroupe **par objet seul**, et le chiffre ne
+s'affiche que s'il est honnête : quand toutes les demandes d'un objet sont des
+comptes absolus, on donne le **maximum** (on sort les plots une fois, il en faut
+autant que l'exercice le plus gourmand) ; dès qu'une demande est « par joueur »,
+le total dépend d'un effectif qu'on n'a pas, et on nomme simplement l'objet.
+
+Le cumul se faisait par objet **et par unité**, si bien qu'une séance ordinaire
+affichait trois lignes de palets. Or au vestiaire la question n'est pas
+« combien » — un coach ne compte pas ses palets, il prend le seau — mais
+**quoi** : ai-je besoin de chasubles, de crosses à poser au sol, des gros
+boudins de mousse ? Ce sont ces objets-là qu'on oublie. Le détail sous la ligne
+dit qui demande quoi ; la liste est triée alphabétiquement, parce qu'un tri par
+quantité mettait « 1 sifflet » avant « chasubles ».
 
 ### Brouillon
 `js/core/brouillon.js` compose un déroulé en trois temps : (1) les minutes visées par catégorie — `CIBLE` corrigée par l'écart des quatre dernières séances, correction amortie tant que l'historique est court, patinage jamais sous 22 % ; (2) dans chaque catégorie, les exercices classés par un score lisible (jamais fait +3, fait la dernière fois −3, « à revoir » au dernier bilan +3, niveau inadapté −4, un peu de hasard) et pris tant que le temps reste ; (3) un ajustement au temps de glace qui donne le reste à la catégorie la plus en dessous de son objectif et rogne celles qui dépassent le plus. Chaque bloc ressort avec ses raisons, affichées au coach.

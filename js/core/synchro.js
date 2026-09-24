@@ -253,8 +253,8 @@ function poussée() {
 }
 
 /* On envoie par rayon, pas par objet. La première synchronisation
-   d'une bibliothèque installée pousse cent soixante-sept exercices :
-   un par requête, ce sont cent soixante-sept allers-retours, soit une
+   d'une bibliothèque installée pousse tous les exercices fournis :
+   un par requête, ce sont autant d'allers-retours, soit une
    minute pendant laquelle rien n'a l'air de marcher. En un PATCH par
    rayon, c'est une poignée de requêtes. Les règles valident chaque
    enfant du lot séparément, donc la garde de révision tient exactement

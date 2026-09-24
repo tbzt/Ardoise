@@ -554,8 +554,8 @@ export const Seance = {
       peindreBibliListe();
     }
 
-    /* Les vignettes coûtent : cent soixante-sept patinoires en SVG font
-       quatorze mille nœuds, et la liste se repeint à chaque frappe. La
+    /* Les vignettes coûtent : la bibliothèque entière en SVG fait plus
+       de dix mille nœuds, et la liste se repeint à chaque frappe. La
        colonne sert à PIOCHER, pas à tout parcourir — la planche-contact
        de la bibliothèque est là pour ça. On en montre donc une page, et
        on dit combien il en reste. */

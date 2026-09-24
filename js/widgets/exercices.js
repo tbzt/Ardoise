@@ -1,9 +1,9 @@
-/* Bibliothèque — cent soixante-sept exercices, et de quoi s'y retrouver.
+/* Bibliothèque — tous les exercices, et de quoi s'y retrouver.
 
    Deux choses manquaient, et c'est tout ce que cet écran ajoute :
 
    — DES REPÈRES. Les cartes étaient triées par catégorie, mais sans
-     aucun en-tête : on faisait défiler cent soixante-sept patinoires
+     aucun en-tête : on faisait défiler des dizaines de patinoires
      qui se ressemblent toutes, sans jamais savoir où l'on était. Les
      titres de catégorie collent maintenant sous la barre.
 
@@ -71,7 +71,7 @@ export const Exercices = {
 
       const cible = sec.querySelector("[data-liste]");
       if (!tous.length) {
-        cible.innerHTML = `<p class="vide">Aucun exercice. Créez-en un, ou réinstallez le <strong>catalogue</strong> (menu ⋯, en haut à droite) pour partir de cent soixante-sept exercices pour adultes débutants.</p>`;
+        cible.innerHTML = `<p class="vide">Aucun exercice. Créez-en un, ou réinstallez le <strong>catalogue</strong> (menu ⋯, en haut à droite) pour partir d'une bibliothèque complète pour adultes débutants.</p>`;
         return;
       }
       if (!liste.length) {

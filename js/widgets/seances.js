@@ -2,7 +2,7 @@
 
    C'est ici qu'on arrive, et non plus dans la bibliothèque : un coach
    ouvre Ardoise pour préparer ou pour mener sa prochaine séance, pas
-   pour parcourir cent soixante-sept exercices.
+   pour parcourir toute la bibliothèque.
 
    Trois choses que l'écran doit dire sans qu'on ouvre quoi que ce soit :
    — quelle est la prochaine séance, et est-elle prête ;

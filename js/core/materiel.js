@@ -49,29 +49,57 @@ export function analyserMateriel(texte) {
   return out;
 }
 
-/* Le cumul pour une séance : par objet, le maximum demandé, et qui le
-   demande. `exercices` : [{ titre, materiel }]. */
+/* Le cumul pour une séance : UNE ligne par objet, et qui le demande.
+
+   Le cumul se faisait par objet ET par unité, si bien qu'une séance
+   ordinaire affichait trois lignes de palets — « 20 palets », « 1 palet
+   par joueur », « 1 palet par duo ». Or au vestiaire, la question n'est
+   pas « combien » : un coach ne compte pas ses palets, il prend le seau.
+   La question est QUOI — ai-je besoin de chasubles, de crosses à poser
+   au sol, des gros boudins de la fédération ? Ce sont ces objets-là
+   qu'on oublie, pas les palets.
+
+   Le chiffre ne s'affiche donc que s'il est honnête : quand toutes les
+   demandes d'un objet sont des comptes absolus, on donne le maximum (on
+   sort les plots une fois, il en faut autant que l'exercice le plus
+   gourmand). Dès qu'une demande est « par joueur », « par duo », « par
+   file », le total dépend d'un effectif qu'on n'a pas — on nomme alors
+   l'objet, et on laisse le détail dire le reste. Mieux vaut « Palets »
+   qu'un nombre inventé.
+
+   `exercices` : [{ titre, materiel }]. */
 export function cumulMateriel(exercices) {
   const carte = new Map();
   for (const { titre, materiel } of exercices) {
     for (const item of analyserMateriel(materiel)) {
-      const k = `${cle(item.objet)}|${item.par || ""}`;
-      if (!carte.has(k)) carte.set(k, { objet: item.objet, par: item.par, n: item.n, exercices: [], details: [] });
+      const k = cle(item.objet);
+      if (!carte.has(k)) carte.set(k, { objet: item.objet, n: null, chiffrable: true, exercices: [], details: [] });
       const c = carte.get(k);
-      if (item.n !== null && (c.n === null || item.n > c.n)) {
-        c.n = item.n;
-        c.objet = item.objet;
-      }
+      // le pluriel l'emporte : « des palets », pas « du palet »
+      if (item.objet.length > c.objet.length) c.objet = item.objet;
+      if (item.par || item.n === null) c.chiffrable = false;
+      else if (c.n === null || item.n > c.n) c.n = item.n;
       if (!c.exercices.includes(titre)) c.exercices.push(titre);
-      c.details.push({ titre, n: item.n });
+      c.details.push({ titre, texte: detail(item) });
     }
   }
-  const liste = [...carte.values()];
-  liste.sort((a, b) => (b.n !== null) - (a.n !== null) || (b.n || 0) - (a.n || 0) || a.objet.localeCompare(b.objet, "fr"));
+  /* Par ordre alphabétique, et rien d'autre. Trier par quantité mettait
+     « 1 sifflet » avant « chasubles » parce qu'il portait un chiffre —
+     un ordre qui prétend hiérarchiser et se trompe. La liste est courte,
+     et un ordre stable se retient d'une séance à l'autre. */
+  const liste = [...carte.values()].map((c) => ({ ...c, n: c.chiffrable ? c.n : null }));
+  liste.sort((a, b) => a.objet.localeCompare(b.objet, "fr"));
   return liste;
 }
 
+/* Ce qu'un exercice demande, dit en clair : c'est le détail sous la
+   ligne qui rattrape le chiffre qu'on n'affiche plus. */
+function detail(item) {
+  const quoi = item.n !== null ? `${item.n} ${item.objet}` : item.objet;
+  return item.par ? `${quoi} par ${item.par}` : quoi;
+}
+
 export function libelleMateriel(c) {
-  const quoi = c.n !== null ? `${c.n} ${c.objet}` : c.objet.charAt(0).toUpperCase() + c.objet.slice(1);
-  return c.par ? `${quoi} par ${c.par}` : quoi;
+  if (c.n !== null) return `${c.n} ${c.objet}`;
+  return c.objet.charAt(0).toUpperCase() + c.objet.slice(1);
 }
