@@ -41,7 +41,7 @@
       mienne ensuite. */
 
 import { Storage } from "./storage.js";
-import { Store } from "./store.js";
+import { Store, seanceSaine, groupeSain, exerciceSain } from "./store.js";
 import { Distant, HorsLigne } from "./distant.js";
 
 /* Une séance sans groupe existe encore (elles précèdent les groupes).
@@ -484,6 +484,67 @@ function nettoyer(o) {
 
 const NOM_LOCAL = (nom, id) => (nom === "bibliotheques" ? id.split("/").slice(1).join("/") : id);
 
+/* ── Deux objets identiques ne sont pas un conflit ──────────────
+
+   La file dit « j'ai quelque chose à pousser », pas « le contenu
+   diverge ». Après un miroir vide — nouvel appareil, navigateur
+   changé, session réouverte, `oublier()` puis reconnexion — TOUT part
+   en file, parce qu'aucun objet n'est « connu ». Le premier tirage
+   demandait alors de trancher entre deux versions rigoureusement
+   identiques, autant de fois qu'il y a d'objets. On compare donc les
+   deux côtés avant de déranger le coach.
+
+   La comparaison passe par les réparateurs du Store, DES DEUX CÔTÉS :
+   une base Realtime ne renvoie ni tableau vide ni `null`, si bien
+   qu'une séance identique revient sans son `blocs` et paraîtrait
+   différente. Elle ignore aussi ce qui appartient au transport
+   (`rev`, `updatedBy`) et l'horodatage : deux enregistrements sans
+   retouche donnent deux `modifie` différents pour un même contenu, et
+   il n'y a rien à trancher là.
+
+   Elle n'ignore rien d'autre. Dans le doute — un champ absent d'un
+   côté, une date de création manquante — les empreintes diffèrent et
+   le conflit s'affiche : on ne se tait que lorsqu'on est sûr. */
+
+const SAINS = { exercices: exerciceSain, groupes: groupeSain, seances: seanceSaine };
+const HORS_COMPARAISON = new Set(["rev", "updatedBy", "modifie"]);
+
+function empreinteContenu(v) {
+  if (Array.isArray(v)) return `[${v.map(empreinteContenu).join(",")}]`;
+  if (v && typeof v === "object") {
+    return `{${Object.keys(v)
+      .filter((k) => !HORS_COMPARAISON.has(k))
+      .sort()
+      .map((k) => `${JSON.stringify(k)}:${empreinteContenu(v[k])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(v === undefined ? null : v);
+}
+
+export function memeContenu(collection, local, distant) {
+  if (!local || !distant) return false;
+  const sain = SAINS[collection];
+  if (!sain) return false;
+  return empreinteContenu(sain(local)) === empreinteContenu(sain(distant));
+}
+
+/* Le distant est pris sans rien demander : c'est le cas où il n'y a
+   rien à décider, parce que les deux côtés disent la même chose. */
+function accepterDistant(espace, nom, cle, distant) {
+  const collection = nom === "bibliotheques" ? "exercices" : nom;
+  const connus = vus(espace, nom);
+  const rayon = nom === "bibliotheques" ? cle.split("/")[0] : connus[cle] ? connus[cle].rayon : rayonDe(collection, distant);
+  defiler(espace, nom, cle);
+  connus[cle] = { rev: distant.rev, modifie: distant.modifie || 0, rayon };
+  enApplication = true;
+  try {
+    COLLECTIONS[collection].installer([nettoyer(distant)]);
+  } finally {
+    enApplication = false;
+  }
+  garderMiroir();
+}
+
 async function signalerConflit(espace, nom, id, distantConnu = null) {
   let distant = distantConnu;
   if (!distant) {
@@ -496,6 +557,14 @@ async function signalerConflit(espace, nom, id, distantConnu = null) {
   }
   const collection = nom === "bibliotheques" ? "exercices" : nom;
   const idLocal = NOM_LOCAL(nom, id);
+
+  // rien à trancher si les deux versions disent la même chose
+  if (distant && memeContenu(collection, COLLECTIONS[collection].get(idLocal), distant)) {
+    accepterDistant(espace, nom, id, distant);
+    annoncer(file.length ? "enAttente" : conflits.length ? "conflit" : "aJour");
+    return;
+  }
+
   if (!conflits.some((c) => c.espace === espace && c.branche === nom && c.id === idLocal)) {
     conflits.push({ espace, branche: nom, collection, id: idLocal, cle: id, distant, local: COLLECTIONS[collection].get(idLocal) });
   }

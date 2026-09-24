@@ -175,6 +175,18 @@ Deux rangements qui ne sont pas des détails de stockage :
   l'espace, l'invité ne pourrait pas les trouver : il faudrait qu'il
   connaisse d'avance l'identifiant de compte de celui qui l'invite.
 
+**Deux objets identiques ne sont pas un conflit.** La file dit « j'ai quelque
+chose à pousser », pas « le contenu diverge » : après un miroir vide — nouvel
+appareil, navigateur changé, `oublier()` puis reconnexion — *tout* part en
+file, et le premier tirage demandait de trancher entre deux versions
+rigoureusement identiques, autant de fois qu'il y a d'objets. `memeContenu()`
+compare les deux côtés avant de déranger, **en passant par les réparateurs du
+Store des deux côtés** (une base Realtime ne renvoie ni tableau vide ni `null`,
+donc une séance identique revient sans son `blocs`) et en ignorant `rev`,
+`updatedBy` et `modifie`. Elle n'ignore rien d'autre : dans le doute les
+empreintes diffèrent et le conflit s'affiche — on ne se tait que lorsqu'on est
+sûr.
+
 Chaque objet porte `rev` et `updatedBy`, que la règle contrôle
 (`rev === ancien + 1`) et que `synchro.js` retire avant de faire entrer
 l'objet dans le Store — ils appartiennent au transport, pas à

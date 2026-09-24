@@ -22,6 +22,7 @@ import { exercicesDeBase } from "./data/catalogue.js";
 import { FICHES } from "./data/referentiel.js";
 import { filtrer } from "./widgets/communs.js";
 import { seanceSaine, groupeSain, exerciceSain } from "./core/store.js";
+import { memeContenu } from "./core/synchro.js";
 import { Distant, HorsLigne, clefCourriel } from "./core/distant.js";
 
 const STYLES = ["patin", "conduite", "arriere", "arriere_palet", "freinage", "glisse", "acceleration", "pivot", "passe", "echange", "tir", "depose", "libre"];
@@ -95,6 +96,44 @@ function verifierAssainissement() {
   // ce que l'écran Séances fait vraiment, et qui plantait
   const total = [amputee, indexee].reduce((t, s) => t + s.blocs.length, 0);
   dire(total === 2, "« blocs.length » ne lève plus sur une donnée revenue amputée");
+}
+
+/* ── Ce qui mérite qu'on dérange le coach ─────────────────────
+
+   La file dit « j'ai quelque chose à pousser », pas « le contenu
+   diverge ». Après un miroir vide, TOUT est en file : le premier
+   tirage demandait de trancher entre deux versions identiques, autant
+   de fois qu'il y a d'objets. On ne se tait QUE si l'on est sûr —
+   l'épreuve vérifie les deux sens. */
+
+function verifierConflits() {
+  groupe("Conflits");
+
+  const se = { id: "se_1", titre: "A", date: "2026-09-19", duree_glace: 60, blocs: [{ id: "b1", duree: 5 }], bilan: null, cree: 1, modifie: 10 };
+
+  dire(memeContenu("seances", se, { ...se, rev: 7, updatedBy: "autre", modifie: 99 }), "Même contenu malgré rev, updatedBy et modifie différents : pas de conflit");
+
+  // ce que rend vraiment une base Realtime : ni tableau vide ni null
+  const vide = { id: "se_2", titre: "A", date: "2026-09-19", duree_glace: 60, blocs: [], bilan: null, cree: 1, modifie: 10 };
+  const revenue = { id: "se_2", titre: "A", date: "2026-09-19", duree_glace: 60, cree: 1, modifie: 55, rev: 3 };
+  dire(memeContenu("seances", vide, revenue), "Séance vide revenue sans « blocs » ni « bilan » : pas de conflit");
+
+  dire(!memeContenu("seances", se, { ...se, titre: "B", rev: 7 }), "Un titre différent EST un conflit");
+  dire(!memeContenu("seances", se, { ...se, blocs: [{ id: "b1", duree: 9 }], rev: 7 }), "Une durée de bloc différente EST un conflit");
+  dire(!memeContenu("seances", se, { ...se, blocs: [], rev: 7 }), "Un déroulé vidé pour de bon EST un conflit");
+  dire(!memeContenu("seances", se, null) && !memeContenu("seances", null, se), "Un côté absent n'est jamais « identique »");
+
+  const g = { id: "gr_1", nom: "Adultes", niveau: "debutant", description: "", duree_glace: 60, cycles: [], cree: 1, modifie: 10 };
+  dire(memeContenu("groupes", g, { id: "gr_1", nom: "Adultes", niveau: "debutant", description: "", duree_glace: 60, cree: 1, modifie: 88, rev: 2 }), "Groupe revenu sans « cycles » : pas de conflit");
+  dire(!memeContenu("groupes", g, { ...g, nom: "Ados", rev: 2 }), "Un nom de groupe différent EST un conflit");
+
+  const ex = { id: "ex_1", nom: "Tir", categorie: "tir", points_cles: [], corrections: [], techniques: [], schema: { vue: "entiere", objets: [] }, cree: 1, modifie: 10 };
+  dire(memeContenu("exercices", ex, { id: "ex_1", nom: "Tir", categorie: "tir", schema: { vue: "entiere" }, cree: 1, modifie: 12, rev: 4 }), "Exercice revenu sans ses tableaux vides : pas de conflit");
+
+  // l'ordre des clés d'un objet ne veut rien dire ; celui d'un tableau, si
+  const a = { id: "se_3", titre: "A", blocs: [{ id: "b1" }, { id: "b2" }], cree: 1 };
+  dire(memeContenu("seances", a, { blocs: [{ id: "b1" }, { id: "b2" }], titre: "A", id: "se_3", cree: 1, rev: 1 }), "L'ordre des champs n'invente pas un conflit");
+  dire(!memeContenu("seances", a, { ...a, blocs: [{ id: "b2" }, { id: "b1" }], rev: 1 }), "Deux blocs intervertis SONT un conflit");
 }
 
 /* ── Le catalogue ─────────────────────────────────────────────── */
@@ -352,6 +391,7 @@ export async function lancer(conteneur, resume) {
 
   verifierCatalogue();
   verifierAssainissement();
+  verifierConflits();
   verifierRecherche();
   await verifierDistant();
 
