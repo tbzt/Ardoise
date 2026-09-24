@@ -5,9 +5,12 @@ import { Storage } from "./storage.js";
 import { nouvelId } from "./ids.js";
 import { aujourdhuiIso, sansAccents } from "./dom.js";
 
-let exercices = Storage.lire("exercices", []);
-let seances = Storage.lire("seances", []);
-let groupes = Storage.lire("groupes", []);
+/* Les trois collections sont assainies à la lecture : une donnée
+   revenue amputée de la synchro se répare à la première ouverture,
+   sans que le coach ait à réimporter quoi que ce soit. */
+let exercices = [];
+let seances = [];
+let groupes = [];
 const abonnes = new Set();
 
 function notifier(quoi) {
@@ -26,6 +29,7 @@ function persisterGroupes() {
   Storage.ecrire("groupes", groupes);
   notifier("groupes");
 }
+
 
 /* Un exercice vide, complet : chaque champ existe, même vide, pour que
    les écrans n'aient jamais à tester l'absence. */
@@ -107,6 +111,88 @@ export function bilanVierge() {
 /* Un bloc de séance : soit un exercice de la bibliothèque (exerciceId
    renseigné, titre recopié pour survivre à sa suppression), soit un
    bloc libre (pause, échauffement hors glace, mot du coach). */
+/* ── Ce qui entre dans le Store est COMPLET ──────────────────────
+
+   Une base Realtime ne stocke ni tableau vide ni `null` : une séance
+   au déroulé vide part avec `blocs: []` et revient SANS `blocs`, et un
+   tableau à trous revient en objet indexé par ses positions. La séance
+   est alors amputée — et `se.blocs.length`, que font les écrans, lève
+   une TypeError qui emporte le rendu de TOUT l'écran Séances. Le coach
+   voit une page blanche et croit avoir perdu son groupe et sa séance,
+   alors que tout est sagement dans le stockage.
+
+   La vérité se répare donc ICI, à l'entrée, et non par un « || [] »
+   semé dans chaque écran — un seul oubli et la page blanche revient.
+   Trois portes, toutes couvertes : le chargement, l'enregistrement et
+   l'installation (import, catalogue, synchro). */
+
+function enTableau(v) {
+  if (Array.isArray(v)) return v;
+  // un tableau à trous revient d'une base Realtime en objet indexé
+  if (v && typeof v === "object") return Object.values(v);
+  return [];
+}
+
+/* Combien de champs ont dû être reconstruits. Sert à savoir s'il faut
+   réécrire le stockage au démarrage : une donnée revenue amputée se
+   répare alors une fois pour toutes, et l'export suivant est propre. */
+let reparations = 0;
+
+function saine(objet, vierge, tableaux) {
+  if (!objet || typeof objet !== "object") return null;
+  const v = vierge();
+  const sortie = { ...v, ...objet, id: objet.id || v.id };
+  for (const cle of tableaux) {
+    if (!Array.isArray(objet[cle])) reparations++;
+    sortie[cle] = enTableau(objet[cle]);
+  }
+  return sortie;
+}
+
+export function seanceSaine(se) {
+  const s = saine(se, seanceVierge, ["blocs"]);
+  if (!s) return null;
+  s.blocs = s.blocs.map((b) => ({ ...b, id: b.id || nouvelId("bl") }));
+  s.bilan = se && se.bilan ? se.bilan : null;
+  return s;
+}
+
+export function groupeSain(g) {
+  return saine(g, groupeVierge, ["cycles"]);
+}
+
+export function exerciceSain(ex) {
+  const e = saine(ex, exerciceVierge, ["points_cles", "corrections", "techniques"]);
+  if (!e) return null;
+  e.schema = e.schema && typeof e.schema === "object" ? e.schema : { vue: "entiere", objets: [] };
+  e.schema.objets = enTableau(e.schema.objets);
+  return e;
+}
+
+function sainesSeances(l) {
+  return enTableau(l).map(seanceSaine).filter(Boolean);
+}
+function sainsGroupes(l) {
+  return enTableau(l).map(groupeSain).filter(Boolean);
+}
+function sainsExercices(l) {
+  return enTableau(l).map(exerciceSain).filter(Boolean);
+}
+
+// les collections ne sont peuplées qu'une fois les réparateurs connus
+exercices = sainsExercices(Storage.lire("exercices", []));
+seances = sainesSeances(Storage.lire("seances", []));
+groupes = sainsGroupes(Storage.lire("groupes", []));
+
+/* Si quelque chose a dû être reconstruit à la lecture, on réécrit : la
+   réparation devient durable, et le prochain export ne reporte pas
+   l'infirmité. Rien à faire pour le coach, aucun réimport à demander. */
+if (reparations) {
+  persisterExercices();
+  persisterSeances();
+  persisterGroupes();
+}
+
 export function blocDepuisExercice(ex) {
   return { id: nouvelId("bl"), exerciceId: ex.id, titre: ex.nom, duree: ex.duree || 5, note: "" };
 }
@@ -172,7 +258,7 @@ export const Store = {
     installer(liste, { mettreAJour = false } = {}) {
       let ajoutes = 0;
       let misAJour = 0;
-      for (const ex of liste) {
+      for (const ex of sainsExercices(liste)) {
         const i = exercices.findIndex((e) => e.id === ex.id);
         if (i < 0) {
           exercices.push(ex);
@@ -195,6 +281,10 @@ export const Store = {
       return seances.find((s) => s.id === id) || null;
     },
     sauver(se) {
+      // réparé EN PLACE : l'écran qui a ouvert cette séance en tient la
+      // référence et continue de la modifier ; lui en substituer une
+      // copie ferait diverger les deux au premier geste suivant
+      Object.assign(se, seanceSaine(se));
       se.modifie = Date.now();
       const i = seances.findIndex((s) => s.id === se.id);
       if (i < 0) seances.push(se);
@@ -228,7 +318,7 @@ export const Store = {
     installer(liste, { mettreAJour = false } = {}) {
       let ajoutes = 0;
       let misAJour = 0;
-      for (const se of liste) {
+      for (const se of sainesSeances(liste)) {
         const i = seances.findIndex((s) => s.id === se.id);
         if (i < 0) {
           seances.push(se);
@@ -255,6 +345,7 @@ export const Store = {
       return n ? groupes.find((g) => (g.nom || "").trim().toLowerCase() === n) || null : null;
     },
     sauver(g) {
+      Object.assign(g, groupeSain(g));
       g.modifie = Date.now();
       const i = groupes.findIndex((x) => x.id === g.id);
       if (i < 0) groupes.push(g);
@@ -281,7 +372,7 @@ export const Store = {
     installer(liste, { mettreAJour = false } = {}) {
       let ajoutes = 0;
       let misAJour = 0;
-      for (const g of liste) {
+      for (const g of sainsGroupes(liste)) {
         const i = groupes.findIndex((x) => x.id === g.id);
         if (i < 0) {
           groupes.push(g);

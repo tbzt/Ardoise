@@ -21,6 +21,7 @@ import { CATEGORIES } from "./data/catalogue.js";
 import { exercicesDeBase } from "./data/catalogue.js";
 import { FICHES } from "./data/referentiel.js";
 import { filtrer } from "./widgets/communs.js";
+import { seanceSaine, groupeSain, exerciceSain } from "./core/store.js";
 import { Distant, HorsLigne, clefCourriel } from "./core/distant.js";
 
 const STYLES = ["patin", "conduite", "arriere", "arriere_palet", "freinage", "glisse", "acceleration", "pivot", "passe", "echange", "tir", "depose", "libre"];
@@ -54,6 +55,46 @@ function compter() {
     ko: tous.filter((l) => l.classList.contains("rouge")).length,
     passes: tous.filter((l) => l.classList.contains("passe")).length,
   };
+}
+
+/* ── Ce qui entre dans le Store ───────────────────────────────
+
+   Née d'un incident : une base Realtime ne stocke ni tableau vide ni
+   `null`. Une séance au déroulé vide est repartie avec `blocs: []` et
+   revenue SANS `blocs` ; `se.blocs.length` a levé une TypeError qui a
+   emporté le rendu de tout l'écran Séances, et le coach a vu une page
+   blanche avec son groupe et sa séance dedans. Une régression ici est
+   silencieuse jusqu'à ce qu'elle coûte une soirée. */
+
+function verifierAssainissement() {
+  groupe("Ce qui entre dans le Store");
+
+  const amputee = seanceSaine({ id: "se_x", titre: "Sans blocs", date: "2026-09-19" });
+  dire(Array.isArray(amputee.blocs) && amputee.blocs.length === 0, "Séance sans « blocs » : tableau vide rendu");
+  dire(amputee.bilan === null, "Séance sans « bilan » : null rendu");
+  dire(amputee.id === "se_x", "L'identifiant est conservé");
+
+  // une base Realtime rend un tableau à trous sous forme d'objet indexé
+  const indexee = seanceSaine({ id: "se_y", blocs: { 0: { id: "b0", duree: 5 }, 2: { id: "b2", duree: 7 } } });
+  dire(Array.isArray(indexee.blocs) && indexee.blocs.length === 2, "« blocs » en objet indexé : retransformé en tableau");
+
+  const sansId = seanceSaine({ id: "se_z", blocs: [{ duree: 5 }] });
+  dire(!!sansId.blocs[0].id, "Un bloc sans identifiant en reçoit un");
+
+  const g = groupeSain({ id: "gr_x", nom: "A" });
+  dire(Array.isArray(g.cycles), "Groupe sans « cycles » : tableau vide rendu");
+
+  const e = exerciceSain({ id: "ex_x", nom: "A" });
+  dire(
+    Array.isArray(e.points_cles) && Array.isArray(e.corrections) && Array.isArray(e.techniques) && Array.isArray(e.schema.objets),
+    "Exercice : points clés, corrections, techniques et objets du schéma sont des tableaux",
+  );
+
+  dire(seanceSaine(null) === null && groupeSain(undefined) === null, "Une entrée qui n'est pas un objet est écartée");
+
+  // ce que l'écran Séances fait vraiment, et qui plantait
+  const total = [amputee, indexee].reduce((t, s) => t + s.blocs.length, 0);
+  dire(total === 2, "« blocs.length » ne lève plus sur une donnée revenue amputée");
 }
 
 /* ── Le catalogue ─────────────────────────────────────────────── */
@@ -310,6 +351,7 @@ export async function lancer(conteneur, resume) {
   resume.className = "resume";
 
   verifierCatalogue();
+  verifierAssainissement();
   verifierRecherche();
   await verifierDistant();
 

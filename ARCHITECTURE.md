@@ -215,6 +215,18 @@ Clés `ardoise_v1_exercices`, `ardoise_v1_seances`, `ardoise_v1_groupes`, `ardoi
 - **Une vignette annonce son format** (`vignette-entiere` / `vignette-moitie`). C'est ce qui permet de sauter le rendu des schémas hors champ sans que la page s'allonge sous le pouce pendant qu'on descend.
 - **Un écran renvoie `{ detruire() }`** ; le routeur l'appelle avant d'en monter un autre (désabonnement du Store, sauvegarde en attente, écouteurs clavier).
 - **Le catalogue a des identifiants fixes** (`cat_…`) : le réinstaller ajoute ce qui manque et n'écrase rien. L'import d'un fichier, lui, ajoute ce qui manque **et** remplace ce dont la version importée est plus récente (`modifie`) — c'est ce qui permet d'exporter un exercice seul, de le retoucher ailleurs et de le rapporter.
+- **Ce qui entre dans le Store est complet.** Une base Realtime ne stocke ni
+  tableau vide ni `null` : une séance au déroulé vide part avec `blocs: []` et
+  revient **sans** `blocs`, et un tableau à trous revient en objet indexé. Les
+  écrans font `se.blocs.length` — la TypeError emporte alors le rendu de tout
+  l'écran Séances, et le coach voit une page blanche en croyant avoir perdu son
+  groupe et sa séance. `seanceSaine()`, `groupeSain()` et `exerciceSain()`
+  réparent à l'entrée, aux trois portes : le chargement, `sauver()` et
+  `installer()` (import, catalogue, synchro). **Jamais par un `|| []` semé dans
+  les écrans** : un seul oubli et la page blanche revient. Ce qui a dû être
+  reconstruit au démarrage est réécrit, pour que la réparation soit durable et
+  que l'export suivant soit propre. `sauver()` répare **en place**
+  (`Object.assign`) : l'écran qui a ouvert l'objet en tient la référence.
 - **Pas d'accès réseau hors de `js/core/distant.js`.** Même loi que pour `localStorage`, même raison.
 - **Rien du distant dans le chemin d'affichage.** Un écran se peint depuis le Store, toujours.
 - **`verifier.html` est le filet.** Toute règle de sécurité ou de synchronisation ajoutée s'y accompagne d'une épreuve — une régression y est silencieuse et coûte des données. On y vérifie surtout ce qui doit être REFUSÉ : une épreuve qui passe alors qu'elle devrait échouer est le pire des cas.
