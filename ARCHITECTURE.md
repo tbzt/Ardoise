@@ -86,12 +86,15 @@ Le repère est la patinoire entière en décimètres : `600 × 300`, origine en 
 | `cone`    | `x, y, couleur`                                          |
 | `cerceau` | `x, y, couleur`                                          |
 | `passeur` | `x, y, angle: 0\|45\|90\|135, couleur`                  |
+| `separateur` | `x, y, angle: 0\|45\|90\|135, couleur` — le boudin de mousse |
 | `fantome` | `x, y, couleur`                                          |
 | `cage`    | `x, y, sens: gauche\|droite\|haut\|bas`                  |
 | `texte`   | `x, y, texte, taille: petit\|moyen\|grand, couleur`       |
 | `trait`   | `pts: [{x,y}…], style, couleur`                          |
 
-Styles de trait, d'après la légende usuelle des schémas : `patin`, `conduite` (ondulé), `arriere` (ondulation large), `arriere_palet` (boucles), `freinage` (flèche et deux barres), `glisse` (double trait sans flèche), `acceleration` (hachures), `pivot` (boucle en bout), `passe` (pointillé), `echange` (pointillé à deux pointes), `tir` (double trait), `depose` (palet et barre), `libre`. `legende()` rend chaque symbole en vignette pour l'éditeur et la feuille imprimée. Les points d'un trait sont ceux que l'utilisateur a tracés, simplifiés (Ramer-Douglas-Peucker) ; le lissage, l'ondulation et les arcs sont recalculés au rendu.
+Styles de trait, d'après la légende usuelle des schémas : `patin`, `conduite` (ondulé), `arriere` (ondulation large), `arriere_palet` (boucles), `freinage` (flèche et deux barres), `glisse` (double trait sans flèche), `acceleration` (hachures), `pivot` (boucle en bout), `passe` (pointillé), `echange` (pointillé à deux pointes), `tir` (double trait), `depose` (palet et barre), `libre`. `separateur` est deux fois plus long que `passeur` et creux plutôt que plein : sur un schéma, il faut voir tout de suite que l'un renvoie le palet et que l'autre ferme un couloir. Personne ne sait comment ça s'appelle — les coachs disent « boudin », les catalogues « séparateur » ou « bande souple » — alors la légende donne les deux, comme elle le fait pour « Cerceau, cercle à la bombe ».
+
+`legende()` rend chaque symbole en vignette pour l'éditeur et la feuille imprimée. Les points d'un trait sont ceux que l'utilisateur a tracés, simplifiés (Ramer-Douglas-Peucker) ; le lissage, l'ondulation et les arcs sont recalculés au rendu.
 
 ### Séance
 ```js

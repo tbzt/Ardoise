@@ -20,14 +20,21 @@
 import { CATEGORIES } from "./data/catalogue.js";
 import { exercicesDeBase } from "./data/catalogue.js";
 import { FICHES } from "./data/referentiel.js";
+import { OBJETS, FORMES as FORMES_PATINOIRE, STYLES_TRAIT } from "./widgets/patinoire.js";
 import { filtrer } from "./widgets/communs.js";
 import { seanceSaine, groupeSain, exerciceSain } from "./core/store.js";
 import { memeContenu } from "./core/synchro.js";
 import { Distant, HorsLigne, clefCourriel } from "./core/distant.js";
 
-const STYLES = ["patin", "conduite", "arriere", "arriere_palet", "freinage", "glisse", "acceleration", "pivot", "passe", "echange", "tir", "depose", "libre"];
+/* Les listes viennent de patinoire.js, qui fait foi : recopiées ici,
+   elles se seraient démenties au premier symbole ajouté — et l'épreuve
+   aurait continué de passer en vert sur un schéma que plus rien ne
+   dessine. Un objet dont le type est inconnu ne lève aucune erreur :
+   il ne se rend simplement pas. */
+const STYLES = Object.keys(STYLES_TRAIT);
+const TYPES = ["joueur", "trait", ...Object.keys(OBJETS)];
 const COULEURS = ["noir", "rouge", "bleu", "vert", "orange"];
-const FORMES_JOUEUR = ["X", "O", "F", "D", "G", "C"];
+const FORMES_JOUEUR = Object.keys(FORMES_PATINOIRE);
 const FORMES = ["", "actif", "vagues", "groupes3", "parcours", "duo", "relais"];
 const NIVEAUX = ["debutant", "intermediaire", "tous"];
 
@@ -164,12 +171,14 @@ function verifierCatalogue() {
   dire(!sansSchema.length, "Tous les exercices ont un schéma", sansSchema.map((e) => e.id).join(", "));
 
   const mauvaisStyle = new Set();
+  const mauvaisType = new Set();
   const mauvaiseCouleur = new Set();
   const mauvaiseForme = new Set();
   const hors = [];
   for (const e of ex) {
     const limite = e.schema.vue === "moitie" ? 310 : 600;
     for (const o of e.schema.objets) {
+      if (!TYPES.includes(o.t)) mauvaisType.add(`${e.id} : ${o.t}`);
       if (o.t === "trait" && !STYLES.includes(o.style)) mauvaisStyle.add(o.style);
       if (o.couleur && !COULEURS.includes(o.couleur)) mauvaiseCouleur.add(o.couleur);
       if (o.t === "joueur" && !FORMES_JOUEUR.includes(o.forme)) mauvaiseForme.add(o.forme);
@@ -179,6 +188,7 @@ function verifierCatalogue() {
       }
     }
   }
+  dire(!mauvaisType.size, "Types d'objet connus", [...mauvaisType].join(" · "));
   dire(!mauvaisStyle.size, "Styles de trait connus", [...mauvaisStyle].join(", "));
   dire(!mauvaiseCouleur.size, "Couleurs connues", [...mauvaiseCouleur].join(", "));
   dire(!mauvaiseForme.size, "Formes de joueur connues", [...mauvaiseForme].join(", "));

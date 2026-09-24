@@ -55,6 +55,7 @@ export const OBJETS = {
   cone: "Plot",
   cerceau: "Cerceau, cercle à la bombe",
   passeur: "Passeur caoutchouc",
+  separateur: "Séparateur de glace (boudin)",
   fantome: "Triangle / faux joueur",
   cage: "Cage mobile",
   texte: "Texte",
@@ -312,6 +313,29 @@ function passeur(o, inter) {
   return `<g class="obj obj-passeur" data-id="${o.id}" transform="translate(${o.x},${o.y}) rotate(${angle})">${halo}<rect x="-15" y="-2.5" width="30" height="5" rx="1" fill="${c}"/></g>`;
 }
 
+/* Le séparateur de glace — le gros boudin de mousse qu'on pose pour
+   couper la patinoire en travers, ou pour border un atelier. Personne
+   ne sait comment ça s'appelle : les coachs disent « boudin », les
+   catalogues « séparateur » ou « bande souple ». La légende donne les
+   deux, comme elle le fait déjà pour « Cerceau, cercle à la bombe ».
+
+   Deux fois plus long que le passeur caoutchouc, et creux plutôt que
+   plein : de loin, sur un schéma, il faut voir tout de suite que l'un
+   renvoie le palet et que l'autre ferme un couloir. Les traits de
+   refend rappellent que c'est fait de sections qu'on aboute. */
+function separateur(o, inter) {
+  const c = o.couleur ? couleurDe(o) : COULEURS.bleu;
+  const angle = Number(o.angle) || 0;
+  const halo = inter
+    ? `<rect x="-32" y="-9" width="64" height="18" fill="transparent"/><rect class="halo" x="-32" y="-9" width="64" height="18" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 3"/>`
+    : "";
+  const refend = [-10, 10].map((x) => `<line x1="${x}" y1="-3" x2="${x}" y2="3" stroke="${c}" stroke-width="1.4"/>`).join("");
+  return (
+    `<g class="obj obj-separateur" data-id="${o.id}" transform="translate(${o.x},${o.y}) rotate(${angle})">${halo}` +
+    `<rect x="-30" y="-4" width="60" height="8" rx="4" fill="${c}" fill-opacity="0.22" stroke="${c}" stroke-width="2"/>${refend}</g>`
+  );
+}
+
 /* Le faux joueur : un triangle et une crosse, l'obstacle qui a une forme. */
 function fantome(o, inter) {
   const c = o.couleur ? couleurDe(o) : COULEURS.noir;
@@ -434,6 +458,8 @@ export function objet(o, uid, inter = false) {
       return cerceau(o, inter);
     case "passeur":
       return passeur(o, inter);
+    case "separateur":
+      return separateur(o, inter);
     case "fantome":
       return fantome(o, inter);
     case "texte":
@@ -505,6 +531,15 @@ export function legende() {
   symboles.push({ nom: OBJETS.cone, svg: centre({ t: "cone", x: 0, y: 0 }) });
   symboles.push({ nom: OBJETS.cerceau, svg: centre({ t: "cerceau", x: 0, y: 0 }) });
   symboles.push({ nom: OBJETS.passeur, svg: centre({ t: "passeur", x: 0, y: 0, angle: 0 }) });
+  // soixante décimètres de long : il lui faut la vignette large
+  symboles.push({
+    nom: OBJETS.separateur,
+    svg: mini(
+      `<g transform="translate(32,10)">${objet({ id: "l", t: "separateur", x: 0, y: 0, angle: 0, couleur: "bleu" }, uid).replace(/transform="translate\([^)]*\)/, 'transform="translate(0,0)')}</g>`,
+      64,
+      20,
+    ),
+  });
   symboles.push({ nom: OBJETS.fantome, svg: centre({ t: "fantome", x: 0, y: 0 }) });
   symboles.push({ nom: OBJETS.cage, svg: centre({ t: "cage", x: 0, y: 0, sens: "droite" }) });
   const traits = Object.entries(STYLES_TRAIT)

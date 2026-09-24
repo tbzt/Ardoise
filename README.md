@@ -6,7 +6,7 @@ Application web à page unique, **100 % locale** : aucun serveur, aucune dépend
 
 → [tbzt.github.io/Ardoise](https://tbzt.github.io/Ardoise)
 
-Livrée avec **175 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute et le protéger, passer (coup droit, revers, bande, une touche, amortir, contrôle orienté), tirer (poignet décomposé, revers, frappé, en mouvement, tête haute, en déviation), quinze ateliers de gardien — dont un pour celui qui dépanne sans équipement —, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
+Livrée avec **176 exercices** et deux séances types pour **adultes débutants**, du tout premier pas sur la glace au match en travers : marcher puis glisser, tomber et se relever, pousser, freiner des deux côtés, reculer, croiser, conduire le palet tête haute et le protéger, passer (coup droit, revers, bande, une touche, amortir, contrôle orienté), tirer (poignet décomposé, revers, frappé, en mouvement, tête haute, en déviation), quinze ateliers de gardien — dont un pour celui qui dépanne sans équipement —, des jeux qui font travailler sans le dire (feu rouge feu vert, requins et sardines, chat glacé, gardez le palet), et finir au calme.
 
 ---
 
@@ -14,7 +14,7 @@ Livrée avec **175 exercices** et deux séances types pour **adultes débutants*
 
 ### Dessiner — l'éditeur de schémas
 - Une patinoire aux proportions IIHF (60 × 30 m), **entière ou demi-glace**.
-- Les symboles suivent la **légende usuelle des schémas de hockey**. On **pose** d'un clic : joueurs `X` et `O`, avant `F`, défenseur `D`, gardien `G`, entraîneur `C`, palets, plots, cerceaux, passeur caoutchouc, faux joueur, textes, et des **cages mobiles** orientables.
+- Les symboles suivent la **légende usuelle des schémas de hockey**. On **pose** d'un clic : joueurs `X` et `O`, avant `F`, défenseur `D`, gardien `G`, entraîneur `C`, palets, plots, cerceaux, passeur caoutchouc, **séparateurs de glace** (les gros boudins de mousse), faux joueur, textes, et des **cages mobiles** orientables.
 - On **trace** d'un glissé, au doigt, au stylet ou à la souris : patiner en avant sans ou avec palet, en arrière sans ou avec palet, patiner et freiner, glisser sur deux patins, accélérer, pivoter, passer, échange de passes, tirer, abandonner le palet sur place, trait libre.
 - Un bouton **Légende** affiche ou masque chaque symbole avec son nom (le choix est mémorisé) ; la même légende peut figurer au bas de la feuille imprimée, pour que quelqu'un qui n'a jamais vu l'appli sache lire un schéma.
 - Cinq couleurs, sélection, déplacement, étiquettes sur les joueurs, annuler / rétablir, raccourcis (`Suppr`, `Ctrl+Z`, `Ctrl+Y`, `Échap`).

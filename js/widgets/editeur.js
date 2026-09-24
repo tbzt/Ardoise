@@ -96,6 +96,7 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         <button type="button" class="outil glyphe" data-outil="cone" title="Plot">▲</button>
         <button type="button" class="outil glyphe" data-outil="cerceau" title="Cerceau, cercle à la bombe">◯</button>
         <button type="button" class="outil glyphe" data-outil="passeur" title="Passeur caoutchouc">▬</button>
+        <button type="button" class="outil glyphe" data-outil="separateur" title="Séparateur de glace (boudin)">▭</button>
         <button type="button" class="outil glyphe" data-outil="fantome" title="Triangle / faux joueur">△</button>
         <button type="button" class="outil" data-outil="cage" title="Cage mobile">Cage</button>
         <button type="button" class="outil glyphe" data-outil="texte" title="Texte">Aa</button>
@@ -191,9 +192,9 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         `<label>Ouverte vers <select name="sens">${[["gauche", "la gauche"], ["droite", "la droite"], ["haut", "le haut"], ["bas", "le bas"]]
           .map(([k, v]) => `<option value="${k}"${(o.sens || "gauche") === k ? " selected" : ""}>${v}</option>`)
           .join("")}</select></label>`;
-    } else if (o.t === "passeur") {
+    } else if (o.t === "passeur" || o.t === "separateur") {
       champs +=
-        `<span class="prop-nom">Passeur caoutchouc</span>` +
+        `<span class="prop-nom">${o.t === "separateur" ? "Séparateur (boudin)" : "Passeur caoutchouc"}</span>` +
         `<label>Orientation <select name="angle">${[0, 45, 90, 135].map((a) => `<option value="${a}"${Number(o.angle || 0) === a ? " selected" : ""}>${a}°</option>`).join("")}</select></label>`;
     } else if (o.t === "cerceau") {
       champs += `<span class="prop-nom">Cerceau</span>`;
@@ -278,6 +279,11 @@ export function creerEditeur(conteneur, schemaInitial, { onChange } = {}) {
         break;
       case "passeur":
         o = { ...base, t: "passeur", angle: 0, couleur };
+        break;
+      // le boudin de la fédération est bleu : c'est ainsi qu'on le
+      // reconnaît sur un schéma, comme le plot est orange
+      case "separateur":
+        o = { ...base, t: "separateur", angle: 0, couleur: couleur === "noir" ? "bleu" : couleur };
         break;
       case "fantome":
         o = { ...base, t: "fantome", couleur };

@@ -4624,6 +4624,50 @@ export function exercicesDeBase() {
       },
     }),
 
+
+    ex({
+      id: "cat_glace_en_trois",
+      forme: "actif",
+      nom: "La glace en trois : tout le monde joue en même temps",
+      categorie: "jeu",
+      duree: 15,
+      objectif: "Personne ne regarde : trois matchs en travers tournent ensemble, et chacun touche le palet dix fois plus.",
+      description:
+        "On coupe la patinoire en trois zones dans la largeur, avec les gros boudins de mousse posés bout à bout sur les deux lignes bleues. Une petite cage contre chaque bande, aux deux bouts de chaque zone : six cages, trois matchs.\n\nTrois contre trois par zone, manches de deux minutes, on tourne les équipes au sifflet. Les boudins font tout le travail : ils arrêtent les palets qui filent, et ils empêchent qu'on aille voir ce qui se passe à côté.\n\nC'est le format qui change le plus une séance de débutants. Sur une glace entière, un joueur touche le palet quelques secondes en quinze minutes ; ici, il ne peut pas y échapper. On ne corrige pas pendant, on regarde et on note.",
+      points_cles: [
+        "Les boudins sont posés bout à bout : un trou et les palets passent",
+        "Trois contre trois au maximum — à quatre, on recommence à se cacher",
+        "Le palet sorti revient tout de suite, un seau par zone",
+        "On change les équipes au sifflet, pas les zones : on perd moins de temps",
+      ],
+      corrections: [
+        "Les palets passent d'une zone à l'autre → resserrer les boudins, il en manque un",
+        "Une zone s'arrête pendant que les autres jouent → un coach par zone, ou un capitaine désigné",
+        "Toujours les mêmes qui touchent le palet → réduire à deux contre deux sur une manche",
+        "Les manches s'éternisent → un chronomètre visible et un sifflet, pas une estimation",
+      ],
+      materiel: "10 séparateurs\n6 cages mobiles\nChasubles de trois couleurs\n20 palets",
+      variantes:
+        "Deux zones au lieu de trois si la glace est petite ou le groupe réduit. Une zone en jeu libre, une en passes, une en tirs — on tourne toutes les cinq minutes. Sans cage : marquer en arrêtant le palet contre le boudin du fond.",
+      schema: {
+        vue: "entiere",
+        objets: [
+          // cinq boudins par ligne bleue : bout à bout d'une bande à
+          // l'autre, sans le trou par lequel les palets s'échappent
+          ...[35, 95, 155, 215, 268].flatMap((y) => [
+            { id: id(), t: "separateur", x: 229, y, angle: 90, couleur: "bleu" },
+            { id: id(), t: "separateur", x: 371, y, angle: 90, couleur: "bleu" },
+          ]),
+          CG(120, 22, "bas"), CG(120, 278, "haut"),
+          CG(300, 22, "bas"), CG(300, 278, "haut"),
+          CG(478, 22, "bas"), CG(478, 278, "haut"),
+          J(95, 110), J(150, 90, "O"), J(120, 190), J(160, 205, "O"), P(132, 150),
+          J(275, 110), J(330, 95, "O"), J(290, 195), J(340, 200, "O"), P(310, 150),
+          J(450, 105), J(505, 95, "O"), J(460, 195), J(515, 200, "O"), P(482, 150),
+        ],
+      },
+    }),
+
   ];
   return liste.map((e, i) => ({ ...e, cree: t0 + i, modifie: t0 + i }));
 }
